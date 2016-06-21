@@ -3,22 +3,46 @@ function khzlcx(){
 window.scrollTo(0,0);//滚动条回到顶端
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='editUser()'/>客户管理-客户资料查询</div>"+  
                     "<div class='content' style='height:280px;padding-top:80px;background:url(images/book.jpg) no-repeat center center;'>" +
-                        "<p>客户姓名:<input type='text'/></p>"+
+                        "<p>客户姓名:<input type='text' id ='customerName'/></p>"+
                         "<p>证件类型:<select><option>身份证</option></select></p>"+
-                        "<p>证件号码:<input type='text'/></p>"+
-                        "<p><input type='button' class='btn btn-large btn-primary' value='查询' onclick='khcx()'/></p>" +
+                        "<p>证件号码:<input type='text' id ='cardId'/></p>"+
+                        "<p><input type='button' id = 'select' class='btn btn-large btn-primary' value='查询'/></p>" +
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+    
+    $("#select").click(function() {
+    	
+    	var customerName = $("#customerName").val();
+    	var cardId = $("#cardId").val();
+    	if(customerName!=""||cardId!=""){
+    		var objs={};
+    		objs.customerName=customerName;
+    		objs.cardId=cardId;
+    		khcx(objs);
+    	}else{
+    	alert("请填入姓名和证件号码中至少一种");
+    	}
+    })
 }
 //客户维护-客户资料查询-查询
-function khcx(){
+function khcx(objs){
+var obj = null;
+var wsLoginUrl = "/ipad/product/selectCustomerInfoByCardId.json"+"?cardId="+objs.cardId;
+$.ajax({
+    url:wsHost + wsLoginUrl,
+    type: "GET",
+    dataType:'json',
+    success: function (json) {
+    	obj = $.evalJSON(json);
+    }
+})
 window.scrollTo(0,0);//滚动条回到顶端
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khzlcx()'/>客户管理-客户资料查询</div>"+  
                     "<div class='content'>" +
                         "<table class='cpTable'>"+
                             "<tr>"+                             
-                                "<th colspan='2'>客户1 &nbsp;&nbsp;&nbsp;&nbsp;32045056659885166</td>"+  
+                                "<th colspan='2' id ='top'> &nbsp;&nbsp;&nbsp;&nbsp;32045056659885166</td>"+  
                             "</tr>"+
                             "<tr>"+                             
                                 "<td style='width:25%;'>贷款进度</td>"+          
@@ -33,6 +57,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khzl
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+	document.getElementById("top").innerHTML =obj.chinese_name;
 }
 
 //客户维护-客户维护计划

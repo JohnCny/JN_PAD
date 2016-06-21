@@ -3,7 +3,8 @@
  */
 var crud = crud || {};
 crud.dom = crud.dom || {};
-var wsHost = "http://172.19.100.4:8080/PCCredit";
+var wsHost = "http://192.168.1.117:8080/PCCredit/";
+
 
 //带auth的GET
 crud.dom.GETAuth = function() {

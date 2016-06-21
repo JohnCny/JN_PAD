@@ -14,16 +14,48 @@ function newUser(){
 window.scrollTo(0,0);//滚动条回到顶端
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykhgl()'/>客户管理-新建客户</div>"+  
                     "<div class='content' style='height:280px;padding-top:80px;background:url(images/book.jpg) no-repeat center center;'>" +
-                        "<p>客户姓名:<input type='text'/></p>"+
-                        "<p>证件类型:<select><option>身份证</option></select></p>"+
-                        "<p>证件号码:<input type='text'/></p>"+
+                        "<p>客户姓名:<input type='text' id ='khname'/></p>"+
+                        "<p>证件类型:<select id ='cardType'>" +
+                        "<option value='0'>身份证</option>" +
+                        "<option value='1'>军官证</option>"+
+                        "<option value='2'>护照</option>"+
+                        "<option value='3'>香港身份证</option>"+
+                        "<option value='4'>澳门身份证</option>"+
+                        "<option value='5'>台湾身份证</option>"+
+                        "</select></p>"+
+                        "<p>证件号码:<input type='text' id = 'cardId'/></p>"+
                         "<p>" +
-                            "<input type='button' class='btn btn-large btn-primary' value='确定'/>"+  
+                            "<input type='button' id ='sure' class='btn btn-large btn-primary' value='确定'/>"+  
                         "</p>" +
                     "</div>");
     $(".right").hide();
-    $("#mainPage").show();
+    $("#mainPage").show();    
+//点击确定插入
+	$("#sure").click(function() {
+		var chineseName = $("#khname").val();
+		var cardId = $("#cardId").val();
+		var cardType = $("#cardType").val();
+		var userId = window.sessionStorage.getItem("userId")
+		if(cardId==""||cardId==null){
+			alert("证件号码不能为空");
+		}else{
+			var wsLoginUrl = "/ipad/product/customerInsert.json"+"?cardId="+cardId+"&chineseName="+chineseName+"&cardType="+cardType+"&userId="+userId;
+			
+			$.ajax({
+		        url:wsHost + wsLoginUrl,
+		        type: "GET",
+		        dataType:'json',
+		        success: function (json) {
+		        	var objs = $.evalJSON(json);
+		        	alert(objs.message);
+		   
+		        }
+			})
+		}
+	})
+
 }
+
 //客户维护
 function editUser(){
 window.scrollTo(0,0);//滚动条回到顶端
