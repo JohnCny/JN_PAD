@@ -3,8 +3,7 @@
  */
 var crud = crud || {};
 crud.dom = crud.dom || {};
-var wsHost = "http://172.19.100.4:8080/PCCredit";
-
+var wsHost = "http://192.168.137.83:8080/PCCredit";
 //带auth的GET
 crud.dom.GETAuth = function() {
     this.doGetAuth = function(url,auth,callback,errorMsg) {
@@ -12,7 +11,7 @@ crud.dom.GETAuth = function() {
             url : wsHost + url,
             type : "GET",
             timeout : 10000,
-            dataType : 'text',
+            dataType : 'json',
             beforeSend : function(req) {
                 req.setRequestHeader('Authorization', auth);
             },
@@ -36,7 +35,7 @@ crud.dom.GET = function() {
             url : wsHost + url,
             type : "GET",
             timeout : 10000,
-            dataType : 'text',
+            dataType : 'json',
             success : function(json) {
                 //回调
                 callback(json);
@@ -58,7 +57,7 @@ crud.dom.POST = function() {
             type : "POST",
             timeout : 10000,
             data: data,
-            dataType : 'text',
+            dataType : 'json',
             success : function(json) {
                 //回调
                 callback(json);
@@ -80,7 +79,7 @@ crud.dom.PUT = function() {
             type : "PUT",
             timeout : 10000,
             data: data,
-            dataType : 'text',
+            dataType : 'json',
             success : function(json) {
                 //回调
                 callback(json);
@@ -102,7 +101,7 @@ crud.dom.DELETE = function() {
             type : "DELETE",
             timeout : 10000,
             data: data,
-            dataType : 'text',
+            dataType : 'json',
             success : function(json) {
                 //回调
                 callback(json);
