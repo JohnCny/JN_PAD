@@ -8,9 +8,7 @@ function mycpgl(){
 	var url = wsProduct;
 	get.doGet(url,initProductManagerContentCallback,"加载产品信息失败！");
 	function initProductManagerContentCallback(json){
-		alert(json);
 		var objs = $.evalJSON(json);
-		alert(objs.totalCount);
 		var content ;
 		var contsnt;
 		for(var i = 0;i<objs.totalCount;i++){
@@ -21,9 +19,9 @@ function mycpgl(){
 	        			  "<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+
 	        			  		"<div class='cplb' onclick='mycpxx1()'>" +
 					            "<img src='images/cp/jqt.png' title='集群通'/>" +
-					            "<span class='dklx'>"+objs.result.productName+"</span>"+
-					            "<span class='cpqx'>"+objs.result.prodLimitTime+"</span>"+
-					            "<span class='cpll'>"+objs.result.rateRange+"</span>"+
+					            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
+					            "<span class='cpqx'>产品期限："+objs.result[i].prodLiTime+"</span>"+
+					            "<span class='cpll'>产品利率："+objs.result[i].rateRange+"</span>"+
 					            "<img src='images/new.png' class='new'/>" +
 					      "</div>"+"";
 			content = content+contsnt;
