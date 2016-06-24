@@ -2,7 +2,7 @@
 //我的首页
 function mywdsy(){
     window.scrollTo(0,0);//滚动条回到顶端
-    alert("取数："+window.sessionStorage.getItem("userId"));
+    alert("GET当前登录用户ID："+window.sessionStorage.getItem("userId"));
     
     var get = crud.dom.factory("GET");
     wsCustManager ="/ipad/user/findSysUserMsg.json";
@@ -10,7 +10,6 @@ function mywdsy(){
     get.doGet(url,initCustManagerContentCallback,"加载客户经理信息失败！");
     function initCustManagerContentCallback(json){
     	var objs = $.evalJSON(json);
-    	alert(json);
     	var content = "<div class='title'>我的首页</div>"+  
 			          "<div class='content'>" +
 			          "<div class='user-info'>" +
@@ -65,32 +64,43 @@ function khjjxx(){
 							"<div id='ex_1' class='zingchart'></div>"+ 
 							"<div class='ban'></div>"+
 							"<p>" +
-								"<input type='button' class='tab-button' style='margin-left:40px;' value='补充进件' onclick='bcjj()'/>" +
-								"<input type='button' class='tab-button' value='拒绝进件' onclick='jjjj()'/>" +
+							/*	"<input type='button' class='tab-button' style='margin-left:40px;' value='补充进件' onclick='bcjj()'/>" +
+								"<input type='button' class='tab-button' value='拒绝进件' onclick='jjjj()'/>" +*/
 							"</p>" +
 						"</div>");
     $(".right").hide();
     $("#mainPage").show();
 }
 function pie() {
-    // example one data
-    var ex1 = {                         
-        "type": "pie",
-        "legend":{},
-        "backgroundColor":"#fff",
-        "series": [
-            {   
-              "backgroundColor":"#e62163","text": "拒绝进件数量  "+10,"values": [10]
-            },
-            {   
-              "backgroundColor":"#4e74c0","text": "审核通过数量  "+60,"values": [60]
-            }
-        ]
-    };
-    // render example one
-    $('#ex_1').zingchart({
-        data:ex1
-    }); 
+	var get = crud.dom.factory("GET");
+    var userId = window.sessionStorage.getItem("userId");;
+	wsAppInfo ="/ipad/custAppInfo/browse1.json?userId="+userId;
+	var url = wsAppInfo;
+	get.doGet(url,initAppInfoManagerContentCallback,"加载进件信息失败！");
+	function initAppInfoManagerContentCallback(json){
+		var obj = $.evalJSON(json);
+		// example one data
+	    var ex1 = {                         
+	        "type": "pie",
+	        "legend":{},
+	        "backgroundColor":"#fff",
+	        "series": [
+	            {   
+	              "backgroundColor":"#e62163","text": "拒绝进件数量  "+obj.result.refuseNum,"values": [obj.result.refuseNum]
+	            },
+	            {   
+	              "backgroundColor":"#4e74c0","text": "审核通过数量  "+obj.result.approvedNum,"values": [obj.result.approvedNum]
+	            }
+	        ]
+	    };
+	    // render example one
+	    $('#ex_1').zingchart({
+	        data:ex1
+	    }); 
+	}
+	
+	
+    
 }
 //客户进件信息-补充进件
 function bcjj(){

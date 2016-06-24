@@ -21,7 +21,6 @@ function dl(){
         type: "GET",
         dataType:'json',
         success: function (json) {
-        	//alert(json);
         	var objs = $.evalJSON(json);
         	if(objs.result.status == 'success'){
         		checkLoginCallback(json);
@@ -29,7 +28,6 @@ function dl(){
         	}else{
         		alert(objs.result.reason);
         	}
-        	
         },
         error: function(xhr){
         	 alert("登录失败!");
