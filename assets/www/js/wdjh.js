@@ -3,7 +3,7 @@ function mywdjh(){
 window.scrollTo(0,0);//滚动条回到顶端
 $("#mainPage").html("<div class='title'>计划管理</div>"+  
                     "<div class='content'>" +
-                        "<div class='box jhgl' onclick='mykhwhjh()'><img src='images/khwhjh.png' style='margin-left:-15px;'/><span>客户维护计划</span></div>"+
+                        "<div class='box jhgl' onclick='khwhjhlb()'><img src='images/khwhjh.png' style='margin-left:-15px;'/><span>客户维护计划</span></div>"+
                         "<div class='box jhgl' onclick='khcsjh()'><img src='images/khcsjh.png' style='margin-left:-15px;'/><span>客户催收计划</span></div>"+
                         "<div class='box jhgl' onclick='pxjh()'><img src='images/pxjh.png' style='margin-left:-15px;'/><span>培训计划</span></div>"+
                         "<div class='box jhgl' onclick='gzjh()'><img src='images/gzjh.png' style='margin-left:-15px;'/><span>工作计划</span></div>"+                       
@@ -12,6 +12,79 @@ $("#mainPage").html("<div class='title'>计划管理</div>"+
     $("#mainPage").show();
 }
 //客户维护计划
+function khwhjhlb(){
+	window.scrollTo(0,0);//滚动条回到顶端	
+	var userId = window.sessionStorage.getItem("userId");
+//	var userType = window.sessionStorage.getItem("userType");
+	var userType = 1;
+	var page = 1;
+	var obj;
+	var head ="<tr>"+   
+	"<th></th>"+ 
+	"<th>序号</th>"+  
+	"<th>客户姓名</th>"+
+	"<th>证件号码</th>"+
+	"<th>产品名称</th>"+
+	"<th>客户经理</th>"+"</tr>";
+
+	var khwhurl="/ipad/product/getMaintenanceList.json"+"?userId="+userId+"&userType="+userType;
+	$.ajax({
+		url:wsHost + khwhurl,
+		type: "GET",
+		dataType:'json',
+		success: function (json) {
+			obj = $.evalJSON(json);
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>客户维护-客户维护列表</div>"+  
+					"<div class='content'>"+
+					"<table id = 'whlb' class='cpTable' style='text-align:center;'>"+
+					head+obj[page]+
+					"</table>"+
+
+					"<p>"+
+					"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='添加维护计划' id = 'tjwhjh'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='返回' onclick='mywdjh()'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+			$("#xyy").click(function(){
+				page=page+1;
+				if(obj[page]){
+					$("#whlb").html(head+obj[page]);
+				}else{
+					alert("当前已经是最后一页");
+					page=page-1;
+				}
+			})
+			$("#syy").click(function(){
+				page=page-1;
+				if(obj[page]){
+					$("#whlb").html(head+obj[page]);
+				}else{
+					alert("当前已经是第一页");
+					page = page+1;
+				}
+			})
+			$("#tjwhjh").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					var objs={};
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					objs.chineseName = values[0];
+					objs.productName = values[1];
+					objs.getCardId = values[2];
+					objs.customerId = values[3];
+					objs.appId = values[4];
+					tjkhwhjh(objs);
+				}else{
+					alert("请选择一行");
+				}
+			})
+		}
+	})
+
+
+}
 function mykhwhjh(){
 window.scrollTo(0,0);//滚动条回到顶端
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>客户维护计划</div>"+ 
