@@ -21,14 +21,15 @@ function mywdsy(){
 			            "<p>所属银行："+objs.result.org+"</p>"+
 			            "<p>客户经理编号："+objs.result.externalId+"</p>"+
 			            "<p>职位：客户经理</p>"+
-			            "<p>授信权限：50万</p>"+
+			            /*"<p>授信权限：50万</p>"+*/
 			            "<p>放款总额：100万</p>"+
 			        "</div>"+
         "<div class='box wdsy1' onclick='mycpgl()'><img src='images/clkh.png'/><span>产品查询</span></div>"+
         "<div class='box wdsy2' onclick='khjjxx();pie()'><img src='images/khjjxx.png'/><span>客户进件信息</span></div>"+
         "<div class='box wdsy3' onclick='khyyzk()'><img src='images/khyyzk.png'/><span>客户运营状况</span></div>"+
         "<div class='box wdsy4' onclick='tz()'><img src='images/tz.png'/><span>通知</span></div>"+
-        "<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+                           
+        "<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
+        "<div class='box wdsy5' onclick='myMap()'><img src='images/jljlxx.png'/><span>地图</span></div>"+
         "</div>"
         $("#mainPage").html(content);
     }
@@ -172,15 +173,23 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khjj
   }   
 //客户运营状况
 function khyyzk(){
-window.scrollTo(0,0);//滚动条回到顶端
-$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>客户运营状况</div>"+  
-                    "<div class='content' style='width:70%;margin:0 auto;'>" +
-                        "<div class='span3' style='background:#f86817;'>客户授信余额总额<br/><span>1000万</span></div>"+
-                        "<div class='span3' style='background:#e93c3f;'>客户授信用信总额<br/><span>1000万</span></div>"+
-                        "<div class='span3' style='background:#67cdcc;'>客户逾期余额总额<br/><span>1000万</span></div>"+
-                        "<div class='span2' style='background:#046589;'>逾期客户数<br/><span>100</span></div>"+
-                        "<div class='span2' style='background:#d6bf00;'>核销客户数<br/><span>500</span></div>"+
-                    "</div>");
+	window.scrollTo(0,0);//滚动条回到顶端
+
+	var get = crud.dom.factory("GET");
+	wsYunyin ="/ipad/user/findYunyinstatus.json";
+	var url = wsYunyin+"?userId="+window.sessionStorage.getItem("userId");
+	get.doGet(url,initCustManagerContentCallback,"加载客户运营状况失败！");
+	function initCustManagerContentCallback(json){
+		var objs = $.evalJSON(json);
+		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>客户运营状况</div>"+  
+	            "<div class='content' style='width:70%;margin:0 auto;'>" +
+	                "<div class='span3' style='background:#f86817;'>客户授信总额<br/><span>"+objs.result.ksze+"</span></div>"+
+	                "<div class='span3' style='background:#e93c3f;'>客户用信总额<br/><span>"+objs.result.kyze+"</span></div>"+
+	                "<div class='span3' style='background:#67cdcc;'>客户逾期余额总额<br/><span>"+objs.result.kyyeze+"</span></div>"+
+	                "<div class='span2' style='background:#046589;'>逾期客户数<br/><span>"+objs.result.yqkhs+"</span></div>"+
+	                "<div class='span2' style='background:#d6bf00;'>核销客户数<br/><span>"+objs.result.hxkhs+"</span></div>"+
+	            "</div>");
+	}
     $(".right").hide();
     $("#mainPage").show();
 }
@@ -195,53 +204,62 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywd
 }
 //通知
 function tz(){
-window.scrollTo(0,0);//滚动条回到顶端
-$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>通知</div>"+  
-                    "<div class='content'>" +
-                        "<table class='cpTable' style='width:100%;height:85%;position:fixed;top:100px;bottom:0;text-align:center;'>"+
-                            "<tr>"+                             
-                                "<td style='width:33.3%;' onclick='sdhtz()'>" +
-                                    "<img src='images/sdh.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>审贷会通知</span>" +
-                                "</td>"+                           
-                                "<td style='width:33.3%;' onclick='pxtz()'>" +
-                                    "<img src='images/px.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>培训通知</span>" +
-                                "</td>"+                      
-                                "<td style='width:33.3%;' onclick='fpjjtz()'>" +
-                                    "<img src='images/fpjj.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>分配进件通知</span>" +
-                                "</td>"+
-                            "</tr>"+
-                            "<tr>"+                         
-                                "<td onclick='fxsxtz()'>" +
-                                    "<img src='images/fxsx.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>风险事项通知</span>" +
-                                "</td>"+                    
-                                "<td onclick='bcdctz()'>" +
-                                    "<img src='images/bcdc.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>补充调查通知</span>" +
-                                "</td>"+                  
-                                "<td onclick='jjjjtz()'>" +
-                                    "<img src='images/jjjj.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>拒绝进件通知</span>" +
-                                "</td>"+ 
-                            "</tr>"+
-                            "<tr>"+                         
-                                "<td onclick='cskhtz()'>" +
-                                    "<img src='images/cs.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>催收客户通知</span>" +
-                                "</td>"+                    
-                                "<td onclick='khzlbgtz()'>" +
-                                    "<img src='images/khzlbg.png'/><br/><span class='tongzhi'>10</span><br/>" +
-                                    "<span class='tz_message'>客户资料变更通知</span>" +
-                                "</td>"+                  
-                                "<td></td>"+ 
-                            "</tr>"+
-                        "</table>"+
-                    "</div>");
-    $(".right").hide();
-    $("#mainPage").show();
+	window.scrollTo(0,0);//滚动条回到顶端
+	
+	var get = crud.dom.factory("GET");
+	wsNotifiyMessage ="/ipad/custAppInfo/notifiyMessageNum.json";
+	var url = wsNotifiyMessage+"?userId="+window.sessionStorage.getItem("userId");
+	get.doGet(url,initNotifiyMessageContentCallback,"加载通知信息失败！");
+	function initNotifiyMessageContentCallback(json){
+		var objs = $.evalJSON(json);
+		//alert(json);
+		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>通知</div>"+  
+	            "<div class='content'>" +
+	                "<table class='cpTable' style='width:100%;height:85%;position:fixed;top:100px;bottom:0;text-align:center;'>"+
+	                    "<tr>"+                             
+	                        "<td style='width:33.3%;' onclick='sdhtz()'>" +
+	                            "<img src='images/sdh.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<span class='tz_message'>审贷会通知</span>" +
+	                        "</td>"+                           
+	                        "<td style='width:33.3%;' onclick='pxtz()'>" +
+	                            "<img src='images/px.png'/><br/><span class='tongzhi'>"+objs.peixun+"</span><br/>" +
+	                            "<span class='tz_message'>培训通知</span>" +
+	                        "</td>"+                      
+	                        "<td style='width:33.3%;' onclick='fpjjtz()'>" +
+	                            "<img src='images/fpjj.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<span class='tz_message'>分配进件通知</span>" +
+	                        "</td>"+
+	                    "</tr>"+
+	                    "<tr>"+                         
+	                        "<td onclick='fxsxtz()'>" +
+	                            "<img src='images/fxsx.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<span class='tz_message'>风险事项通知</span>" +
+	                        "</td>"+                    
+	                        "<td onclick='bcdctz()'>" +
+	                            "<img src='images/bcdc.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<span class='tz_message'>补充调查通知</span>" +
+	                        "</td>"+                  
+	                        "<td onclick='jjjjtz()'>" +
+	                            "<img src='images/jjjj.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<span class='tz_message'>拒绝进件通知</span>" +
+	                        "</td>"+ 
+	                    "</tr>"+
+	                    "<tr>"+                         
+	                        "<td onclick='cskhtz()'>" +
+	                            "<img src='images/cs.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<span class='tz_message'>催收客户通知</span>" +
+	                        "</td>"+                    
+	                        "<td onclick='khzlbgtz()'>" +
+	                            "<img src='images/khzlbg.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<span class='tz_message'>客户资料变更通知</span>" +
+	                        "</td>"+                  
+	                        "<td></td>"+ 
+	                    "</tr>"+
+	                "</table>"+
+	            "</div>");
+	}
+	    $(".right").hide();
+	    $("#mainPage").show();
 }
 //通知-审贷会通知
 function sdhtz(){
@@ -337,50 +355,48 @@ function show_sdhtz(){
 }
 //通知-培训通知
 function pxtz(){
-window.scrollTo(0,0);//滚动条回到顶端
-$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>通知-培训通知</div>"+  
-                    "<div class='content' style='margin-top:146px;'>" +
-                        "<div class='rcap' onclick='show_pxtz()'>" +
-                            "<table>" +
-                                "<tr>" +
-                                    "<td class='center' style='width:20%;'>2015-06-12<br/>~<br/>2015-06-13</td>"+
-                                    "<td style='width:40%;'>" +
-                                        "<p class='rcTitle'>客户经理业务培训</p>" +
-                                        "<p class='cyz'>参与者</p>" +
-                                        "<p class='cyzxm'>王旭、朱远炎、宋辰、谭文华</p>" +
-                                    "</td>"+
-                                    "<td style='width:35%;'>" +
-                                        "<p class='center'>江苏省常州市九州环宇505</p>" +
-                                    "</td>"+
-                                    "<td style='width:5%;'>" +
-                                        "<img src='images/right.png'/>" +
-                                    "</td>"+
-                                "</tr>"+                            
-                            "</table>"+
-                        "</div>"+   
-                       /*"<table class='cpTable' style='text-align:center;'>"+
-                            "<tr>"+                             
-                                "<th>序号</th>"+  
-                                "<th>培训目标</th>"+
-                                "<th>培训方式</th>"+
-                                "<th>培训时间</th>"+
-                                "<th>考核方式</th>"+
-                                "<th>客户经理确认</th>"+
-                            "</tr>"+
-                            "<tr>"+    
-                                "<td>1</td>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                                "<td></td>"+
-                            "</tr>"+
-                        "</table>"+*/
-                    "</div>");
+	window.scrollTo(0,0);//滚动条回到顶端
+	var get = crud.dom.factory("GET");
+	wsNotice ="/ipad/custAppInfo/findRetraining.json";
+	var url = wsNotice;
+	get.doGet(url,initNoticeContentCallback,"加载培训通知信息失败！");
+	function initNoticeContentCallback(json){
+		var objs = $.evalJSON(json);
+		//alert(json);
+		var content ="";
+		var contsnt ="";
+		var title ="<div class='title'><img src='images/back.png' onclick='tz()'/>通知-培训通知</div>"+  
+            		"<div class='content' style='margin-top:146px;'>" +"";
+		for(var i = 0;i<objs.totalCount;i++){
+			contsnt = "<div class='rcap' onclick='show_pxtz('"+objs.result[i].id+"')'>" +
+                        "<table>" +
+                            "<tr>" +
+                                "<td class='center' style='width:20%;'>"+objs.result[i].id+"<br/>~<br/>"+objs.result[i].trainingTime+"</td>"+
+                                "<td style='width:40%;'>" +
+                                    "<p class='rcTitle'>"+objs.result[i].trainingObjective+"</p>" +
+                                    "<p class='cyz'>参与者</p>" +
+                                    "<p class='cyzxm'>"+objs.result[i].userList+"</p>" +
+                                "</td>"+
+                                "<td style='width:35%;'>" +
+                                    "<p class='center'>"+objs.result[i].trainingLocation+"</p>" +
+                                "</td>"+
+                                "<td style='width:5%;'>" +
+                                    "<img src='images/right.png'/>" +
+                                "</td>"+
+                            "</tr>"+                            
+                        "</table>"+
+                    "</div>"+""; 
+			content = content+contsnt;
+		}
+		alert(content);
+		 $("#mainPage").html(title+content+"</div>");
+		 window.parent.resizeFrame();
+	}
     $(".right").hide();
     $("#mainPage").show();
 }
-function show_pxtz(){
+function show_pxtz(id){
+	alert("111");
     $("#text").html("<div class='display-div sdhtz'>"+
                         "<div class='dialog-head'>"+
                            "<h4>客户经理业务培训</h4>"+
@@ -399,7 +415,7 @@ function show_pxtz(){
                            "<button type='button' class='btn btn-success' onclick='hide_dcts()'>接受</button>"+
                            "<button type='button' class='btn btn-danger' onclick='hide_dcts()'>拒绝</button>"+
                         "</div>"+
-                    "</div><!-- /display-div -->");
+                    "</div>");
     $("#text").animate({top:"0px"},"500");
 }
 //通知-分配进件通知
@@ -800,4 +816,9 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywd
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+}
+
+//地图
+function myMap(){
+	alert("开发中,敬请期待!");
 }
