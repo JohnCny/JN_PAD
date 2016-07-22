@@ -29,7 +29,7 @@ function mywdsy(){
         "<div class='box wdsy3' onclick='khyyzk()'><img src='images/khyyzk.png'/><span>客户运营状况</span></div>"+
         "<div class='box wdsy4' onclick='tz()'><img src='images/tz.png'/><span>通知</span></div>"+
         "<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
-        "<div class='box wdsy5' onclick='myMap()'><img src='images/jljlxx.png'/><span>地图</span></div>"+
+        "<div class='box wdsy5' onclick='wzxx()'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
         "</div>"
         $("#mainPage").html(content);
     }
@@ -822,3 +822,184 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywd
 function myMap(){
 	alert("开发中,敬请期待!");
 }
+function wzxx(){
+ 	window.scrollTo(0,0);//滚动条回到顶端
+ 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>位置信息</div>"+  
+ 			"</div>"+
+ 			"<div class='content' id='allmap' style='height:580px;margin:0 auto;'></div>"+
+ 			"<div class='content' style ='margin:0 auto;'><p  align='center'>" +
+ 			"<select id ='user'>"+"<option value = '0'>请选择客户经理</option>"+
+ 			"<option value = 'bde2c4d855150a0a015515236b48001a'>杜宇航</option>"+
+ 			"<option value = 'bde2c4d855150a0a0155152c4a8a002e'>许亚鹏</option>"+
+ 			"<option value = 'bde2c4d855150a0a015515300d4f0037'>赵文杰</option>"+
+ 			"<option value = 'bde2c4d855150a0a01551539249d0043'>王文涓</option>"+
+ 			"<option value = 'bde2c4d855150a0a0155152acc820028'>卢曼</option>"+
+ 			"<option value = 'ff80808154564c840154565d19b6001a'>温健</option>"+
+ 			"</select>"+
+ 			"<input type='button' id='ckkhjlwz' class='btn btn-primary btn-large' value='查看客户经理位置'/>"+  
+ 			"<input type='button' id='fswdwz' class='btn btn btn-primary btn-large' value='发送我的位置'/>"+  
+ 			"<input type='button' class='btn btn-large'  value='返回' onclick='mywdsy()'/>"+  
+ 			"</p></div>"
+ 	);
+ 	$(".right").hide();
+ 	$("#mainPage").show();
+ 	startGetLocation();
+ 
+ 	$("#ckkhjlwz").click(function(){
+ 		var userId = $("#user").val();
+ 		var gxwzUrl = "/ipad/intopieces/selectLocation.json";
+ 
+ 		$.ajax({
+ 			url:wsHost+gxwzUrl,
+ 			dateType:'json',
+ 			type:'GET',
+ 			//是否异步		
+ //			async:false,
+ 			data:{
+ 				userId:userId,
+ 			},
+ 			success:function (json){
+ 				var obj = $.evalJSON(json);
+ 				if(obj.success=="true"){
+ 					managerLocation(obj);
+ 					
+ 				}else if(obj.success=="false"){
+ 					
+ 					alert("该客户经理位置信息不存在");
+ 				}else{
+ 					
+ 					alert("未知错误");
+ 				}
+ 			}
+ 
+ 		})
+ 	})
+ 	$("#fswdwz").click(function(){
+ 		var gxwzUrl = "/ipad/intopieces/updateLocation.json";
+ 		var userId = window.sessionStorage.getItem("userId");
+ 		$.ajax({
+ 			url:wsHost+gxwzUrl,
+ 			dateType:'json',
+ 			type:'GET',
+ 			//是否异步		
+ //			async:false,
+ 			data:{
+ 				lat:lat,
+ 				lon:lon,
+ 				userId:userId,
+ 			},
+ 			success:function (json){
+ 				var obj = $.evalJSON(json);
+ 				alert(obj.message);
+ 			}
+ 
+ 		})
+ 	})
+ }
+ var lon;
+ var lat;
+ 
+ function startGetLocation(){
+ 
+ 	if(supportsGeoLocation()){ 
+ 		alert("你的浏览器支持 GeoLocation."); 
+ 		getLocation();
+ 	}else{ 
+ 		alert("不支持 GeoLocation.");
+ 		mywdsy();
+ 	} 
+ 
+ }
+ 
+ //检测浏览器是否支持HTML5 
+ function supportsGeoLocation(){ 
+ 	return !!navigator.geolocation; 
+ }   
+ //单次位置请求执行的函数              
+ function getLocation(){ 
+ 	navigator.geolocation.getCurrentPosition(mapIt,locationError); 
+ } 
+ //定位成功时，执行的函数 
+ function mapIt(position){  
+ 	lon = position.coords.longitude; 
+ 	lat = position.coords.latitude; 
+ 
+ //	alert("您位置的经度是："+lon+" 纬度是："+lat); 
+ 	var map = new BMap.Map("allmap"); 
+ 	var point = new BMap.Point(""+lon+"",""+lat+""); 
+ 	map.centerAndZoom(point,19); 
+ 	var gc = new BMap.Geocoder(); 
+ 	translateCallback = function (point){ 
+ 		var marker = new BMap.Marker(point); 
+ 		map.addOverlay(marker); 
+ 		map.setCenter(point); 
+ 		gc.getLocation(point, function(rs){ 
+ 			var addComp = rs.addressComponents; 
+ 			if(addComp.province!==addComp.city){ 
+ 				var sContent = 
+ 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
+ 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+ 					"</div>";} 
+ 			else{ 
+ 				var sContent = 
+ 					"<div id = 'point' value ='"+lon+"@"+lat+"'><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
+ 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+ 					"</div>"; 
+ 			} 
+ 			var infoWindow = new BMap.InfoWindow(sContent); 
+ 			map.openInfoWindow(infoWindow,point); 
+ 		});  
+ 	}                     
+ 	BMap.Convertor.translate(point,0,translateCallback); 
+ } 
+ //定位失败时，执行的函数 
+ function locationError(error) 
+ { 
+ 	switch(error.code) 
+ 	{ 
+ 	case error.PERMISSION_DENIED: 
+ 		alert("无法完成定位请求"); 
+ 		break; 
+ 	case error.POSITION_UNAVAILABLE: 
+ 		alert("位置信息不可用"); 
+ 		break; 
+ 	case error.TIMEOUT: 
+ 		alert("请求超时"); 
+ 		break; 
+ 	case error.UNKNOWN_ERROR: 
+ 		alert("位置错误发生了"); 
+ 		break; 
+ 	} 
+ } 
+ 
+ function managerLocation(obj){
+ 	
+ 	var lon = obj.LocationInfoForm.longitude; 
+ 	var lat = obj.LocationInfoForm.latitude; 
+ 	var map = new BMap.Map("allmap"); 
+ 	var point = new BMap.Point(""+lon+"",""+lat+""); 
+ 	map.centerAndZoom(point,19); 
+ 	var gc = new BMap.Geocoder(); 
+ 	translateCallback = function (point){ 
+ 		var marker = new BMap.Marker(point); 
+ 		map.addOverlay(marker); 
+ 		map.setCenter(point); 
+ 		gc.getLocation(point, function(rs){ 
+ 			var addComp = rs.addressComponents; 
+ 			if(addComp.province!==addComp.city){ 
+ 				var sContent = 
+ 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+obj.LocationInfoForm.userName+obj.LocationInfoForm.updateTime+"的位置是：</h4>" +  
+ 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+ 					"</div>";} 
+ 			else{ 
+ 				var sContent = 
+ 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+obj.LocationInfoForm.userName+obj.LocationInfoForm.updateTime+"的位置是：</h4>" +  
+ 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+ 					"</div>"; 
+ 			} 
+ 			var infoWindow = new BMap.InfoWindow(sContent); 
+ 			map.openInfoWindow(infoWindow,point); 
+ 		});  
+ 	}                     
+ 	BMap.Convertor.translate(point,0,translateCallback);  
+ }
