@@ -9,24 +9,24 @@ function mycpgl(){
 	get.doGet(url,initProductManagerContentCallback,"加载产品信息失败！");
 	function initProductManagerContentCallback(json){
 		var objs = $.evalJSON(json);
-		var content ;
-		var contsnt;
+		var content="";
+		var contsnt="";
+		var title = "<div class='title'>" +
+		 			"<img src='images/back.png' onclick='mywdsy()'/>产品查询" +
+		 			"<input type='text' style='margin:13px 40px;' placeholder='搜索' onkeyup='search(this)'/>" +
+		 			"</div>"+  
+		 			"<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+"";
 		for(var i = 0;i<objs.totalCount;i++){
-			contsnt = "<div class='title'>" +
-	        				 "<img src='images/back.png' onclick='mywdsy()'/>产品查询" +
-	        				 "<input type='text' style='margin:13px 40px;' placeholder='搜索' onkeyup='search(this)'/>" +
-	        			  "</div>"+  
-	        			  "<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+
-	        			  		"<div class='cplb' onclick='mycpxx1()'>" +
+			contsnt = "<div class='cplb' onclick='mycpxx1()'>" +
 					            "<img src='images/cp/jqt.png' title='集群通'/>" +
 					            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
 					            "<span class='cpqx'>产品期限："+objs.result[i].prodLiTime+"</span>"+
-					            "<span class='cpll'>产品利率："+objs.result[i].rateRange+"</span>"+
+					            "<span class='cpll'>产品利率(%)："+objs.result[i].rateRange+"</span>"+
 					            "<img src='images/new.png' class='new'/>" +
-					      "</div>"+"";
+					  "</div>"+"";
 			content = content+contsnt;
 		}
-		 $("#mainPage").html(content+"</div>");
+		 $("#mainPage").html(title + content+"</div>");
 		 window.parent.resizeFrame();
 	}
 /*$("#mainPage").html("<div class='title'>" +
