@@ -3,6 +3,7 @@
 <html lang="zh-cn">
 <head>
 	<meta charset="utf-8"> 
+	<meta name="viewport" content="width=device-width, target-densitydp=high-dpi,user-scalable=no"> 
     <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width"> 
 	<title>PAD</title> 	 	
 	<link rel="stylesheet" href="css/btn.css" /> 
@@ -58,7 +59,7 @@
 		
 	</div><!-- /text -->
 </body>
-<script src="js/jquery-1.7.2.min.js"></script>
+<script src="js/jquery-1.7.2.min.js" charset="utf-8"></script>
 <!-- 饼图 -->
 <script src="js/zingchart.min.js"></script>
 <script src="js/zingchart.jquery.js"></script>
@@ -90,12 +91,11 @@
 <script type="text/javascript" src="js/CardPlugin.js"></script>
 <script type="text/javascript" src="js/ImagePlugin.js"></script>
 <script type="text/javascript" src="js/DBPlugin.js"></script>
-<script type="text/javascript">
-	
-<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7.2/jquery.min.js"></script> 
-<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=wqBXfIN3HkpM1AHKWujjCdsi"></script> 
-<script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/convertor.js"></script>
-<script type="text/javascript">
+
+<!-- <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7.2/jquery.min.js"></script>  -->
+<!-- <script type="text/javascript" src="mapjs/api_v2.0.js"></script> -->
+<script type="text/javascript" src="mapjs/convertor.js"></script> 
+<script type="text/javascript" charset="utf-8" >
 
   	//phonegap调用相机部分
 	var pictureSource;      //图片来源
@@ -105,7 +105,7 @@
 	
 	//********************************照片******************************
 	//事件触发函数
-	function getMedia(id,type) {
+	function getMedia(id,type,name) {
 	    idtmp=id;
 	    pictureSource=navigator.camera.PictureSourceType;
 	    destinationType=navigator.camera.DestinationType;
@@ -128,6 +128,8 @@
 				function testSuccess(res){
 					var url = document.getElementById(idtmp);
 					url.value = res;
+					var lll= document.getElementsByName("imageuri")[0].setAttribute("uri",URI);
+
 					//alert(json);
 				}
 				function testError(){
@@ -180,6 +182,7 @@
 				function testSuccess(res){
 					var url = document.getElementById(idtmp);
 					url.value = res;
+					alert(res);
 					//alert(json);
 				}
 				function testError(){
@@ -203,5 +206,26 @@
 		    navigator.notification.alert(msg, null, 'Uh oh!'); 
 		} 
 	}
+/*******************************************************************************************/
 	
+	
+	function capturePhoto() {
+		destinationType=navigator.camera.DestinationType;
+        navigator.camera.getPicture(oAddPhoto, oonFail, {
+            quality : 100,
+            destinationType : destinationType.FILE_URI,//这里要用FILE_URI，才会返回文件的URI地址            sourceType : Camera.PictureSourceType.CAMERA,
+            allowEdit : true,
+            encodingType : Camera.EncodingType.JPEG,
+           // popoverOptions : CameraPopoverOptions,
+            saveToPhotoAlbum : true
+        });
+   
+	function oonFail(message) {
+        alert('拍照失败的原因: ' + message);
+    }
+    
+    function oAddPhoto(imageURI) {
+        alert(imageURI);
+    }
+	 }
 </script>

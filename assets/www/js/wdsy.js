@@ -3,7 +3,6 @@
 function mywdsy(){
     window.scrollTo(0,0);//滚动条回到顶端
     alert("GET当前登录用户ID："+window.sessionStorage.getItem("userId"));
-    
     var get = crud.dom.factory("GET");
     wsCustManager ="/ipad/user/findSysUserMsg.json";
     var url = wsCustManager+"?userId="+window.sessionStorage.getItem("userId");
@@ -28,10 +27,15 @@ function mywdsy(){
         "<div class='box wdsy2' onclick='khjjxx();pie()'><img src='images/khjjxx.png'/><span>客户进件信息</span></div>"+
         "<div class='box wdsy3' onclick='khyyzk()'><img src='images/khyyzk.png'/><span>客户运营状况</span></div>"+
         "<div class='box wdsy4' onclick='tz()'><img src='images/tz.png'/><span>通知</span></div>"+
-        "<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
-        "<div class='box wdsy5' onclick='wzxx()'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
+//        "<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
+        "<div class='box wdsy5' onclick ='khjlrb()'><img src='images/jljlxx.png'/><span>客户经理日报</span></div>"+ 
+        "<div class='box wdsy5' onclick ='wzxx()'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
+        "<div class='box wdsy5' id ='wzxx'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
         "</div>"
         $("#mainPage").html(content);
+    	$("#wzxx").click(function(){
+    		window.location.href="file:///android_asset/www/import.html";
+    	})
     }
     
     /*$("#mainPage").html("<div class='title'>我的首页</div>"+  
@@ -232,15 +236,15 @@ function tz(){
 	                    "</tr>"+
 	                    "<tr>"+                         
 	                        "<td onclick='fxsxtz()'>" +
-	                            "<img src='images/fxsx.png'/><br/><span class='tongzhi'>0</span><br/>" +
-	                            "<span class='tz_message'>风险事项通知</span>" +
+	                            "<img src='images/fxsx.png'/><br/><span class='tongzhi'>"+objs.risk+"</span><br/>" +
+	                            "<span class='tz_message'>风险客户通知</span>" +
 	                        "</td>"+                    
 	                        "<td onclick='bcdctz()'>" +
-	                            "<img src='images/bcdc.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<img src='images/bcdc.png'/><br/><span class='tongzhi'>"+objs.returnCount+"</span><br/>" +
 	                            "<span class='tz_message'>补充调查通知</span>" +
 	                        "</td>"+                  
 	                        "<td onclick='jjjjtz()'>" +
-	                            "<img src='images/jjjj.png'/><br/><span class='tongzhi'>0</span><br/>" +
+	                            "<img src='images/jjjj.png'/><br/><span class='tongzhi'>"+objs.refuseCount+"</span><br/>" +
 	                            "<span class='tz_message'>拒绝进件通知</span>" +
 	                        "</td>"+ 
 	                    "</tr>"+
@@ -818,23 +822,208 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywd
     $("#mainPage").show();
 }
 
+
+//客户经理日报
+function khjlrb(){
+	var khjirburl ="/ipad/dailyAccount/browse.json";
+	var userId = window.sessionStorage.getItem("userId"); 
+	$.get(wsHost+khjirburl,{userId:userId},callbackInfor);
+	function callbackInfor(json){
+		var obj = $.evalJSON(json);
+		var tmp ="";
+		var result={};
+		var page=1;
+		var j = 1;
+		var head= "<tr>"+                             
+        "<th></th>"+  
+        "<th>客户经理</th>"+
+        "<th>周几</th>"+
+        "<th>周报名称</th>"+
+        "<th>创建时间</th>"+
+        "<th>修改时间</th>"+
+        "</tr>";
+		for(var i=0;i<obj.totalCount;i++){
+		tmp+="<tr onclick='check(this)'>"+    
+            "<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].id+"@"+obj.items[i].displayName+"@"+
+				obj.items[i].whatDay+"@"+obj.items[i].tomorrowplan+"@"+obj.items[i].todayplan+
+				"@"+obj.items[i].modifiedTime+"'/>"+"</span></td>"+
+            "<td>"+obj.items[i].displayName+"</td>"+
+            "<td>"+obj.items[i].whatDay+"</td>"+
+            "<td>"+obj.items[i].title+"</td>"+
+            "<td>"+obj.items[i].createdTime+"</td>"+
+            "<td>"+obj.items[i].modifiedTime+"</td>"+
+        "</tr>";
+        
+			if((i+1)%5==0){
+				result[j]=tmp;
+				j++;
+				tmp="";
+			}
+			
+		}
+		result[j]=tmp;
+		window.scrollTo(0,0);//滚动条回到顶端
+		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>客户经理日报</div>"+  
+		                    "<div class='content'>" +
+		                    "<table class='cpTable' id='rblb' style='text-align:center;'>"+
+		                    head+result[page]+ 
+		                    "</table>"+
+							"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+							"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+							"<input type='button' class='btn btn-large btn-primary' value='修改' id ='xgrb'/>"+
+							"<input type='button' class='btn btn-large btn-primary' value='查看' id ='ckrb'/>"+
+							"<input type='button' class='btn btn-large' value='返回' onclick='mywdsy()'/></p>"+
+							"</div>");
+		    $(".right").hide();
+		    $("#mainPage").show();
+			$("#xyy").click(function(){
+				page=page+1;
+				if(result[page]){
+					$("#rblb").html(head+result[page]);
+				}else{
+					alert("当前已经是最后一页");
+					page=page-1;
+				}
+			})
+			$("#syy").click(function(){
+				page=page-1; 
+				if(result[page]){
+					$("#rblb").html(head+result[page]);
+				}else{
+					alert("当前已经是第一页");
+					page = page+1;
+				}
+			})
+		
+			$("#xgrb").click(function(){
+				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+				var resu={};
+				resu.rbId =values[0];
+				resu.tomorrowplan =values[3];
+				resu.todayplan =values[0];
+				xgkhrb(resu);
+				
+			})
+			$("#ckrb").click(function(){
+				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+				var resu={};
+				resu.rbId =values[0];
+				resu.tomorrowplan =values[3];
+				resu.todayplan =values[0];
+				xsrbxx(resu);
+				
+			})
+	}
+	
+	
+	
+}
+
+function xgkhrb(resu){
+	
+	var rbxgurl="/ipad/dailyAccount/update.json";
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khjlrb()'/>客户经理日报</div>"+  
+			"<div class='content'>" +
+			"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
+			"<tr>"+                        
+			"<th colspan='4'>今日工作内容</th></tr>"+ 
+			"<tr>"+
+			"<td><textarea name='todayplan' id='todayplan' style='height:200px'>"+resu.todayplan+"</textarea>"+
+			"</tr>"+
+			"<tr><td colspan='4'><h3><b>今日工作内容：</b>（工作地点、工作内容明细、工作总结与感悟等）。</h3></td></tr>"+
+			
+			"<tr>"+                        
+			"<th colspan='4'>明日工作安排</th></tr>"+ 
+			"</tr>"+
+			"<td><textarea name='tomorrowplan' id='tomorrowplan' style='height:200px'>"+resu.tomorrowplan+"</textarea>"+
+			"</tr>"+
+			"<tr><td colspan='4'><h3><b>明日工作计划：</b>（工作计划区域、计划工作事项、业务目标等）。</h3></td></tr>"+
+			
+			"</table>"+
+			"<p>" +
+			"<input type='button' class='btn btn-primary btn-large' value='保存' id='save' />" +
+			"<input type='button' class='btn btn-large' value='返回' onclick='khjlrb()'/>" +
+			"</p>"+
+	"</div>");
+	
+	$("#save").click(function(){
+		$.ajax({
+ 			url:wsHost+rbxgurl,
+ 			dateType:'json',
+ 			type:'GET',
+ 			//是否异步		
+ //			async:false,
+ 			data:{
+ 				userId:window.sessionStorage.getItem("userId"),
+ 				todayplan:$("#todayplan").val(),
+ 				tomorrowplan:$("#tomorrowplan").val(),
+ 				id:resu.rbId,
+ 			},
+ 			success:function (json){
+ 				var obj = $.evalJSON(json);
+ 				alert(obj.message);
+ 				if(obj.success=="true"){
+ 					khjlrb();
+ 				}
+ 			}
+		})
+	})
+	
+	
+}
+
+
+//显示日报信息
+
+function xsrbxx(resu){
+	
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khjlrb()'/>客户经理日报</div>"+  
+			"<div class='content'>" +
+			"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
+			"<tr>"+                        
+			"<th colspan='4'>今日工作内容</th></tr>"+ 
+			"<tr>"+
+			"<td><textarea name='todayplan' id='todayplan' style='height:200px' readonly='true'>"+resu.todayplan+"</textarea>"+
+			"</tr>"+
+			"<tr><td colspan='4'><h3><b>今日工作内容：</b>（工作地点、工作内容明细、工作总结与感悟等）。</h3></td></tr>"+
+			
+			"<tr>"+                        
+			"<th colspan='4'>明日工作安排</th></tr>"+ 
+			"</tr>"+
+			"<td><textarea name='tomorrowplan' id='tomorrowplan' style='height:200px' readonly='true'>"+resu.tomorrowplan+"</textarea>"+
+			"</tr>"+
+			"<tr><td colspan='4'><h3><b>明日工作计划：</b>（工作计划区域、计划工作事项、业务目标等）。</h3></td></tr>"+
+			
+			"</table>"+
+			"<p>" +
+			"<input type='button' class='btn btn-large' value='返回' onclick='khjlrb()'/>" +
+			"</p>"+
+	"</div>");
+	
+	
+	
+	
+}
 //地图
 function myMap(){
 	alert("开发中,敬请期待!");
 }
 function wzxx(){
+	var khjlxxlurl = "/ipad/intopieces/managerInfoi.json";
+	var opin=window.sessionStorage.getItem("managerList");
  	window.scrollTo(0,0);//滚动条回到顶端
  	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>位置信息</div>"+  
  			"</div>"+
  			"<div class='content' id='allmap' style='height:580px;margin:0 auto;'></div>"+
  			"<div class='content' style ='margin:0 auto;'><p  align='center'>" +
  			"<select id ='user'>"+"<option value = '0'>请选择客户经理</option>"+
- 			"<option value = 'bde2c4d855150a0a015515236b48001a'>杜宇航</option>"+
- 			"<option value = 'bde2c4d855150a0a0155152c4a8a002e'>许亚鹏</option>"+
- 			"<option value = 'bde2c4d855150a0a015515300d4f0037'>赵文杰</option>"+
- 			"<option value = 'bde2c4d855150a0a01551539249d0043'>王文涓</option>"+
- 			"<option value = 'bde2c4d855150a0a0155152acc820028'>卢曼</option>"+
+// 			"<option value = 'bde2c4d855150a0a015515236b48001a'>杜宇航</option>"+
+// 			"<option value = 'bde2c4d855150a0a0155152c4a8a002e'>许亚鹏</option>"+
+// 			"<option value = 'bde2c4d855150a0a015515300d4f0037'>赵文杰</option>"+
+// 			"<option value = 'bde2c4d855150a0a01551539249d0043'>王文涓</option>"+
+// 			"<option value = 'bde2c4d855150a0a0155152acc820028'>卢曼</option>"+
  			"<option value = 'ff80808154564c840154565d19b6001a'>温健</option>"+
+// 			opin+
  			"</select>"+
  			"<input type='button' id='ckkhjlwz' class='btn btn-primary btn-large' value='查看客户经理位置'/>"+  
  			"<input type='button' id='fswdwz' class='btn btn btn-primary btn-large' value='发送我的位置'/>"+  
@@ -861,8 +1050,20 @@ function wzxx(){
  			success:function (json){
  				var obj = $.evalJSON(json);
  				if(obj.success=="true"){
- 					managerLocation(obj);
- 					
+ 					var map = new BMap.Map("allmap"); 
+ 					for(var i=0;i<obj.size;i++){
+ 					 	var lon = obj.LocationInfoForm[i].longitude; 
+ 					 	var lat = obj.LocationInfoForm[i].latitude; 
+ 					 	var point = new BMap.Point(""+lon+"",""+lat+""); 
+ 					 	map.centerAndZoom(point,15); 
+// 					 	translateCallback = function ( point){ 
+ 					 		var marker  = new BMap.Marker(point); 
+ 					 		map.addOverlay(marker); 
+ 					 		map.setCenter(point); 
+// 					 	}                     
+// 					 	BMap.Convertor.translate(point,0,translateCallback);  
+ 					 	showInformation(marker,obj.LocationInfoForm[i].updateTime,point,map,obj.LocationInfoForm[i].userName);
+ 					}
  				}else if(obj.success=="false"){
  					
  					alert("该客户经理位置信息不存在");
@@ -870,6 +1071,8 @@ function wzxx(){
  					
  					alert("未知错误");
  				}
+ 				
+ 				
  			}
  
  		})
@@ -877,6 +1080,7 @@ function wzxx(){
  	$("#fswdwz").click(function(){
  		var gxwzUrl = "/ipad/intopieces/updateLocation.json";
  		var userId = window.sessionStorage.getItem("userId");
+ 		if(lon!=""&&lat!=""){
  		$.ajax({
  			url:wsHost+gxwzUrl,
  			dateType:'json',
@@ -891,18 +1095,22 @@ function wzxx(){
  			success:function (json){
  				var obj = $.evalJSON(json);
  				alert(obj.message);
+ 				lon="";
+ 				lat="";
  			}
  
- 		})
+ 		})}else{
+ 			
+ 			alert("位置信息为空，等待获取位置信息");
+ 		}
  	})
  }
- var lon;
- var lat;
+ var lon="";
+ var lat="";
  
  function startGetLocation(){
  
  	if(supportsGeoLocation()){ 
- 		alert("你的浏览器支持 GeoLocation."); 
  		getLocation();
  	}else{ 
  		alert("不支持 GeoLocation.");
@@ -930,7 +1138,8 @@ function wzxx(){
  	map.centerAndZoom(point,19); 
  	var gc = new BMap.Geocoder(); 
  	translateCallback = function (point){ 
- 		var marker = new BMap.Marker(point); 
+ 		var marker = new BMap.Marker(point);
+ 		var infoWindow;
  		map.addOverlay(marker); 
  		map.setCenter(point); 
  		gc.getLocation(point, function(rs){ 
@@ -942,15 +1151,21 @@ function wzxx(){
  					"</div>";} 
  			else{ 
  				var sContent = 
- 					"<div id = 'point' value ='"+lon+"@"+lat+"'><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
+ 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
  					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
  					"</div>"; 
  			} 
- 			var infoWindow = new BMap.InfoWindow(sContent); 
+ 			infoWindow = new BMap.InfoWindow(sContent); 
  			map.openInfoWindow(infoWindow,point); 
  		});  
+ 		 marker.addEventListener("click", function () {  
+ 			
+ 	         map.openInfoWindow(infoWindow,point);  
+ 	         
+ 	     }); 
  	}                     
  	BMap.Convertor.translate(point,0,translateCallback); 
+    
  } 
  //定位失败时，执行的函数 
  function locationError(error) 
@@ -970,36 +1185,60 @@ function wzxx(){
  		alert("位置错误发生了"); 
  		break; 
  	} 
+ 	
+ 	
  } 
  
- function managerLocation(obj){
- 	
- 	var lon = obj.LocationInfoForm.longitude; 
- 	var lat = obj.LocationInfoForm.latitude; 
- 	var map = new BMap.Map("allmap"); 
- 	var point = new BMap.Point(""+lon+"",""+lat+""); 
- 	map.centerAndZoom(point,19); 
- 	var gc = new BMap.Geocoder(); 
- 	translateCallback = function (point){ 
- 		var marker = new BMap.Marker(point); 
- 		map.addOverlay(marker); 
- 		map.setCenter(point); 
- 		gc.getLocation(point, function(rs){ 
- 			var addComp = rs.addressComponents; 
- 			if(addComp.province!==addComp.city){ 
- 				var sContent = 
- 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+obj.LocationInfoForm.userName+obj.LocationInfoForm.updateTime+"的位置是：</h4>" +  
- 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
- 					"</div>";} 
- 			else{ 
- 				var sContent = 
- 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+obj.LocationInfoForm.userName+obj.LocationInfoForm.updateTime+"的位置是：</h4>" +  
- 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
- 					"</div>"; 
- 			} 
- 			var infoWindow = new BMap.InfoWindow(sContent); 
- 			map.openInfoWindow(infoWindow,point); 
- 		});  
- 	}                     
- 	BMap.Convertor.translate(point,0,translateCallback);  
+ function getLocations(){ 
+	 	navigator.geolocation.getCurrentPosition(mapIts,locationError); 
+	 } 
+ function mapIts(position){  
+	 	lon = position.coords.longitude; 
+	 	lat = position.coords.latitude; 
+	 	var gxwzUrl = "/ipad/intopieces/updateLocation.json";
+ 		var userId = window.sessionStorage.getItem("userId");
+ 		if(lon!=""&&lat!=""){
+ 		$.ajax({
+ 			url:wsHost+gxwzUrl,
+ 			dateType:'json',
+ 			type:'GET',
+ 			//是否异步		
+ //			async:false,
+ 			data:{
+ 				lat:lat,
+ 				lon:lon,
+ 				userId:userId,
+ 			},
+ 			success:function (json){
+ 				var obj = $.evalJSON(json);
+ 				alert(obj.message);
+ 			}
+ 
+ 		})
+	 	
+	 }else{
+		alert("无法获取当前位置，请检查网络连接和GPS权限"); 
+		 
+	 }
+ }
+ function showInformation(marker,updatetime,point,map,username){
+	 var gc = new BMap.Geocoder(); 
+	 marker.addEventListener("click", function(){
+			 gc.getLocation(point, function(rs){ 
+	 			var addComp = rs.addressComponents; 
+	 			if(addComp.province!==addComp.city){ 
+	 				var sContent = 
+	 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+username+updatetime+"位置是：</h4>" +  
+	 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+	 					"</div>";} 
+	 			else{ 
+	 				var sContent = 
+	 					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+"位置是：</h4>" +  
+	 					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+	 					"</div>"; 
+	 			} 
+	 			var infoWindow = new BMap.InfoWindow(sContent); 
+	 			map.openInfoWindow(infoWindow,point);
+	 		});
+	 })
  }

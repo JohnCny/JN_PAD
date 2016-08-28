@@ -10,7 +10,6 @@ function khzlcx(){
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
-
 	$("#select").click(function() {
 		var customerName = $("#customerName").val();
 		var cardId = $("#cardId").val();
@@ -87,9 +86,11 @@ function khcx(objs){
 function khwhlb(){
 	window.scrollTo(0,0);//滚动条回到顶端	
 	var userId = window.sessionStorage.getItem("userId");
-//	var userType = window.sessionStorage.getItem("userType");
-	var userType = 1;
-	var page = 1;
+	var userType = window.sessionStorage.getItem("userType");
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
 	var obj;
 	var head ="<tr>"+   
 	"<th></th>"+ 
@@ -106,11 +107,29 @@ function khwhlb(){
 		dataType:'json',
 		success: function (json) {
 			obj = $.evalJSON(json);
-			alert(obj);
+			for(var i = 0;i<obj.size;i++){
+				tmp=tmp+"<tr onclick='check(this)'>"+
+                "<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.result[i].chineseName+"@"+
+                obj.result[i].productName+"@"+obj.result[i].cardId+
+                "@"+obj.result[i].customerId+"@"+obj.result[i].appId+"'"+"/>"+"</span></td>"+
+				"<td>"+i+"</td>"+
+				"<td>"+obj.result[i].chineseName+"</td>"+
+				"<td>"+obj.result[i].cardId+"</td>"+
+				"<td>"+obj.result[i].productName+"</td>"+
+				"<td>"+obj.result[i].userName+"</td>"+
+				"</tr>";
+				
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+			}
+			result[j]=tmp;
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='editUser()'/>客户维护-客户维护列表</div>"+  
 					"<div class='content'>"+
 					"<table id = 'whlb' class='cpTable' style='text-align:center;'>"+
-					head+obj[page]+
+					head+result[page]+
 					"</table>"+
 
 					"<p>"+
@@ -124,7 +143,7 @@ function khwhlb(){
 			$("#xyy").click(function(){
 				page=page+1;
 				if(obj[page]){
-					$("#whlb").html(head+obj[page]);
+					$("#whlb").html(head+result[page]);
 				}else{
 					alert("当前已经是最后一页");
 					page=page-1;
@@ -133,7 +152,7 @@ function khwhlb(){
 			$("#syy").click(function(){
 				page=page-1;
 				if(obj[page]){
-					$("#whlb").html(head+obj[page]);
+					$("#whlb").html(head+result[page]);
 				}else{
 					alert("当前已经是第一页");
 					page = page+1;

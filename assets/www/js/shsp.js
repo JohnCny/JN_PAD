@@ -1,17 +1,32 @@
 
 //审核审批
 function myshsp(){
+	var userType = window.sessionStorage.getItem("userType");
+	var shspshow;
+	var show1 = "<div class='box shsp1' onclick='cysdrw()'>" +                            
+	"<span>进件初审</span>"+
+	"</div>"+
+	"<div class='box shsp2' onclick='sdjy()'>" +
+	"<span>审贷决议</span>"+
+	"</div>";
+	var show2 = "<div class='box shsp1' onclick='buzhangsp()'>" +
+	"<span>部长审批</span>"+
+	"</div>"+
+	"<div class='box shsp2' onclick='lsywbfzrsp()'>" +
+	"<span>零售业务部负责人审批</span>"+
+	"</div>"+
+	"<div class='box shsp1' onclick='hzsp()'>" +
+	"<span>行长审批</span>"+
+	"</div>";
+	if(Number(userType)!=1){
+		shspshow = show1+show2;
+	}else{
+		shspshow=show1;
+	}
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title'>审核审批</div>"+  
 			"<div class='content'>" +
-			"<div class='box shsp1' onclick='cysdrw()'>" +                            
-			"<span>进件初审</span>"+
-//			"<span>查阅审贷任务</span>"+
-			"</div>"+
-			"<div class='box shsp2' onclick='sdjy()'>" +
-			"<span>审贷决议</span>"+
-//			"<span>审核审批进件</span>"+
-			"</div>"+
+			shspshow+
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
@@ -24,17 +39,27 @@ function cysdrw(){
 	var result={};
 	var page=1;
 	var j = 1;
+	var head ="<tr>"+                         
+	"<th></th>"+                 
+	"<th>客户名称</th>"+  
+	"<th>申请金额</th>"+
+	"<th>证件类型</th>"+
+	"<th>证件号码</th>"+
+	"<th>审核状态</th>"+
+	"<th>申请时间</th>"+
+	"<th>节点名称</th>"+ 
+	"</tr>"
 	$.ajax({
 		url:wsHost+sdrwurl,
 		type: "GET",
 		dataType:'json',
 		data:{
 			userId:userId,
+			nextNodeName:"进件初审",
 		},
 		success: function (json){
 			var obj = $.evalJSON(json);
-			for(var i = 0;i<obj.totalCount;i++){
-
+			for(var i = 0;i<obj.items.length;i++){
 				if(obj.items[i].cardType=="0"){
 					obj.items[i].cardType="身份证";
 				}else if(obj.items[i].cardType=="1"){
@@ -63,7 +88,7 @@ function cysdrw(){
 				}
 
 				tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].productId+"@"+
-				obj.items[i].serialNumber+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
+				obj.items[i].applyQuota+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
 				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"'/>"+"</span></td>"+  
 				"<td>"+obj.items[i].chineseName+"</td>"+
 				"<td>"+obj.items[i].applyQuota+"</td>"+
@@ -84,31 +109,15 @@ function cysdrw(){
 
 			window.scrollTo(0,0);//滚动条回到顶端
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myshsp()'/>进件初审</div>"+  
-					"<div class='content'>" +                        
-					"<table class='cpTable jjTable' style='text-align:center;'>"+
-					"<tr>"+                         
-//					"<th></th>"+                 
-//					"<th>客户名称</th>"+  
-//					"<th>证件号码</th>"+
-//					"<th>产品名称</th>"+
-//					"<th>申请额度</th>"+
-//					"<th>案件提交时间</th>"+
-//					"<th>确认截止时间</th>"+
-//					"<th>审核截止时间</th>"+ 
-//					"<th>申请客户经理</th>"+ 
-					"<th></th>"+                 
-					"<th>客户名称</th>"+  
-					"<th>申请金额</th>"+
-					"<th>证件类型</th>"+
-					"<th>证件号码</th>"+
-					"<th>审核状态</th>"+
-					"<th>申请时间</th>"+
-					"<th>节点名称</th>"+ 
-					"</tr>"+
-					result[page]+
+					"<div class='content' >"+ 
+					"<table id='cslb' class='cpTable jjTable' style='text-align:center;'>"+
+					
+					head+result[page]+
 					"</table>"+
 					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='调查模板' id ='xszlxx'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='影像资料' id ='xsyxzl'/>"+
 					"<input type='button' class='btn btn-primary btn-large' value='初审结论' id='csjl'/>"+
 					"<input type='button' class='btn btn-large' value='返回' onclick='myshsp()'/></p>"+
 			"</div>");
@@ -118,7 +127,7 @@ function cysdrw(){
 			$("#xyy").click(function(){
 				page=page+1;
 				if(result[page]){
-					$("#rzlb").html(head+result[page]);
+					$("#cslb").html(head+result[page]);
 				}else{
 					alert("当前已经是最后一页");
 					page=page-1;
@@ -127,7 +136,7 @@ function cysdrw(){
 			$("#syy").click(function(){
 				page=page-1; 
 				if(result[page]){
-					$("#rzlb").html(head+result[page]);
+					$("#cslb").html(head+result[page]);
 				}else{
 					alert("当前已经是第一页");
 					page = page+1;
@@ -139,9 +148,34 @@ function cysdrw(){
 
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
-
 					res.appId = values[3];
+					res.applyQuota = values[1];
 					csresult(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+			$("#xsyxzl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var res ={};
+					res.customerId = values[2];
+					res.currentLoc ="cysdrw()";
+					xsyxzl(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+			$("#xszlxx").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					$("#xszlxx").attr('disabled',"true");
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+
+					var appId = values[3];
+					var res={};
+					res.appId = appId;
+					res.currentLoc ="cysdrw()";
+					xszlxx(res);
 				}else{
 					alert("请选择一行");
 				}
@@ -152,6 +186,184 @@ function cysdrw(){
 
 	})
 
+}
+
+//影像资料
+function xsyxzl(res){
+	
+	var yxzlurl="/ipad/JnpadImageBrowse/uploadYx.json";
+	var obj;
+	var id;
+	var page = 0;
+	var lltpurl;
+	$.ajax({
+		url:wsHost+yxzlurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			customerId:res.customerId,
+		},
+		success: function (json){
+			obj = $.evalJSON(json);
+			id=obj.imagerList[0].id;
+			lltpurl="/ipad/JnpadImageBrowse/downLoadYxzlJn.json?id="+id;
+			
+		
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='"+res.currentLoc+"'/>调查模板</div>"+
+			"<div class='content'>" +
+			"<div class='tabplace' id='imageBrowse' style='text-align:center;margin:0 auto;'>图片加载中..." +
+			"</div>"+
+			"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='查看原图' id = 'ckyt'/>"+
+					"<input type='button' class='btn btn-large' value='返回' ondblclick='"+res.currentLoc+" /></p>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+	$("#imageBrowse").html(
+			"<img id ='images' width='500px' style='text-align:center' src='"+wsHost+lltpurl+"' alt='' />"
+	);
+	
+	$("#ckyt").click(function(){
+		var values=$("#ckyt").val();
+		var xx="查看原图";
+		var xxx="查看小图";
+		if(values==xx){
+			
+		$("#imageBrowse").html(
+				"<img id ='images' style='text-align:center' src='"+wsHost+lltpurl+"' alt='' />"
+		);
+		$("#ckyt").val("查看小图");
+		}else if(values==xxx){
+			$("#imageBrowse").html(
+					"<img id ='images' width='500px' style='text-align:center' src='"+wsHost+lltpurl+"' alt='' />"
+			);
+			$("#ckyt").val("查看原图");
+		}
+	})
+	
+	$("#syy").click(function(){
+		
+		page=page-1; 
+		if(page>=0){
+			id=obj.imagerList[page].id
+			lltpurl="/ipad/JnpadImageBrowse/downLoadYxzlJn.json?id="+id;
+			$("#imageBrowse").html(
+					"<img id ='images' style='text-align:center' width='500px' src='"+wsHost+lltpurl+"' alt=''/>"
+			);
+		}else{
+			alert("当前已经是第一页");
+			page = page+1;
+		}
+	})
+	
+	$("#xyy").click(function(){
+		
+		page=page+1; 
+		if(page<obj.size){
+			id=obj.imagerList[page].id
+			lltpurl="/ipad/JnpadImageBrowse/downLoadYxzlJn.json?id="+id;
+			$("#imageBrowse").html(
+					"<img id ='images' width='500px' height='500px'  src='"+wsHost+lltpurl+"' alt=''/>"
+			);
+		}else{
+			alert("当前已经是最后一页");
+			page = page-1;
+		}
+	});
+	
+		}
+	})
+}
+//显示调查模板
+function xszlxx(res){
+	var dcmburl="/ipad/product/browerModel.json";
+	$.ajax({
+		url:wsHost+dcmburl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			appId:res.appId,
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='"+res.currentLoc+"'/>调查模板</div>"+  
+					"<div class='content'>" +
+					"<div class='tabplace'>"+
+					"<ul class='com-tab' >"+
+					"<li class='tab' id ='jyb'>建议</li>"+
+					"<li class='tab' id ='jbzkb'>基本状况</li>"+
+					"<li class='tab' id = 'zcfzb'>资产负债</li>"+
+					"<li class='tab' id = 'bzlrb'>标准利润</li>"+
+					"<li class='tab' id = 'xjlb'>现金流</li>"+
+					"<li class='tab' id = 'jcb'>交叉</li>"+
+					"<li class='tab' id = 'gzb'>固资</li>"+
+					"<li class='tab' id = 'yfysb'>应付预收</li>"+
+					"<li class='tab' id = 'ysyfb'>应收预付</li>"+
+					"<li class='tab' id = 'jueyb'>决议表</li>"+
+					"</ul></div>"+
+					"<div id = 'resultshow'>"+
+					obj.tableContentjyb+
+					"</div>"+
+					"<p><input type='button' class='btn btn-large' value='返回' onclick='"+res.currentLoc+"'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+			//建议表
+			$("#jyb").click(function(){
+				$("#resultshow").html(obj.tableContentjyb);
+			})
+
+			//基本状况
+			$("#jbzkb").click(function(){
+				$("#resultshow").html(obj.tableContentjbzkb);
+			})
+
+			//资产负债
+			$("#zcfzb").click(function(){
+				$("#resultshow").html(obj.tableContentzcfzb);
+			})
+
+			//标准利润
+			$("#bzlrb").click(function(){
+				$("#resultshow").html(obj.tableContentbzlrb);
+			})
+
+			//现金流
+			$("#xjlb").click(function(){
+				$("#resultshow").html(obj.tableContentxjlb);
+			})
+
+			//交叉
+			$("#jcb").click(function(){
+				$("#resultshow").html(obj.tableContentxjXb);
+			})
+
+			//固资
+			$("#gzb").click(function(){
+				$("#resultshow").html(obj.tableContentxgzb);
+			})
+
+			//应付预收
+			$("#yfysb").click(function(){
+				$("#resultshow").html(obj.tableContentyfysb);
+			})
+
+			//应收预付
+			$("#ysyfb").click(function(){
+				$("#resultshow").html(obj.tableContentysyfb);
+			})
+
+			//决议表
+			$("#jueyb").click(function(){
+				$("#resultshow").html(obj.tableContentjueyb);
+			})
+		},
+		error:function(json){
+			var obj = $.evalJSON(json);
+			alert(obj.mess);
+		}
+	})
 }
 //初审结论
 function csresult(res){
@@ -168,386 +380,28 @@ function csresult(res){
 		cache:false,
 		success: function (json){
 			var obj = $.evalJSON(json);
-			var	opin=managerList();
-				window.scrollTo(0,0);//滚动条回到顶端
-				$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='cysdrw()'/>进件初审结论</div>"+  
-						"<div class='content'>" +
-						"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
-						"<tr>"+                        
-						"<th colspan='4'>初审结论</th>"+  
-						"</tr>"+
-						"<tr>"+
-						"<th>审议结论：</th>"+
-						"<td><select id ='auditresult' name = 'status'><option value = 'APPROVE'>通过</option>" +
-						"<option value = 'REJECTAPPROVE'>拒绝</option>" +
-						"<option value = 'RETURNAPPROVE'>退回</option>" +
-						"</select>"+
-						"</td>"+
-						"</tr>"+
-						"<tr>"+
-						"<th>授信额度：</th>"+
-						"<td><input type='text' id ='sxed' name='decision_amount'/>"+
-						"</td>"+
-						"<th>利率</th>"+
-						"<td><input id='decisionRate' type='text' name='decision_rate'/>"+
-						"</td>"+
-						"</tr>"+
-						"<tr>"+
-						"<th>产品授信区间：</th>"+
-						"<td><input type='text' id='sxqj' value='"+obj.prodCreditRange+"' readonly ='true'/>"+
-						"</td>"+
-						"<th>期限：</th>"+
-						"<td><select>" +
-						"<option value = '1'>1个月</option>" +
-						"<option value = '2'>2个月</option>" +
-						"<option value = '3'>3个月</option>" +
-						"<option value = '4'>4个月</option>" +
-						"<option value = '5'>5个月</option>" +
-						"<option value = '6'>6个月</option>" +
-						"<option value = '7'>7个月</option>" +
-						"<option value = '8'>8个月</option>" +
-						"<option value = '9'>9个月</option>" +
-						"<option value = '10'>10个月</option>" +
-						"<option value = '11'>11个月</option>" +
-						"<option value = '12'>12个月</option>" +
-						"<option value = '13'>13个月</option>" +
-						"<option value = '14'>14个月</option>" +
-						"<option value = '15'>15个月</option>" +
-						"<option value = '16'>16个月</option>" +
-						"<option value = '17'>17个月</option>" +
-						"<option value = '18'>18个月</option>" +
-						"<option value = '19'>19个月</option>" +
-						"<option value = '20'>20个月</option>" +
-						"<option value = '21'>21个月</option>" +
-						"<option value = '22'>22个月</option>" +
-						"<option value = '23'>23个月</option>" +
-						"<option value = '24'>24个月</option>" +
-						"<option value = '25'>25个月</option>" +
-						"<option value = '26'>26个月</option>" +
-						"<option value = '27'>27个月</option>" +
-						"<option value = '28'>28个月</option>" +
-						"<option value = '29'>29个月</option>" +
-						"<option value = '30'>30个月</option>" +
-						"<option value = '31'>31个月</option>" +
-						"<option value = '32'>32个月</option>" +
-						"<option value = '33'>33个月</option>" +
-						"<option value = '34'>34个月</option>" +
-						"<option value = '35'>35个月</option>" +
-						"<option value = '36'>36个月</option>" +
-						"</select>"+
-						"</td>"+
-						"</tr>"+
-						"<tr>"+
-						"<th>参与审批人：</th>"+
-						"<td><select id ='cyuser1'>"+"<option value = '0'>请选择</option>"
-						+opin+
-						"</select></td>"+
-						"<th>参与审批人：</th>"+
-						"<td><select id ='cyuser2'>"+"<option value = '0'>请选择</option>"
-						+opin+
-						"</select></td>"+
-						"</tr>"+
-						"<tr>"+
-						"<th>辅调客户经理:</th>"+
-						"<td><select id ='fduser'>"+"<option value = '0'>请选择</option>"
-						+opin+
-						"</select></td>"+
-						"</tr>"+
-						"<tr style='display :none'>"+
-						"<th><label id ='reason' for=reason>原因:</label></th>"+
-						"<td><textarea name='decisionRefusereason' id='decisionRefusereason'></textarea>" +
-						"</td>" +
-						"</tr>"+
-						"</table>"+
-						"<p>" +
-						"<input type='button' class='btn btn-primary btn-large' value='保存' id='save'/>" +
-						"<input type='button' class='btn btn-large' value='返回' onclick='cysdrw()'/>" +
-						"</p>"+
-				"</div>");
-				$(".right").hide();
-				$("#mainPage").show();
-				$("#save").click(function(){
-					var number =/^\d+$/;
-					var sxfw= $("#sxqj").val();
-					var sxed= $("#sxed").val();
-					var s = sxfw.split("-");
-					if(sxed>=s[0]&&sxed<=s[1]&&number.test(sxed)){
-						$("#save").attr('disabled',"true");
-					$.ajax({
-						url:wsHost+tjjlurl,
-						dateType:'json',
-						type:'GET',
-						data:{
-							cyUser1:$("#cyuser1").val(),
-							cyUser2:$("#cyuser2").val(),
-							fdUser:$("#fduser").val(),
-							auditType:"1",
-							decisionRate:$("#decisionRate").val(),
-							productId:obj.customerApplicationInfo.productId,
-							serialNumber:obj.customerApplicationInfo.serialNumber,
-							customerId:obj.customerApplicationInfo.customerId,
-							id:res.appId,
-							status:$("#auditresult").val(),
-							decisionAmount:$("#sxed").val(),
-							custManagerId:obj.customerInfor.userId,
-							userId:userId,
-							decisionRefusereason:$("#decisionRefusereason").val(),
-						},
-						success:function(json){
-							mes = $.evalJSON(json);
-							alert(mes.message);
-							cysdrw();
-						}
-					})
-				}else{
-					alert("请输入正确的授信金额");
-				}
-				})
-
-				$("#auditresult").change(function (){
-
-					var status = $("select[name=status]").val();
-					if( status == "APPROVE"){
-						$("tr:eq(2)").show();
-						$("tr:eq(6)").hide();
-						if($("input[name=decision_amount]").val() == ""){
-							$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
-						}
-						if($("input[name=decision_rate]").val() == ""){
-							$("input[name='decision_rate']").after("<label class='error myerror'generated='true' >利率不能为空</label>");   
-						}
-					}
-
-					if( status == "REJECTAPPROVE"){
-						$("tr:eq(2)").hide();
-						$("tr:eq(6)").show();
-						if($("textarea[name=decision_refusereason]").val() == ""){
-							$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
-						}
-					}
-
-					if( status == "RETURNAPPROVE"){
-						$("tr:eq(2)").hide();
-						$("tr:eq(6)").show();
-					}
-
-					if(status =='RETURNAPPROVE'){
-						$("#reason").text("退回原因");	
-					}else{
-						$("#reason").text("拒绝原因");	
-					} 
-				});
-//			})
-		},
-		error: function(){
-		alert("请求超时");
-		}
-	})
-}
-function managerList(){
-	var opin;
-	var khjlxxlurl = "/ipad/intopieces/managerInfoi.json";
-	$.ajax({
-		url:wsHost+khjlxxlurl,
-		dateType:'json',
-		type:'GET',
-		async:false,
-		success:function (json){
-		var obj = $.evalJSON(json);
-		for(var i = 0;i<obj.size;i++){
-			opin =opin+"<option value = '"+obj.managerInfo[i].ID+"'>"+obj.managerInfo[i].EXTERNAL_ID+obj.managerInfo[i].DISPLAY_NAME+"</option>";
-			}
-		}
-	})
-	return opin;
-}
-
-//审贷决议
-function sdjy(){
-	var sdrwurl= "/ipad/intopieces/sdBrowse.json";
-	var userId = window.sessionStorage.getItem("userId");
-	var tmp ="";
-	var result={};
-	var page=1;
-	var j = 1;
-	$.ajax({
-		url:wsHost+sdrwurl,
-		type: "GET",
-		dataType:'json',
-		data:{
-			userId:userId,
-		},
-		success: function (json){
-			obj = $.evalJSON(json);
-			for(var i = 0;i<obj.totalCount;i++){
-
-				if(obj.items[i].cardType=="0"){
-					obj.items[i].cardType="身份证";
-				}else if(obj.items[i].cardType=="1"){
-					obj.items[i].cardType="军官证";
-				}else if(obj.items[i].cardType=="2"){
-					obj.items[i].cardType="护照";
-				}else if(obj.items[i].cardType=="3"){
-					obj.items[i].cardType="香港身份证";
-				}else if(obj.items[i].cardType=="4"){
-					obj.items[i].cardType="澳门身份证";
-				}else if(obj.items[i].cardType=="5"){
-					obj.items[i].cardType="台湾身份证";
-				}
-				if(obj.items[i].status=="save"){
-					obj.items[i].status="未申请";
-				}else if(obj.items[i].status=="audit"){
-					obj.items[i].status="已申请";
-				}else if(obj.items[i].status=="nopass"){
-					obj.items[i].status="申请未通过";
-				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
-				}else if(obj.items[i].status=="approved"){
-					obj.items[i].status="审批结束";
-				}else if(obj.items[i].status=="succeed"){
-					obj.items[i].status="申请成功";
-				}
-
-				tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].productId+"@"+
-				obj.items[i].serialNumber+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
-				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"'/>"+"</span></td>"+  
-				"<td>"+obj.items[i].chineseName+"</td>"+
-				"<td>"+obj.items[i].applyQuota+"</td>"+
-				"<td>"+obj.items[i].cardType+"</td>"+
-				"<td>"+obj.items[i].cardId+"</td>"+
-				"<td>"+obj.items[i].status+"</td>"+
-				"<td>"+obj.items[i].createdTime+"</td>"+			
-				"<td>"+obj.items[i].nodeName+"</td></tr>"
-
-				if((i+1)%5==0){
-					result[j]=tmp;
-					j++;
-					tmp="";
-				}
-			}
-
-			result[j]=tmp;
-
+			var	managerList=window.sessionStorage.getItem("managerList");
 			window.scrollTo(0,0);//滚动条回到顶端
-			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myshsp()'/>审贷决议</div>"+  
-					"<div class='content'>" +                        
-					"<table class='cpTable jjTable' style='text-align:center;'>"+
-					"<tr>"+                         
-//					"<th></th>"+                 
-//					"<th>客户名称</th>"+  
-//					"<th>证件号码</th>"+
-//					"<th>产品名称</th>"+
-//					"<th>申请额度</th>"+
-//					"<th>案件提交时间</th>"+
-//					"<th>确认截止时间</th>"+
-//					"<th>审核截止时间</th>"+ 
-//					"<th>申请客户经理</th>"+ 
-					"<th></th>"+                 
-					"<th>客户名称</th>"+  
-					"<th>申请金额</th>"+
-					"<th>证件类型</th>"+
-					"<th>证件号码</th>"+
-					"<th>审核状态</th>"+
-					"<th>申请时间</th>"+
-					"<th>节点名称</th>"+ 
-					"</tr>"+
-					result[page]+
-					"</table>"+
-					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
-					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
-					"<input type='button' class='btn btn-primary btn-large' value='决议结论' id='jyjl'/>"+
-					"<input type='button' class='btn btn-large' value='返回' onclick='myshsp()'/></p>"+
-			"</div>");
-			$(".right").hide();
-			$("#mainPage").show();   
-
-			$("#xyy").click(function(){
-				page=page+1;
-				if(result[page]){
-					$("#rzlb").html(head+result[page]);
-				}else{
-					alert("当前已经是最后一页");
-					page=page-1;
-				}
-			})
-			$("#syy").click(function(){
-				page=page-1; 
-				if(result[page]){
-					$("#rzlb").html(head+result[page]);
-				}else{
-					alert("当前已经是第一页");
-					page = page+1;
-				}
-			})
-
-			$("#jyjl").click(function() {
-				if ($("input[type='radio']").is(':checked')) {
-
-					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
-					var res ={};
-
-					res.appId = values[3];
-					xssdjy(res);
-				}else{
-					alert("请选择一行");
-				}
-			})
-
-
-		}
-
-	})
-
-}
-
-
-//显示审贷决议
-function xssdjy(res){
-
-	var sdjyurl = "/ipad/intopieces/sdjy.json";
-	var tjjlurl = "/ipad/intopieces/updateAll.json";
-	var userId = window.sessionStorage.getItem("userId");
-	$.ajax({
-		url:wsHost+sdjyurl,
-		type: "GET",
-		dataType:'json',
-		data:{
-			appId:res.appId,
-		},
-		cache:false,
-		success: function (json){
-			var obj = $.evalJSON(json);
-			var	opin=managerList();
-			window.scrollTo(0,0);//滚动条回到顶端
-			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='sdjy()'/>审贷决议结论</div>"+  
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='cysdrw()'/>进件初审结论</div>"+  
 					"<div class='content'>" +
 					"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
 					"<tr>"+                        
-					"<th colspan='4'>初审结论</th>"+  
+					"<th colspan='4'>进件申请信息</th>"+  
 					"</tr>"+
 					"<tr>"+
-					"<th>初审额度：</th>"+
-					"<td><input type='text' id ='sxed' name='decision_amount' value = '"+obj.customerApplicationProcess.examineAmount+"' readonly ='true'/>"+
-					"</td>"+
-					"<th>利率</th>"+
-					"<td><input id='decisionRate' type='text' name='decision_rate'  value = '"+obj.customerApplicationProcess.examineLv+"' readonly ='true'/>"+
+					"<th>申请金额：</th>"+
+					"<td><input type ='text' value='"+res.applyQuota+"' readonly = 'true'>"+
 					"</td>"+
 					"</tr>"+
 					"<tr>"+
-					"<th>参与审批人：</th>"+
-					"<td><input type='text' value = '"+obj.appManagerAuditLog.userId_1+"' readonly ='true'>"+
+					"<th>产品授信区间：</th>"+
+					"<td><input type='text' id='sxqj' value='"+obj.prodCreditRange+"' readonly = 'true'/>"+
 					"</td>"+
-					"<th>参与审批人：</th>"+
-					"<td><input type='text' value = '"+obj.appManagerAuditLog.userId_2+"' readonly ='true'>"+
-					"</td>"+
-					"</tr>"+
-					"<tr>"+
-					"<th>辅调客户经理:</th>"+
-					"<td><input type='text' value = '"+obj.appManagerAuditLog.userId_3+"' readonly ='true'>"+
-					"</td>"+
+					"<th>产品名称：</th>"+
+					"<td><input type = 'text' value='"+obj.producAttribute.productName+"' readonly = 'true'></td>"+
 					"</tr>"+
 					"<tr>"+                        
-					"<th colspan='4'>审议结论</th>"+  
+					"<th colspan='4'>初审结论</th>"+  
 					"</tr>"+
 					"<tr>"+
 					"<th>审议结论：</th>"+
@@ -566,9 +420,20 @@ function xssdjy(res){
 					"</td>"+
 					"</tr>"+
 					"<tr>"+
-					"<th>产品授信区间：</th>"+
-					"<td><input type='text' id='sxqj' value='"+obj.prodCreditRange+"' readonly ='true'/>"+
-					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><select id ='cyuser1'>"+"<option value = '0'>请选择</option>"
+					+managerList+
+					"</select></td>"+
+					"<th>参与审批人：</th>"+
+					"<td><select id ='cyuser2'>"+"<option value = '0'>请选择</option>"
+					+managerList+
+					"</select></td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><select id ='fduser'>"+"<option value = '0'>请选择</option>"
+					+managerList+
+					"</select></td>"+
 					"<th>期限：</th>"+
 					"<td><select>" +
 					"<option value = '1'>1个月</option>" +
@@ -610,6 +475,371 @@ function xssdjy(res){
 					"</select>"+
 					"</td>"+
 					"</tr>"+
+					"<tr style='display :none'>"+
+					"<th><label id ='reason' for=reason>原因:</label></th>"+
+					"<td><textarea name='decisionRefusereason' id='decisionRefusereason'></textarea>" +
+					"</td>" +
+					"</tr>"+
+					"</table>"+
+					"<p>" +
+					"<input type='button' class='btn btn-primary btn-large' value='保存' id='save'/>" +
+					"<input type='button' class='btn btn-large' value='返回' onclick='cysdrw()'/>" +
+					"</p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+			$("#save").click(function(){
+				var number =/^\d+$/;
+				var sxfw= $("#sxqj").val();
+				var sxed= $("#sxed").val();
+				var s = sxfw.split("-");
+
+				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+
+					$("#save").attr('disabled',"true");
+					$.ajax({
+						url:wsHost+tjjlurl,
+						dateType:'json',
+						type:'GET',
+						data:{
+							cyUser1:$("#cyuser1").val(),
+							cyUser2:$("#cyuser2").val(),
+							fdUser:$("#fduser").val(),
+							auditType:"1",
+							decisionRate:$("#decisionRate").val(),//利率
+							productId:obj.customerApplicationInfo.productId,
+							serialNumber:obj.customerApplicationInfo.serialNumber,
+							customerId:obj.customerApplicationInfo.customerId,
+							id:res.appId,
+							status:$("#auditresult").val(),
+							decisionAmount:sxed,
+							custManagerId:obj.customerInfor.userId,
+							userId:userId,
+							decisionRefusereason:$("#decisionRefusereason").val(),
+						},
+						success:function(json){
+							var mes = $.evalJSON(json);
+							alert(mes.message);
+							cysdrw();
+						}
+					})
+				}else{
+					alert("请输入正确的授信金额");
+				}
+			})
+
+			$("#auditresult").change(function (){
+
+				var status = $("select[name=status]").val();
+				if( status == "APPROVE"){
+					$("tr:eq(5)").show();
+					$("tr:eq(8)").hide();
+//					if($("input[name=decision_amount]").val() == ""){
+//					$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
+//					}
+//					if($("input[name=decision_rate]").val() == ""){
+
+//					$("input[name='decision_rate']").after("<label class='error myerror'generated='true' >利率不能为空</label>");   
+//					}
+				}
+
+				if( status == "REJECTAPPROVE"){
+					$("tr:eq(5)").hide();
+					$("tr:eq(8)").show();
+//					if($("textarea[name=decision_refusereason]").val() == ""){
+//					$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
+//					}
+				}
+
+				if( status == "RETURNAPPROVE"){
+					$("tr:eq(5)").hide();
+					$("tr:eq(8)").show();
+				}
+
+				if(status =='RETURNAPPROVE'){
+					$("#reason").text("退回原因");	
+				}else{
+					$("#reason").text("拒绝原因");	
+				} 
+			});
+//			})
+		},
+		error: function(){
+			alert("请求超时");
+		}
+	})
+}
+function managerList(){
+	var khjlxxlurl = "/ipad/intopieces/managerInfoi.json";
+	var opin="";
+	$.ajax({
+		url:wsHost+khjlxxlurl,
+		dateType:'json',
+		type:'GET',
+		async:false,
+		success:function (json){
+			var obj = $.evalJSON(json);
+//			for(var i = 0;i<obj.size;i++){
+//			opin =opin+"<option value = '"+obj.managerInfo[i].ID+"'>"+obj.managerInfo[i].EXTERNAL_ID+obj.managerInfo[i].DISPLAY_NAME+"</option>";
+//			}
+			for(var i =0;i<obj.size;i++){
+
+				opin = opin+obj.manager[i];
+			}
+		}
+	})
+	return opin;
+}
+
+//审贷决议
+function sdjy(){
+	var sdrwurl= "/ipad/intopieces/csBrowse.json";
+	var userId = window.sessionStorage.getItem("userId");
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head="<tr>"+                         
+	"<th></th>"+                 
+	"<th>客户名称</th>"+  
+	"<th>申请金额</th>"+
+	"<th>证件类型</th>"+
+	"<th>证件号码</th>"+
+	"<th>审核状态</th>"+
+	"<th>申请时间</th>"+
+	"<th>节点名称</th>"+ 
+	"</tr>";
+	$.ajax({
+		url:wsHost+sdrwurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			userId:userId,
+			nextNodeName:"审贷决议"
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			for(var i = 0;i<obj.items.length;i++){
+
+				if(obj.items[i].cardType=="0"){
+					obj.items[i].cardType="身份证";
+				}else if(obj.items[i].cardType=="1"){
+					obj.items[i].cardType="军官证";
+				}else if(obj.items[i].cardType=="2"){
+					obj.items[i].cardType="护照";
+				}else if(obj.items[i].cardType=="3"){
+					obj.items[i].cardType="香港身份证";
+				}else if(obj.items[i].cardType=="4"){
+					obj.items[i].cardType="澳门身份证";
+				}else if(obj.items[i].cardType=="5"){
+					obj.items[i].cardType="台湾身份证";
+				}
+				if(obj.items[i].status=="save"){
+					obj.items[i].status="未申请";
+				}else if(obj.items[i].status=="audit"){
+					obj.items[i].status="已申请";
+				}else if(obj.items[i].status=="nopass"){
+					obj.items[i].status="申请未通过";
+				}else if(obj.items[i].status=="refuse"){
+					obj.items[i].status="被拒接";
+				}else if(obj.items[i].status=="approved"){
+					obj.items[i].status="审批结束";
+				}else if(obj.items[i].status=="succeed"){
+					obj.items[i].status="申请成功";
+				}
+
+				tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].productId+"@"+
+				obj.items[i].applyQuota+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
+				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"'/>"+"</span></td>"+  
+				"<td>"+obj.items[i].chineseName+"</td>"+
+				"<td>"+obj.items[i].applyQuota+"</td>"+
+				"<td>"+obj.items[i].cardType+"</td>"+
+				"<td>"+obj.items[i].cardId+"</td>"+
+				"<td>"+obj.items[i].status+"</td>"+
+				"<td>"+obj.items[i].createdTime+"</td>"+			
+				"<td>"+obj.items[i].nodeName+"</td></tr>"
+
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+			}
+
+			result[j]=tmp;
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myshsp()'/>审贷决议</div>"+  
+					"<div class='content'>" +                        
+					"<table id='sdlb' class='cpTable jjTable' style='text-align:center;'>"+
+					
+					head+result[page]+
+					"</table>"+
+					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='调查模板' id ='xszlxx'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='影像资料' id ='xsyxzl'/>"+
+					"<input type='button' class='btn btn-primary btn-large' value='决议结论' id='jyjl'/>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='myshsp()'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();   
+
+			$("#xyy").click(function(){
+				page=page+1;
+				if(result[page]){
+					$("#sdlb").html(head+result[page]);
+				}else{
+					alert("当前已经是最后一页");
+					page=page-1;
+				}
+			})
+			$("#syy").click(function(){
+				page=page-1; 
+				if(result[page]){
+					$("#sdlb").html(head+result[page]);
+				}else{
+					alert("当前已经是第一页");
+					page = page+1;
+				}
+			})
+
+			$("#jyjl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var res ={};
+					res.appId = values[3];
+					res.applyQuota = values[1];
+					xssdjy(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+			$("#xsyxzl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var res ={};
+					res.customerId = values[2];
+					res.currentLoc ="cysdrw()";
+					xsyxzl(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+			$("#xszlxx").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					$("#xszlxx").attr('disabled',"true");
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+
+					var appId = values[3];
+					var res={};
+					res.appId = appId;
+					res.currentLoc ="sdjy()";
+					xszlxx(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+
+		}
+
+	})
+
+}
+
+
+//显示审贷决议
+function xssdjy(res){
+
+	var sdjyurl = "/ipad/intopieces/sdjy.json";
+	var tjjlurl = "/ipad/intopieces/updateAll.json";
+	var userId = window.sessionStorage.getItem("userId");
+	$.ajax({
+		url:wsHost+sdjyurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			appId:res.appId,
+		},
+		cache:false,
+		success: function (json){  
+			var obj = $.evalJSON(json);
+			var opin =window.sessionStorage.getItem("managerList");
+			
+			var productList=obj.productList;
+			var list="";
+			for(var i = 0;i<productList.length;i++){
+				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
+					list =list+"<option value = '"+productList[i].id+"'>"+productList[i].productName+"</option>";
+				}
+			}
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='sdjy()'/>审贷决议结论</div>"+  
+					"<div class='content'>" +
+					"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
+					"<tr>"+                        
+					"<th colspan='4'>进件申请信息</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>申请金额：</th>"+
+					"<td><input type ='text' value='"+res.applyQuota+"' readonly = 'true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>产品授信区间：</th>"+
+					"<td><input type='text' id='sxqj' value='"+obj.prodCreditRange+"' readonly = 'true'/>"+
+					"</td>"+
+					"<th>产品名称：</th>"+
+					"<td><input type = 'text' value='"+obj.producAttribute.productName+"' readonly = 'true'></td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>初审结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>初审额度：</th>"+
+					"<td><input type='text'  name='decision_amount' value = '"+obj.appManagerAuditLog.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog.userId_1+"' readonly ='true'>"+
+					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog.userId_2+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog.userId_3+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>审议结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审议结论：</th>"+
+					"<td><select id ='auditresult' name = 'status'><option value = 'APPROVE'>通过</option>" +
+					"<option value = 'REJECTAPPROVE'>拒绝</option>" +
+					"<option value = 'RETURNAPPROVE'>退回</option>" +
+					"</select>"+
+					"</td>"+
+					"<th>变更产品名称</th>"+
+					"<td><select id ='xxggcp'><option value = ''>"+obj.producAttribute.productName+"</option>" +
+					list+
+					"</select>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>授信额度：</th>"+
+					"<td><input type='text' id ='sxed' name='decision_amount'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input id='decisionRate' type='text' name='decision_rate'/>"+
+					"</td>"+
+					"</tr>"+
 					"<tr>"+
 					"<th>参与审批人：</th>"+
 					"<td><select id ='cyuser1'>"+"<option value = '0'>请选择</option>"
@@ -625,8 +855,45 @@ function xssdjy(res){
 					"<td><select id ='fduser'>"+"<option value = '0'>请选择</option>"
 					+opin+
 					"</select></td>"+
-					"<th>产品</th>"+
-					"<td><input type='text' value = '"+obj.producAttribute.productName+"'  readonly ='true'>"+
+					"<th>期限：</th>"+
+					"<td><select>" +
+					"<option value = '1'>1个月</option>" +
+					"<option value = '2'>2个月</option>" +
+					"<option value = '3'>3个月</option>" +
+					"<option value = '4'>4个月</option>" +
+					"<option value = '5'>5个月</option>" +
+					"<option value = '6'>6个月</option>" +
+					"<option value = '7'>7个月</option>" +
+					"<option value = '8'>8个月</option>" +
+					"<option value = '9'>9个月</option>" +
+					"<option value = '10'>10个月</option>" +
+					"<option value = '11'>11个月</option>" +
+					"<option value = '12'>12个月</option>" +
+					"<option value = '13'>13个月</option>" +
+					"<option value = '14'>14个月</option>" +
+					"<option value = '15'>15个月</option>" +
+					"<option value = '16'>16个月</option>" +
+					"<option value = '17'>17个月</option>" +
+					"<option value = '18'>18个月</option>" +
+					"<option value = '19'>19个月</option>" +
+					"<option value = '20'>20个月</option>" +
+					"<option value = '21'>21个月</option>" +
+					"<option value = '22'>22个月</option>" +
+					"<option value = '23'>23个月</option>" +
+					"<option value = '24'>24个月</option>" +
+					"<option value = '25'>25个月</option>" +
+					"<option value = '26'>26个月</option>" +
+					"<option value = '27'>27个月</option>" +
+					"<option value = '28'>28个月</option>" +
+					"<option value = '29'>29个月</option>" +
+					"<option value = '30'>30个月</option>" +
+					"<option value = '31'>31个月</option>" +
+					"<option value = '32'>32个月</option>" +
+					"<option value = '33'>33个月</option>" +
+					"<option value = '34'>34个月</option>" +
+					"<option value = '35'>35个月</option>" +
+					"<option value = '36'>36个月</option>" +
+					"</select>"+
 					"</td>"+
 					"</tr>"+
 					"<tr style='display :none'>"+
@@ -647,36 +914,37 @@ function xssdjy(res){
 				var sxfw= $("#sxqj").val();
 				var sxed= $("#sxed").val();
 				var s = sxfw.split("-");
-				if(sxed>=s[0]&&sxed<=s[1]&&number.test(sxed)){
+				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
 					$("#save").attr('disabled',"true");
-				$.ajax({
-					url:wsHost+tjjlurl,
-					dateType:'json',
-					type:'GET',
-					data:{
-						cyUser1:$("#cyuser1").val(),
-						cyUser2:$("#cyuser2").val(),
-						fdUser:$("#fduser").val(),
-						auditType:"2",
-						decisionRate:$("#decisionRate").val(),
-						productId:obj.customerApplicationInfo.productId,
-						serialNumber:obj.customerApplicationInfo.serialNumber,
-						customerId:obj.customerApplicationInfo.customerId,
-						id:res.appId,
-						status:$("#auditresult").val(),
-						decisionAmount:$("#sxed").val(),
-						custManagerId:obj.custManagerId,
-						userId:userId,
-						decisionRefusereason:$("#decisionRefusereason").val(),
-					},
-					success:function(json){
-						mes = $.evalJSON(json);
-						alert(mes.message);
-						sdjy();
-					}
+					$.ajax({
+						url:wsHost+tjjlurl,
+						dateType:'json',
+						type:'GET',
+						data:{
+							proodId:$("#xxggcp").val(),
+							cyUser1:$("#cyuser1").val(),
+							cyUser2:$("#cyuser2").val(),
+							fdUser:$("#fduser").val(),
+							auditType:"2",
+							decisionRate:$("#decisionRate").val(),
+							productId:obj.customerApplicationInfo.productId,
+							serialNumber:obj.customerApplicationInfo.serialNumber,
+							customerId:obj.customerApplicationInfo.customerId,
+							id:res.appId,
+							status:$("#auditresult").val(),
+							decisionAmount:$("#sxed").val(),
+							custManagerId:obj.custManagerId,
+							userId:userId,
+							decisionRefusereason:$("#decisionRefusereason").val(),
+						},
+						success:function(json){
+							var mes = $.evalJSON(json);
+							alert(mes.message);
+							sdjy();
+						}
 
 
-				})
+					})
 				}else{
 					alert("请输入正确的授信金额");
 				}
@@ -686,8 +954,8 @@ function xssdjy(res){
 
 				var status = $("select[name=status]").val();
 				if( status == "APPROVE"){
-					$("tr:eq(6)").show();
-					$("tr:eq(10)").hide();
+					$("tr:eq(9)").show();
+					$("tr:eq(12)").hide();
 					if($("input[name=decision_amount]").val() == ""){
 						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
 					}
@@ -697,16 +965,16 @@ function xssdjy(res){
 				}
 
 				if( status == "REJECTAPPROVE"){
-					$("tr:eq(6)").hide();
-					$("tr:eq(10)").show();
+					$("tr:eq(9)").hide();
+					$("tr:eq(12)").show();
 					if($("textarea[name=decision_refusereason]").val() == ""){
 						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
 					}
 				}
 
 				if( status == "RETURNAPPROVE"){
-					$("tr:eq(6)").hide();
-					$("tr:eq(10)").show();
+					$("tr:eq(9)").hide();
+					$("tr:eq(12)").show();
 				}
 
 				if(status =='RETURNAPPROVE'){
@@ -724,7 +992,1268 @@ function xssdjy(res){
 }
 
 
+//部长审批
+function buzhangsp(){
+	var sdrwurl= "/ipad/intopieces/csBrowse.json";
+	var userId = window.sessionStorage.getItem("userId");
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head="<tr>"+                         
+	"<th></th>"+                 
+	"<th>客户名称</th>"+  
+	"<th>申请金额</th>"+
+	"<th>证件类型</th>"+
+	"<th>证件号码</th>"+
+	"<th>审核状态</th>"+
+	"<th>申请时间</th>"+
+	"<th>节点名称</th>"+ 
+	"</tr>";
+	$.ajax({
+		url:wsHost+sdrwurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			userId:userId,
+			nextNodeName:"部长审批",
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			for(var i = 0;i<obj.items.length;i++){
+				if(obj.items[i].cardType=="0"){
+					obj.items[i].cardType="身份证";
+				}else if(obj.items[i].cardType=="1"){
+					obj.items[i].cardType="军官证";
+				}else if(obj.items[i].cardType=="2"){
+					obj.items[i].cardType="护照";
+				}else if(obj.items[i].cardType=="3"){
+					obj.items[i].cardType="香港身份证";
+				}else if(obj.items[i].cardType=="4"){
+					obj.items[i].cardType="澳门身份证";
+				}else if(obj.items[i].cardType=="5"){
+					obj.items[i].cardType="台湾身份证";
+				}
+				if(obj.items[i].status=="save"){
+					obj.items[i].status="未申请";
+				}else if(obj.items[i].status=="audit"){
+					obj.items[i].status="已申请";
+				}else if(obj.items[i].status=="nopass"){
+					obj.items[i].status="申请未通过";
+				}else if(obj.items[i].status=="refuse"){
+					obj.items[i].status="被拒接";
+				}else if(obj.items[i].status=="approved"){
+					obj.items[i].status="审批结束";
+				}else if(obj.items[i].status=="succeed"){
+					obj.items[i].status="申请成功";
+				}
 
+				tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].productId+"@"+
+				obj.items[i].applyQuota+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
+				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"'/>"+"</span></td>"+  
+				"<td>"+obj.items[i].chineseName+"</td>"+
+				"<td>"+obj.items[i].applyQuota+"</td>"+
+				"<td>"+obj.items[i].cardType+"</td>"+
+				"<td>"+obj.items[i].cardId+"</td>"+
+				"<td>"+obj.items[i].status+"</td>"+
+				"<td>"+obj.items[i].createdTime+"</td>"+			
+				"<td>"+obj.items[i].nodeName+"</td></tr>"
+
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+			}
+
+			result[j]=tmp;
+
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myshsp()'/>部长审批</div>"+  
+					"<div class='content'>" +                        
+					"<table id='bzsplb' class='cpTable jjTable' style='text-align:center;'>"+
+					head+result[page]+
+					"</table>"+
+					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='调查模板' id ='xszlxx'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='影像资料' id ='xsyxzl'/>"+
+					"<input type='button' class='btn btn-primary btn-large' value='审批结论' id='csjl'/>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='myshsp()'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();   
+
+			$("#xyy").click(function(){
+				page=page+1;
+				if(result[page]){
+					$("#bzsplb").html(head+result[page]);
+				}else{
+					alert("当前已经是最后一页");
+					page=page-1;
+				}
+			})
+			$("#syy").click(function(){
+				page=page-1; 
+				if(result[page]){
+					$("#bzsplb").html(head+result[page]);
+				}else{
+					alert("当前已经是第一页");
+					page = page+1;
+				}
+			})
+
+			$("#csjl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					
+					var res ={};
+					res.appId = values[3];
+					res.applyQuota = values[1];
+					bzspjl(res)
+				}else{
+					alert("请选择一行");
+				}
+			})
+			$("#xsyxzl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var res ={};
+					res.customerId = values[2];
+					res.currentLoc ="cysdrw()";
+					xsyxzl(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+			$("#xszlxx").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					$("#xszlxx").attr('disabled',"true");
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+
+					var appId = values[3];
+					var res={};
+					res.appId = appId;
+					res.currentLoc ="buzhangsp()";
+					xszlxx(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+		}
+
+	})
+
+}
+
+//显示部长审批结论页面
+function bzspjl(res){
+
+
+	var sdjyurl = "/ipad/intopieces/bzsp.json";
+	var tjjlurl = "/ipad/intopieces/updateAll.json";
+	var userId = window.sessionStorage.getItem("userId");
+	$.ajax({
+		url:wsHost+sdjyurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			appId:res.appId,
+		},
+		cache:false,
+		success: function (json){
+			var obj = $.evalJSON(json);
+			var productList=obj.productList;
+			alert(productList.length);
+			var list="";
+			for(var i = 0;i<productList.length;i++){
+				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
+					list =list+"<option value = '"+productList[i].id+"'>"+productList[i].productName+"</option>";
+				}
+			}
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='buzhangsp()'/>部长审批</div>"+  
+					"<div class='content'>" +
+					"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
+					"<tr>"+                        
+					"<th colspan='4'>进件申请信息</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>申请金额：</th>"+
+					"<td><input type ='text' value='"+res.applyQuota+"' readonly = 'true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>产品授信区间：</th>"+
+					"<td><input type='text' id='sxqj' value='"+obj.prodCreditRange+"' readonly = 'true'/>"+
+					"</td>"+
+					"<th>产品名称：</th>"+
+					"<td><input type = 'text' value='"+obj.producAttribute.productName+"' readonly = 'true'></td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>初审结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>初审额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog1.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog1.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_1+"' readonly ='true'>"+
+					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_2+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_3+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>审贷结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审议额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog2.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog2.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_1+"' readonly ='true'>"+
+					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_2+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_3+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>审核结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审批结论：</th>"+
+					"<td><select id ='auditresult' name = 'status'><option value = 'APPROVE'>通过</option>" +
+					"<option value = 'REJECTAPPROVE'>拒绝</option>" +
+					"<option value = 'RETURNAPPROVE'>退回</option>" +
+					"</select>"+
+					"</td>"+
+					"<th>变更产品名称</th>"+
+					"<td><select id ='xxggcp' name = 'status'><option value = ''>"+obj.producAttribute.productName+"</option>" +
+					list+
+					"</select>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>授信额度：</th>"+
+					"<td><input type='text' id ='sxed' name='decision_amount'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input id='decisionRate' type='text' name='decision_rate'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限：</th>"+
+					"<td><select>" +
+					"<option value = '1'>1个月</option>" +
+					"<option value = '2'>2个月</option>" +
+					"<option value = '3'>3个月</option>" +
+					"<option value = '4'>4个月</option>" +
+					"<option value = '5'>5个月</option>" +
+					"<option value = '6'>6个月</option>" +
+					"<option value = '7'>7个月</option>" +
+					"<option value = '8'>8个月</option>" +
+					"<option value = '9'>9个月</option>" +
+					"<option value = '10'>10个月</option>" +
+					"<option value = '11'>11个月</option>" +
+					"<option value = '12'>12个月</option>" +
+					"<option value = '13'>13个月</option>" +
+					"<option value = '14'>14个月</option>" +
+					"<option value = '15'>15个月</option>" +
+					"<option value = '16'>16个月</option>" +
+					"<option value = '17'>17个月</option>" +
+					"<option value = '18'>18个月</option>" +
+					"<option value = '19'>19个月</option>" +
+					"<option value = '20'>20个月</option>" +
+					"<option value = '21'>21个月</option>" +
+					"<option value = '22'>22个月</option>" +
+					"<option value = '23'>23个月</option>" +
+					"<option value = '24'>24个月</option>" +
+					"<option value = '25'>25个月</option>" +
+					"<option value = '26'>26个月</option>" +
+					"<option value = '27'>27个月</option>" +
+					"<option value = '28'>28个月</option>" +
+					"<option value = '29'>29个月</option>" +
+					"<option value = '30'>30个月</option>" +
+					"<option value = '31'>31个月</option>" +
+					"<option value = '32'>32个月</option>" +
+					"<option value = '33'>33个月</option>" +
+					"<option value = '34'>34个月</option>" +
+					"<option value = '35'>35个月</option>" +
+					"<option value = '36'>36个月</option>" +
+					"</select>"+
+					"</td>"+
+					"</tr>"+
+					"<tr style='display :none'>"+
+					"<th><label id ='reason' for=reason>原因:</label></th>"+
+					"<td><textarea name='decisionRefusereason' id='decisionRefusereason'></textarea>" +
+					"</td>" +
+					"</tr>"+
+					"</table>"+
+					"<p>" +
+					"<input type='button' class='btn btn-primary btn-large' value='保存' id='save' />" +
+					"<input type='button' class='btn btn-large' value='返回' onclick='buzhangsp()'/>" +
+					"</p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+			$("#save").click(function(){
+				var number =/^\d+$/;
+				var sxfw= $("#sxqj").val();
+				var sxed= $("#sxed").val();
+				var s = sxfw.split("-");
+				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+					$("#save").attr('disabled',"true");
+					$.ajax({
+						url:wsHost+tjjlurl,
+						dateType:'json',
+						type:'GET',
+						data:{
+							proodId:$("#xxggcp").val(),
+							auditType:"3",
+							decisionRate:$("#decisionRate").val(),
+							productId:obj.customerApplicationInfo.productId,
+							serialNumber:obj.customerApplicationInfo.serialNumber,
+							customerId:obj.customerApplicationInfo.customerId,
+							id:res.appId,
+							status:$("#auditresult").val(),
+							decisionAmount:$("#sxed").val(),
+							custManagerId:obj.custManagerId,
+							userId:userId,
+							decisionRefusereason:$("#decisionRefusereason").val(),
+						},
+						success:function(json){
+							var mes = $.evalJSON(json);
+							alert(mes.message);
+							sdjy();
+						}
+
+
+					})
+				}else{
+					alert("请输入正确的授信金额");
+				}
+			})
+
+			$("#auditresult").change(function (){
+
+				var status = $("select[name=status]").val();
+				if( status == "APPROVE"){
+					$("tr:eq(13)").show();
+					$("tr:eq(15)").hide();
+					if($("input[name=decision_amount]").val() == ""){
+						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
+					}
+					if($("input[name=decision_rate]").val() == ""){
+						$("input[name='decision_rate']").after("<label class='error myerror'generated='true' >利率不能为空</label>");   
+					}
+				}
+
+				if( status == "REJECTAPPROVE"){
+					$("tr:eq(13)").hide();
+					$("tr:eq(15)").show();
+					if($("textarea[name=decision_refusereason]").val() == ""){
+						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
+					}
+				}
+
+				if( status == "RETURNAPPROVE"){
+					$("tr:eq(13)").hide();
+					$("tr:eq(15)").show();
+				}
+
+				if(status =='RETURNAPPROVE'){
+					$("#reason").text("退回原因");	
+				}else{
+					$("#reason").text("拒绝原因");	
+				} 
+			});
+
+		},
+		error: function(){
+			alert("请求超时");
+		}
+	})
+
+
+}
+
+
+//零售业务部负责人
+function lsywbfzrsp(){
+	var sdrwurl= "/ipad/intopieces/csBrowse.json";
+	var userId = window.sessionStorage.getItem("userId");
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head="<tr>"+                         
+	"<th></th>"+                 
+	"<th>客户名称</th>"+  
+	"<th>申请金额</th>"+
+	"<th>证件类型</th>"+
+	"<th>证件号码</th>"+
+	"<th>审核状态</th>"+
+	"<th>申请时间</th>"+
+	"<th>节点名称</th>"+ 
+	"</tr>";
+	$.ajax({
+		url:wsHost+sdrwurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			userId:userId,
+			nextNodeName:"零售部业务负责人",
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			for(var i = 0;i<obj.items.length;i++){
+
+				if(obj.items[i].cardType=="0"){
+					obj.items[i].cardType="身份证";
+				}else if(obj.items[i].cardType=="1"){
+					obj.items[i].cardType="军官证";
+				}else if(obj.items[i].cardType=="2"){
+					obj.items[i].cardType="护照";
+				}else if(obj.items[i].cardType=="3"){
+					obj.items[i].cardType="香港身份证";
+				}else if(obj.items[i].cardType=="4"){
+					obj.items[i].cardType="澳门身份证";
+				}else if(obj.items[i].cardType=="5"){
+					obj.items[i].cardType="台湾身份证";
+				}
+				if(obj.items[i].status=="save"){
+					obj.items[i].status="未申请";
+				}else if(obj.items[i].status=="audit"){
+					obj.items[i].status="已申请";
+				}else if(obj.items[i].status=="nopass"){
+					obj.items[i].status="申请未通过";
+				}else if(obj.items[i].status=="refuse"){
+					obj.items[i].status="被拒接";
+				}else if(obj.items[i].status=="approved"){
+					obj.items[i].status="审批结束";
+				}else if(obj.items[i].status=="succeed"){
+					obj.items[i].status="申请成功";
+				}
+
+				tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].productId+"@"+
+				obj.items[i].applyQuota+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
+				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"'/>"+"</span></td>"+  
+				"<td>"+obj.items[i].chineseName+"</td>"+
+				"<td>"+obj.items[i].applyQuota+"</td>"+
+				"<td>"+obj.items[i].cardType+"</td>"+
+				"<td>"+obj.items[i].cardId+"</td>"+
+				"<td>"+obj.items[i].status+"</td>"+
+				"<td>"+obj.items[i].createdTime+"</td>"+			
+				"<td>"+obj.items[i].nodeName+"</td></tr>"
+
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+			}
+
+			result[j]=tmp;
+
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myshsp()'/>部长审批</div>"+  
+					"<div class='content'>" +                        
+					"<table id='lsywlb' class='cpTable jjTable' style='text-align:center;'>"+
+					head+result[page]+
+					"</table>"+
+					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='调查模板' id ='xszlxx'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='影像资料' id ='xsyxzl'/>"+
+					"<input type='button' class='btn btn-primary btn-large' value='审批结论' id='jyjl'/>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='myshsp()'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();   
+
+			$("#xyy").click(function(){
+				page=page+1;
+				if(result[page]){
+					$("#lsywlb").html(head+result[page]);
+				}else{
+					alert("当前已经是最后一页");
+					page=page-1;
+				}
+			})
+			$("#syy").click(function(){
+				page=page-1; 
+				if(result[page]){
+					$("#lsywlb").html(head+result[page]);
+				}else{
+					alert("当前已经是第一页");
+					page = page+1;
+				}
+			})
+
+			$("#jyjl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					
+					var res ={};
+					res.appId = values[3];
+					res.applyQuota = values[1];
+					lsbywfzr(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+
+			$("#xszlxx").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					$("#xszlxx").attr('disabled',"true");
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+
+					var appId = values[3];
+					var res={};
+					res.appId = appId;
+					res.currentLoc ="lsywbfzrsp()";
+					xszlxx(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+			
+			$("#xsyxzl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var res ={};
+					res.customerId = values[2];
+					res.currentLoc ="cysdrw()";
+					xsyxzl(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+		}
+
+	})
+
+}
+
+
+//显示零售部负责人论页面
+function lsbywfzr(res){
+
+
+	var sdjyurl = "/ipad/intopieces/lsbfzr.json";
+	var tjjlurl = "/ipad/intopieces/updateAll.json";
+	var userId = window.sessionStorage.getItem("userId");
+	$.ajax({
+		url:wsHost+sdjyurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			appId:res.appId,
+		},
+		cache:false,
+		success: function (json){
+			var obj = $.evalJSON(json);
+//			var	opin=managerList();
+			var productList=obj.productList;
+			alert(productList.length);
+			var list="";
+			for(var i = 0;i<productList.length;i++){
+				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
+					list =list+"<option value = '"+productList[i].id+"'>"+productList[i].productName+"</option>";
+				}
+			}
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='lsywbfzrsp()'/>零售业务部负责人审批</div>"+  
+					"<div class='content'>" +
+					"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
+					"<tr>"+                        
+					"<th colspan='4'>进件申请信息</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>申请金额：</th>"+
+					"<td><input type ='text' value='"+res.applyQuota+"' readonly = 'true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>产品授信区间：</th>"+
+					"<td><input type='text' id='sxqj' value='"+obj.prodCreditRange+"' readonly = 'true'/>"+
+					"</td>"+
+					"<th>产品名称：</th>"+
+					"<td><input type = 'text' value='"+obj.producAttribute.productName+"' readonly = 'true'></td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>初审结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>初审额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog1.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog1.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_1+"' readonly ='true'>"+
+					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_2+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_3+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>审贷结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审议额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog2.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog2.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_1+"' readonly ='true'>"+
+					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_2+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_3+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>部长结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审议额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog3.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog3.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>审核结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审批结论：</th>"+
+					"<td><select id ='auditresult' name = 'status'><option value = 'APPROVE'>通过</option>" +
+					"<option value = 'REJECTAPPROVE'>拒绝</option>" +
+					"<option value = 'RETURNAPPROVE'>退回</option>" +
+					"</select>"+
+					"</td>"+
+					"<th>变更产品名称</th>"+
+					"<td><select id ='xxggcp' name = 'status'><option value = ''>"+obj.producAttribute.productName+"</option>" +
+					list+
+					"</select>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>授信额度：</th>"+
+					"<td><input type='text' id ='sxed' name='decision_amount'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input id='decisionRate' type='text' name='decision_rate'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限：</th>"+
+					"<td><select>" +
+					"<option value = '1'>1个月</option>" +
+					"<option value = '2'>2个月</option>" +
+					"<option value = '3'>3个月</option>" +
+					"<option value = '4'>4个月</option>" +
+					"<option value = '5'>5个月</option>" +
+					"<option value = '6'>6个月</option>" +
+					"<option value = '7'>7个月</option>" +
+					"<option value = '8'>8个月</option>" +
+					"<option value = '9'>9个月</option>" +
+					"<option value = '10'>10个月</option>" +
+					"<option value = '11'>11个月</option>" +
+					"<option value = '12'>12个月</option>" +
+					"<option value = '13'>13个月</option>" +
+					"<option value = '14'>14个月</option>" +
+					"<option value = '15'>15个月</option>" +
+					"<option value = '16'>16个月</option>" +
+					"<option value = '17'>17个月</option>" +
+					"<option value = '18'>18个月</option>" +
+					"<option value = '19'>19个月</option>" +
+					"<option value = '20'>20个月</option>" +
+					"<option value = '21'>21个月</option>" +
+					"<option value = '22'>22个月</option>" +
+					"<option value = '23'>23个月</option>" +
+					"<option value = '24'>24个月</option>" +
+					"<option value = '25'>25个月</option>" +
+					"<option value = '26'>26个月</option>" +
+					"<option value = '27'>27个月</option>" +
+					"<option value = '28'>28个月</option>" +
+					"<option value = '29'>29个月</option>" +
+					"<option value = '30'>30个月</option>" +
+					"<option value = '31'>31个月</option>" +
+					"<option value = '32'>32个月</option>" +
+					"<option value = '33'>33个月</option>" +
+					"<option value = '34'>34个月</option>" +
+					"<option value = '35'>35个月</option>" +
+					"<option value = '36'>36个月</option>" +
+					"</select>"+
+					"</td>"+
+					"</tr>"+
+					"<tr style='display :none'>"+
+					"<th><label id ='reason' for=reason>原因:</label></th>"+
+					"<td><textarea name='decisionRefusereason' id='decisionRefusereason'></textarea>" +
+					"</td>" +
+					"</tr>"+
+					"</table>"+
+					"<p>" +
+					"<input type='button' class='btn btn-primary btn-large' value='保存' id='save' />" +
+					"<input type='button' class='btn btn-large' value='返回' onclick='lsywbfzrsp()'/>" +
+					"</p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+			$("#save").click(function(){
+				var number =/^\d+$/;
+				var sxfw= $("#sxqj").val();
+				var sxed= $("#sxed").val();
+				var s = sxfw.split("-");
+				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+					$("#save").attr('disabled',"true");
+					$.ajax({
+						url:wsHost+tjjlurl,
+						dateType:'json',
+						type:'GET',
+						data:{
+							proodId:$("#xxggcp").val(),
+							auditType:"4",
+							decisionRate:$("#decisionRate").val(),
+							productId:obj.customerApplicationInfo.productId,
+							serialNumber:obj.customerApplicationInfo.serialNumber,
+							customerId:obj.customerApplicationInfo.customerId,
+							id:res.appId,
+							status:$("#auditresult").val(),
+							decisionAmount:$("#sxed").val(),
+							custManagerId:obj.custManagerId,
+							userId:userId,
+							decisionRefusereason:$("#decisionRefusereason").val(),
+						},
+						success:function(json){
+							var mes = $.evalJSON(json);
+							alert(mes.message);
+							sdjy();
+						}
+
+
+					})
+				}else{
+					alert("请输入正确的授信金额");
+				}
+			})
+
+			$("#auditresult").change(function (){
+
+				var status = $("select[name=status]").val();
+				if( status == "APPROVE"){
+					$("tr:eq(15)").show();
+					$("tr:eq(17)").hide();
+					if($("input[name=decision_amount]").val() == ""){
+						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
+					}
+					if($("input[name=decision_rate]").val() == ""){
+						$("input[name='decision_rate']").after("<label class='error myerror'generated='true' >利率不能为空</label>");   
+					}
+				}
+
+				if( status == "REJECTAPPROVE"){
+					$("tr:eq(15)").hide();
+					$("tr:eq(17)").show();
+					if($("textarea[name=decision_refusereason]").val() == ""){
+						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
+					}
+				}
+
+				if( status == "RETURNAPPROVE"){
+					$("tr:eq(15)").hide();
+					$("tr:eq(17)").show();
+				}
+
+				if(status =='RETURNAPPROVE'){
+					$("#reason").text("退回原因");	
+				}else{
+					$("#reason").text("拒绝原因");	
+				} 
+			});
+
+		},
+		error: function(){
+			alert("请求超时");
+		}
+	})
+
+
+}
+
+//行长审批
+function hzsp(){
+	var sdrwurl= "/ipad/intopieces/csBrowse.json";
+	var userId = window.sessionStorage.getItem("userId");
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head="<tr>"+                         
+	"<th></th>"+                 
+	"<th>客户名称</th>"+  
+	"<th>申请金额</th>"+
+	"<th>证件类型</th>"+
+	"<th>证件号码</th>"+
+	"<th>审核状态</th>"+
+	"<th>申请时间</th>"+
+	"<th>节点名称</th>"+ 
+	"</tr>";
+	$.ajax({
+		url:wsHost+sdrwurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			userId:userId,
+			nextNodeName:"行长审批",
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			for(var i = 0;i<obj.items.length;i++){
+
+				if(obj.items[i].cardType=="0"){
+					obj.items[i].cardType="身份证";
+				}else if(obj.items[i].cardType=="1"){
+					obj.items[i].cardType="军官证";
+				}else if(obj.items[i].cardType=="2"){
+					obj.items[i].cardType="护照";
+				}else if(obj.items[i].cardType=="3"){
+					obj.items[i].cardType="香港身份证";
+				}else if(obj.items[i].cardType=="4"){
+					obj.items[i].cardType="澳门身份证";
+				}else if(obj.items[i].cardType=="5"){
+					obj.items[i].cardType="台湾身份证";
+				}
+				if(obj.items[i].status=="save"){
+					obj.items[i].status="未申请";
+				}else if(obj.items[i].status=="audit"){
+					obj.items[i].status="已申请";
+				}else if(obj.items[i].status=="nopass"){
+					obj.items[i].status="申请未通过";
+				}else if(obj.items[i].status=="refuse"){
+					obj.items[i].status="被拒接";
+				}else if(obj.items[i].status=="approved"){
+					obj.items[i].status="审批结束";
+				}else if(obj.items[i].status=="succeed"){
+					obj.items[i].status="申请成功";
+				}
+
+				tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].productId+"@"+
+				obj.items[i].applyQuota+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
+				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"'/>"+"</span></td>"+  
+				"<td>"+obj.items[i].chineseName+"</td>"+
+				"<td>"+obj.items[i].applyQuota+"</td>"+
+				"<td>"+obj.items[i].cardType+"</td>"+
+				"<td>"+obj.items[i].cardId+"</td>"+
+				"<td>"+obj.items[i].status+"</td>"+
+				"<td>"+obj.items[i].createdTime+"</td>"+			
+				"<td>"+obj.items[i].nodeName+"</td></tr>"
+
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+			}
+
+			result[j]=tmp;
+
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myshsp()'/>行长审批</div>"+  
+					"<div class='content'>" +                        
+					"<table id='hzsplb' class='cpTable jjTable' style='text-align:center;'>"+
+					result[page]+
+					"</table>"+
+					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='调查模板' id ='xszlxx'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='影像资料' id ='xsyxzl'/>"+
+					"<input type='button' class='btn btn-primary btn-large' value='审批结论' id='jyjl'/>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='myshsp()'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();   
+
+			$("#xyy").click(function(){
+				page=page+1;
+				if(result[page]){
+					$("#hzsplb").html(head+result[page]);
+				}else{
+					alert("当前已经是最后一页");
+					page=page-1;
+				}
+			})
+			$("#syy").click(function(){
+				page=page-1; 
+				if(result[page]){
+					$("#hzsplb").html(head+result[page]);
+				}else{
+					alert("当前已经是第一页");
+					page = page+1;
+				}
+			})
+
+			$("#jyjl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					
+					var res ={};
+					res.appId = values[3];
+					res.applyQuota = values[1];
+					hzspjl(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+
+			$("#xszlxx").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					$("#xszlxx").attr('disabled',"true");
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+
+					var appId = values[3];
+					var res={};
+					res.appId = appId;
+					res.currentLoc ="hzsp()";
+					xszlxx(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+			$("#xsyxzl").click(function() {
+				if ($("input[type='radio']").is(':checked')) {
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var res ={};
+					res.customerId = values[2];
+					res.currentLoc ="cysdrw()";
+					xsyxzl(res);
+				}else{
+					alert("请选择一行");
+				}
+			})
+		}
+
+	})
+
+}
+
+//显示行长审批页面
+function hzspjl(res){
+
+
+	var sdjyurl = "/ipad/intopieces/hzspjl.json";
+	var tjjlurl = "/ipad/intopieces/updateAll.json";
+	var userId = window.sessionStorage.getItem("userId");
+	$.ajax({
+		url:wsHost+sdjyurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			appId:res.appId,
+		},
+		cache:false,
+		success: function (json){
+			var obj = $.evalJSON(json);
+//			var	opin=managerList();
+			var productList=obj.productList;
+			alert(productList.length);
+			var list="";
+			for(var i = 0;i<productList.length;i++){
+				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
+					list =list+"<option value = '"+productList[i].id+"'>"+productList[i].productName+"</option>";
+				}
+			}
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='hzsp()'/>行长审批结论</div>"+  
+					"<div class='content'>" +
+					"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
+					"<tr>"+                        
+					"<th colspan='4'>进件申请信息</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>申请金额：</th>"+
+					"<td><input type ='text' value='"+res.applyQuota+"' readonly = 'true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>产品授信区间：</th>"+
+					"<td><input type='text' id='sxqj' value='"+obj.prodCreditRange+"' readonly = 'true'/>"+
+					"</td>"+
+					"<th>产品名称：</th>"+
+					"<td><input type = 'text' value='"+obj.producAttribute.productName+"' readonly = 'true'></td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>初审结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>初审额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog1.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog1.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_1+"' readonly ='true'>"+
+					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_2+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog1.userId_3+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>审贷结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审议额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog2.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog2.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_1+"' readonly ='true'>"+
+					"</td>"+
+					"<th>参与审批人：</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_2+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>辅调客户经理:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_3+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>部长结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审议额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog3.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog3.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>零售部业务负责人结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审议额度：</th>"+
+					"<td><input type='text' name='decision_amount' value = '"+obj.appManagerAuditLog4.examineAmount+"' readonly ='true'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog4.examineLv+"' readonly ='true'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+                        
+					"<th colspan='4'>审核结论</th>"+  
+					"</tr>"+
+					"<tr>"+
+					"<th>审批结论：</th>"+
+					"<td><select id ='auditresult' name = 'status'><option value = 'APPROVE'>通过</option>" +
+					"<option value = 'REJECTAPPROVE'>拒绝</option>" +
+					"<option value = 'RETURNAPPROVE'>退回</option>" +
+					"</select>"+
+					"</td>"+
+					"<th>变更产品名称</th>"+
+					"<td><select id ='xxggcp' name = 'status'><option value = ''>"+obj.producAttribute.productName+"</option>" +
+					list+
+					"</select>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>授信额度：</th>"+
+					"<td><input type='text' id ='sxed' name='decision_amount'/>"+
+					"</td>"+
+					"<th>利率</th>"+
+					"<td><input id='decisionRate' type='text' name='decision_rate'/>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限：</th>"+
+					"<td><select>" +
+					"<option value = '1'>1个月</option>" +
+					"<option value = '2'>2个月</option>" +
+					"<option value = '3'>3个月</option>" +
+					"<option value = '4'>4个月</option>" +
+					"<option value = '5'>5个月</option>" +
+					"<option value = '6'>6个月</option>" +
+					"<option value = '7'>7个月</option>" +
+					"<option value = '8'>8个月</option>" +
+					"<option value = '9'>9个月</option>" +
+					"<option value = '10'>10个月</option>" +
+					"<option value = '11'>11个月</option>" +
+					"<option value = '12'>12个月</option>" +
+					"<option value = '13'>13个月</option>" +
+					"<option value = '14'>14个月</option>" +
+					"<option value = '15'>15个月</option>" +
+					"<option value = '16'>16个月</option>" +
+					"<option value = '17'>17个月</option>" +
+					"<option value = '18'>18个月</option>" +
+					"<option value = '19'>19个月</option>" +
+					"<option value = '20'>20个月</option>" +
+					"<option value = '21'>21个月</option>" +
+					"<option value = '22'>22个月</option>" +
+					"<option value = '23'>23个月</option>" +
+					"<option value = '24'>24个月</option>" +
+					"<option value = '25'>25个月</option>" +
+					"<option value = '26'>26个月</option>" +
+					"<option value = '27'>27个月</option>" +
+					"<option value = '28'>28个月</option>" +
+					"<option value = '29'>29个月</option>" +
+					"<option value = '30'>30个月</option>" +
+					"<option value = '31'>31个月</option>" +
+					"<option value = '32'>32个月</option>" +
+					"<option value = '33'>33个月</option>" +
+					"<option value = '34'>34个月</option>" +
+					"<option value = '35'>35个月</option>" +
+					"<option value = '36'>36个月</option>" +
+					"</select>"+
+					"</td>"+
+					"</tr>"+
+					"<tr style='display :none'>"+
+					"<th><label id ='reason' for=reason>原因:</label></th>"+
+					"<td><textarea name='decisionRefusereason' id='decisionRefusereason'></textarea>" +
+					"</td>" +
+					"</tr>"+
+					"</table>"+
+					"<p>" +
+					"<input type='button' class='btn btn-primary btn-large' value='保存' id='save' />" +
+					"<input type='button' class='btn btn-large' value='返回' onclick='hzsp()'/>" +
+					"</p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+			$("#save").click(function(){
+				var number =/^\d+$/;
+				var sxfw= $("#sxqj").val();
+				var sxed= $("#sxed").val();
+				var s = sxfw.split("-");
+				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+					$("#save").attr('disabled',"true");
+					$.ajax({
+						url:wsHost+tjjlurl,
+						dateType:'json',
+						type:'GET',
+						data:{
+							proodId:$("#xxggcp").val(),
+							auditType:"5",
+							decisionRate:$("#decisionRate").val(),
+							productId:obj.customerApplicationInfo.productId,
+							serialNumber:obj.customerApplicationInfo.serialNumber,
+							customerId:obj.customerApplicationInfo.customerId,
+							id:res.appId,
+							status:$("#auditresult").val(),
+							decisionAmount:$("#sxed").val(),
+							custManagerId:obj.custManagerId,
+							userId:userId,
+							decisionRefusereason:$("#decisionRefusereason").val(),
+						},
+						success:function(json){
+							var mes = $.evalJSON(json);
+							alert(mes.message);
+							sdjy();
+						}
+
+
+					})
+				}else{
+					alert("请输入正确的授信金额");
+				}
+			})
+
+			$("#auditresult").change(function (){
+
+				var status = $("select[name=status]").val();
+				if( status == "APPROVE"){
+					$("tr:eq(17)").show();
+					$("tr:eq(19)").hide();
+					if($("input[name=decision_amount]").val() == ""){
+						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
+					}
+					if($("input[name=decision_rate]").val() == ""){
+						$("input[name='decision_rate']").after("<label class='error myerror'generated='true' >利率不能为空</label>");   
+					}
+				}
+
+				if( status == "REJECTAPPROVE"){
+					$("tr:eq(17)").hide();
+					$("tr:eq(19)").show();
+					if($("textarea[name=decision_refusereason]").val() == ""){
+						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
+					}
+				}
+
+				if( status == "RETURNAPPROVE"){
+					$("tr:eq(17)").hide();
+					$("tr:eq(19)").show();
+				}
+
+				if(status =='RETURNAPPROVE'){
+					$("#reason").text("退回原因");	
+				}else{
+					$("#reason").text("拒绝原因");	
+				} 
+			});
+
+		},
+		error: function(){
+			alert("请求超时");
+		}
+	})
+
+
+}
 
 
 

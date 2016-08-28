@@ -10,7 +10,7 @@ function dl(){
     post.doPost("/ipad/user/JnLogin.json",data,checkLoginCallback,"登陆失败！");*/
 
 //  测试用
-	var user_name = "songxu";  
+	var user_name = "wenjian123";  
     var pass_word = "111111";
 //  上线用
 //  var user_name = $("#name").val();
@@ -44,8 +44,16 @@ function checkLoginCallback(json){
     	return;
     }
     var session = window.sessionStorage;//有些不支持sessionStorage，而是globalStroage.
+//    var manggerList = managerList();
+
+
     //alert(obj.result.user.id);
     session.setItem("userId",obj.result.user.id);
+    session.setItem("userType",obj.result.user.userType);
+//    session.setItem("managerList",manggerList);
+    //定时定位
+//    var location = window.setInterval(getLocations,30000);
+
     //alert("getItem:"+session.getItem("id"));
     //alert(sssion.getItem("user_id"));
     //$("#page1").show();

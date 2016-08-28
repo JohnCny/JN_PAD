@@ -1,4 +1,4 @@
-jquery.json-2.3.jsfunction myxjlb(){//损益表
+function myxjlb(){//损益表
 window.scrollTo(0,0);//滚动条回到顶端
 $("#xjlb").html("<table class='cpTable khjbxx sjb' style='text-align:center;'>"+
                     "<tr>"+                        
