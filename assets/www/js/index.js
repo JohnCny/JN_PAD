@@ -387,7 +387,7 @@ function addTd(table){
         var num= $('#yhls tr').length;
         $("#"+table).append("<tr>"+    
                                 "<td>"+num+"</td>"+
-                                "<td><input type='text' id='yhls_sheet"+num+"' class='readonly' readonly='readonly'/><input type='button' class='btn' value='选择文件' onclick='getMedia(\"yhls_sheet"+num+"\",\"img\");'/></td>"+
+                                "<td><input type='text' id='yhls_sheet"+num+"' class='readonly' readonly='readonly'/><input type='button' class='btn' value='选择文件' onclick='getMedia(\"yhls_sheet"+num+"\",\"img\",\"imageuri\","+num-1+");'/></td>"+
                                 "<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"yhls_sheet"+num+"\",\"img\");'/></td>"+
                             "</tr>");      
     }
@@ -395,7 +395,7 @@ function addTd(table){
         var num= $('#qtyxzl tr').length;
         $("#"+table).append("<tr>"+    
                                 "<td>"+num+"</td>"+
-                                "<td><input type='text' id='qtyxzl_sheet"+num+"' class='readonly' readonly='readonly'/><input type='button' class='btn' value='选择文件' onclick='getMedia(\"qtyxzl_sheet"+num+"\",\"img\");'/></td>"+
+                                "<td><input type='text' id='qtyxzl_sheet"+num+"' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' value='选择文件' onclick='getMedia(\"qtyxzl_sheet"+num+"\",\"img\",);'/></td>"+
                                 "<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet"+num+"\",\"img\");'/></td>"+
                             "</tr>");      
     }

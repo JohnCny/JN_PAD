@@ -497,7 +497,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myjj
 //    
 //}
 
-//调查模板
+//调查模板 
 function dcmbadd(addIntopiece){
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newUser1()'/>影像资料采集</div>"+  
@@ -581,16 +581,21 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 						"</div><div class='line'></div>"+
 						"<div class='bottom-content'>"+
 							"<table id='fcz' class='cpTable' style='text-align:center;margin-top:20px;'>"+
-								"<tr>"+                             
+								"<tr>"+    
+									"<th style='width:40px;'>序号</th>"+ 
 									"<th>文件路径</th>"+
 									"<th>操作</th>"+
 								"</tr>"+
-								"<tr>"+    
-									"<td><input type='text' id='fcz_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"fcz_sheet1\",\"img\",\"imageuri\");' value='选择文件'/></td>"+
+								"<tr>"+  
+									"<td>1</td>"+
+									"<td><input type='text' id='fcz_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"fcz_sheet1\",\"img\",\"imageuri\",\"0\");' value='选择文件'/></td>"+
 									"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
 //									"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
-									
 								"</tr>"+
+								"<p class='Left'>" +
+								"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
+								"<button class='add-button' onclick='removeTd(\"qtyxzl\")'><img src='images/del.png'/></button>" +
+								"</p>"+
 							"</table>"+
 						"</div>"+
 					"</div>");
@@ -609,10 +614,10 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 	    var uploadUrl=encodeURI("http://61.34.68.72:8080/PCCredit/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId);  
 	    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 	  
-	    //获取上传进度  
-	    ft.onprogress = uploadProcessing;  
-	    //显示进度条  
-//	    $('.upload_process_bar,#process_info').show(); 
+//	    //获取上传进度  
+//	    ft.onprogress = uploadProcessing;  
+//	    //显示进度条  
+////	    $('.upload_process_bar,#process_info').show(); 
   })
   
   

@@ -3,7 +3,7 @@
 <html lang="zh-cn">
 <head>
 	<meta charset="utf-8"> 
-	<meta name="viewport" content="width=device-width, target-densitydp=high-dpi,user-scalable=no"> 
+	<meta name="viewport" content="target-densitydp=high-dpi,user-scalable=no"> 
     <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width"> 
 	<title>PAD</title> 	 	
 	<link rel="stylesheet" href="css/btn.css" /> 
@@ -105,7 +105,7 @@
 	
 	//********************************照片******************************
 	//事件触发函数
-	function getMedia(id,type,name) {
+	function getMedia(id,type,name,num) {
 	    idtmp=id;
 	    pictureSource=navigator.camera.PictureSourceType;
 	    destinationType=navigator.camera.DestinationType;
@@ -128,7 +128,7 @@
 				function testSuccess(res){
 					var url = document.getElementById(idtmp);
 					url.value = res;
-					var lll= document.getElementsByName("imageuri")[0].setAttribute("uri",URI);
+					var lll= document.getElementsByName("imageuri")[num].setAttribute("uri",URI);
 
 					//alert(json);
 				}
