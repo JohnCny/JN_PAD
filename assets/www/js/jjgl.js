@@ -500,7 +500,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myjj
 //调查模板 
 function dcmbadd(addIntopiece){
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newUser1()'/>影像资料采集</div>"+  
+	$("#mainPage").html("<div class='title'><img src='images/back.png' id='newUser1'/>调查模板采集</div>"+  
 			"<div class='content' style='text-align:center;'>" +  
 			"<div class='jjstep'>" +
 			"<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
@@ -543,7 +543,7 @@ function dcmbadd(addIntopiece){
 			    options.mimeType = "multipart/form-data";  
 			    options.chunkedMode = false;  
 			    ft = new FileTransfer();  
-			    var uploadUrl=encodeURI("http://61.34.68.72:8080/PCCredit/ipad/addIntopieces/reportImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId);  
+			    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/reportImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId);  
 			    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 			  
 			    //获取上传进度  
@@ -565,13 +565,16 @@ function dcmbadd(addIntopiece){
 		    	
 		    	newUser1(addIntopiece);
 		    })
-	
+		    $("#newUser1").click(function(){
+    	
+		    	newUser1(addIntopiece);
+		    })
 	
 }
 //影像资料
 function yxzladd(addIntopiece){
 window.scrollTo(0,0);//滚动条回到顶端
-$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newUser1()'/>影像资料采集</div>"+  
+$("#mainPage").html("<div class='title'><img src='images/back.png' id='newUser1'/>影像资料采集</div>"+  
                     "<div class='content' style='text-align:center;'>" +  
                         "<div class='jjstep'>" +
                         "<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
@@ -580,7 +583,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 							"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
 						"</div><div class='line'></div>"+
 						"<div class='bottom-content'>"+
-							"<table id='fcz' class='cpTable' style='text-align:center;margin-top:20px;'>"+
+							"<table id='qtyxzl' class='cpTable' style='text-align:center;margin-top:20px;'>"+
 								"<tr>"+    
 									"<th style='width:40px;'>序号</th>"+ 
 									"<th>文件路径</th>"+
@@ -592,11 +595,11 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 									"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
 //									"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
 								"</tr>"+
-								"<p class='Left'>" +
-								"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
-								"<button class='add-button' onclick='removeTd(\"qtyxzl\")'><img src='images/del.png'/></button>" +
-								"</p>"+
 							"</table>"+
+							"<p class='Left'>" +
+							"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
+							"<button class='add-button' onclick='removeTd(\"qtyxzl\")'><img src='images/del.png'/></button>" +
+							"</p>"+
 						"</div>"+
 					"</div>");
   $(".right").hide();
@@ -611,7 +614,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 	    options.mimeType = "multipart/form-data";  
 	    options.chunkedMode = false;  
 	    ft = new FileTransfer();  
-	    var uploadUrl=encodeURI("http://61.34.68.72:8080/PCCredit/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId);  
+	    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId);  
 	    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 	  
 //	    //获取上传进度  
@@ -624,6 +627,10 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
   	$("#khxxlb").click(function(){
     	
     	myjjgl2(addIntopiece);
+    })
+    $("#newUser1").click(function(){
+    	
+    	newUser1(addIntopiece);
     })
     $("#xxzlcj").click(function(){
     	

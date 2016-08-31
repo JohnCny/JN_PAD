@@ -30,7 +30,7 @@ function mywdsy(){
 //        "<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
         "<div class='box wdsy5' onclick ='khjlrb()'><img src='images/jljlxx.png'/><span>客户经理日报</span></div>"+ 
         "<div class='box wdsy5' onclick ='wzxx()'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
-        "<div class='box wdsy5' id ='wzxx'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
+//        "<div class='box wdsy5' id ='wzxx'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
         "</div>"
         $("#mainPage").html(content);
     	$("#wzxx").click(function(){
@@ -983,14 +983,14 @@ function xsrbxx(resu){
 			"<tr>"+                        
 			"<th colspan='4'>今日工作内容</th></tr>"+ 
 			"<tr>"+
-			"<td><textarea name='todayplan' id='todayplan' style='height:200px' readonly='true'>"+resu.todayplan+"</textarea>"+
+			"<td><textarea name='todayplan' id='todayplan' style='height:200px' disabled='disabled'>"+resu.todayplan+"</textarea>"+
 			"</tr>"+
 			"<tr><td colspan='4'><h3><b>今日工作内容：</b>（工作地点、工作内容明细、工作总结与感悟等）。</h3></td></tr>"+
 			
 			"<tr>"+                        
 			"<th colspan='4'>明日工作安排</th></tr>"+ 
 			"</tr>"+
-			"<td><textarea name='tomorrowplan' id='tomorrowplan' style='height:200px' readonly='true'>"+resu.tomorrowplan+"</textarea>"+
+			"<td><textarea name='tomorrowplan' id='tomorrowplan' style='height:200px' disabled='disabled'>"+resu.tomorrowplan+"</textarea>"+
 			"</tr>"+
 			"<tr><td colspan='4'><h3><b>明日工作计划：</b>（工作计划区域、计划工作事项、业务目标等）。</h3></td></tr>"+
 			
@@ -1015,15 +1015,15 @@ function wzxx(){
  	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>位置信息</div>"+  
  			"</div>"+
  			"<div class='content' id='allmap' style='height:580px;margin:0 auto;'></div>"+
- 			"<div class='content' style ='margin:0 auto;'><p  align='center'>" +
+ 			"<div class='content' style ='margin:0 auto;'><p align='center'>" +
  			"<select id ='user'>"+"<option value = '0'>请选择客户经理</option>"+
 // 			"<option value = 'bde2c4d855150a0a015515236b48001a'>杜宇航</option>"+
 // 			"<option value = 'bde2c4d855150a0a0155152c4a8a002e'>许亚鹏</option>"+
 // 			"<option value = 'bde2c4d855150a0a015515300d4f0037'>赵文杰</option>"+
 // 			"<option value = 'bde2c4d855150a0a01551539249d0043'>王文涓</option>"+
 // 			"<option value = 'bde2c4d855150a0a0155152acc820028'>卢曼</option>"+
- 			"<option value = 'ff80808154564c840154565d19b6001a'>温健</option>"+
-// 			opin+
+// 			"<option value = 'ff80808154564c840154565d19b6001a'>温健</option>"+
+ 			opin+
  			"</select>"+
  			"<input type='button' id='ckkhjlwz' class='btn btn-primary btn-large' value='查看客户经理位置'/>"+  
  			"<input type='button' id='fswdwz' class='btn btn btn-primary btn-large' value='发送我的位置'/>"+  

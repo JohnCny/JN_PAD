@@ -9,7 +9,6 @@ function mycpgl(){
 	get.doGet(url,initProductManagerContentCallback,"加载产品信息失败！");
 	function initProductManagerContentCallback(json){
 		var objs = $.evalJSON(json);
-		alert(json);
 		var content="";
 		var contsnt="";
 		var title = "<div class='title'>" +

@@ -190,20 +190,22 @@ function cysdrw(){
 
 //影像资料
 function xsyxzl(res){
-	
+	alert(res.customerId);
 	var yxzlurl="/ipad/JnpadImageBrowse/uploadYx.json";
 	var obj;
 	var id;
 	var page = 0;
 	var lltpurl;
-	$.ajax({
-		url:wsHost+yxzlurl,
-		type: "GET",
-		dataType:'json',
-		data:{
-			customerId:res.customerId,
-		},
-		success: function (json){
+//	$.ajax({
+//		url:wsHost+yxzlurl,
+//		type: "GET",
+//		dataType:'json',
+//		data:{
+//			customerId:res.customerId,
+//		},
+//		success: 
+	$.get(wsHost+yxzlurl,{customerId:res.customerId},callbackfunction);
+		function  callbackfunction (json){
 			obj = $.evalJSON(json);
 			id=obj.imagerList[0].id;
 			lltpurl="/ipad/JnpadImageBrowse/downLoadYxzlJn.json?id="+id;
@@ -273,7 +275,7 @@ function xsyxzl(res){
 	});
 	
 		}
-	})
+//	})
 }
 //显示调查模板
 function xszlxx(res){
@@ -579,13 +581,7 @@ function managerList(){
 		async:false,
 		success:function (json){
 			var obj = $.evalJSON(json);
-//			for(var i = 0;i<obj.size;i++){
-//			opin =opin+"<option value = '"+obj.managerInfo[i].ID+"'>"+obj.managerInfo[i].EXTERNAL_ID+obj.managerInfo[i].DISPLAY_NAME+"</option>";
-//			}
-			for(var i =0;i<obj.size;i++){
-
-				opin = opin+obj.manager[i];
-			}
+			opin=obj.manager;
 		}
 	})
 	return opin;
@@ -720,7 +716,7 @@ function sdjy(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
-					res.currentLoc ="cysdrw()";
+					res.currentLoc ="sdjy()";
 					xsyxzl(res);
 				}else{
 					alert("请选择一行");
@@ -1016,7 +1012,7 @@ function buzhangsp(){
 		dataType:'json',
 		data:{
 			userId:userId,
-			nextNodeName:"部长审批",
+			nextNodeName:"小微负责人审批",
 		},
 		success: function (json){
 			var obj = $.evalJSON(json);
@@ -1121,7 +1117,7 @@ function buzhangsp(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
-					res.currentLoc ="cysdrw()";
+					res.currentLoc ="buzhangsp()";
 					xsyxzl(res);
 				}else{
 					alert("请选择一行");
@@ -1165,7 +1161,6 @@ function bzspjl(res){
 		success: function (json){
 			var obj = $.evalJSON(json);
 			var productList=obj.productList;
-			alert(productList.length);
 			var list="";
 			for(var i = 0;i<productList.length;i++){
 				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
@@ -1424,7 +1419,7 @@ function lsywbfzrsp(){
 		dataType:'json',
 		data:{
 			userId:userId,
-			nextNodeName:"零售部业务负责人",
+			nextNodeName:"零售业务部负责人审批",
 		},
 		success: function (json){
 			var obj = $.evalJSON(json);
@@ -1546,7 +1541,7 @@ function lsywbfzrsp(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
-					res.currentLoc ="cysdrw()";
+					res.currentLoc ="lsywbfzrsp()";
 					xsyxzl(res);
 				}else{
 					alert("请选择一行");
@@ -1578,7 +1573,6 @@ function lsbywfzr(res){
 			var obj = $.evalJSON(json);
 //			var	opin=managerList();
 			var productList=obj.productList;
-			alert(productList.length);
 			var list="";
 			for(var i = 0;i<productList.length;i++){
 				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
@@ -1968,7 +1962,7 @@ function hzsp(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
-					res.currentLoc ="cysdrw()";
+					res.currentLoc ="hzsp()";
 					xsyxzl(res);
 				}else{
 					alert("请选择一行");
@@ -1999,7 +1993,6 @@ function hzspjl(res){
 			var obj = $.evalJSON(json);
 //			var	opin=managerList();
 			var productList=obj.productList;
-			alert(productList.length);
 			var list="";
 			for(var i = 0;i<productList.length;i++){
 				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
