@@ -1,6 +1,6 @@
 //新建进件
 function myjjgl(){
-	
+	$("#mainPage").html("");
 	var cpxxurl="/ipad/product/selectProductByFilter.json";
 	
 	var tmp ="";
@@ -43,7 +43,6 @@ $("#mainPage").html("<div class='title'>进件管理</div>"+
     					    "<div class='step1'>选择产品</div>"+
                             "<div class='step2'>选择客户</div>"+
                             "<div class='step2'>选择资料类型</div>"+
-                            "<div class='step2'>选择信息类型</div>"+
                             "<div class='step2'>信息录入</div>"+
 					    "</div><div class='line'></div>"+
 	                    "<div class='bottom-content' style='padding-top:5px;'>"+
@@ -152,7 +151,6 @@ $("#mainPage").html("<div class='title'>" +
                             "<div class='step1' onclick='myjjgl()'>"+productInfo.productName+"</div>"+
                             "<div class='step3'>选择客户</div>"+
                             "<div class='step2'>选择资料类型</div>"+
-                            "<div class='step2'>选择信息类型</div>"+
                             "<div class='step2'>信息录入</div>"+
 //                            "<input type='button' class='btn btn-primary btn-large next' value='下一步' onclick='newUser1()'/>"+
                         "</div><div class='line'></div>"+
@@ -206,13 +204,13 @@ $("#mainPage").html("<div class='title'>" +
 //新建进件
 function newUser1(addIntopiece){
 window.scrollTo(0,0);//滚动条回到顶端
-$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myjjgl2("+addIntopiece+")'/>进件管理</div>"+  
+$("#mainPage").html("<div class='title' id='mjjgl2'><img src='images/back.png'/>进件管理</div>"+  
                     "<div class='content'>" +
                         "<div class='jjstep'>" +
                             "<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
                             "<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
                             "<div class='step3'>选择资料类型</div>"+
-                            "<div class='step2'>选择信息类型</div>"+
+                            "<div class='step2'>信息录入</div>"+
                         "</div><div class='line'></div>"+
                         "<div class='bottom-content'>"+
                             "<div class='box jjgl' id = 'diaocmb' style='margin-left:400px;margin-right:50px;display:inline-block;'>" +
@@ -229,6 +227,10 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myjj
     $("#mainPage").show();
     
     $("#khxxlb").click(function(){
+    	
+    	myjjgl2(addIntopiece);
+    })
+    $("#mjjgl2").click(function(){
     	
     	myjjgl2(addIntopiece);
     })
@@ -500,12 +502,13 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myjj
 //调查模板 
 function dcmbadd(addIntopiece){
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' id='newUser1'/>调查模板采集</div>"+  
+	$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png'/>调查模板采集</div>"+  
 			"<div class='content' style='text-align:center;'>" +  
 			"<div class='jjstep'>" +
 			"<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
 			"<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
-			"<div class='step3'>客户影像资料采集</div>"+
+			"<div class='step3' id='newUser1'>客户影像资料采集</div>"+
+			"<div class='step3'>信息录入</div>"+
 			"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
 			"</div><div class='line'></div>"+
 			"<div class='bottom-content'>"+
@@ -533,17 +536,14 @@ function dcmbadd(addIntopiece){
 	}, false); 
 	  $("#sure").click(function(){
 			 var fileURI = document.getElementsByName("imageuri")[0].getAttribute("uri");
-			 alert(fileURI);
-			 
 			 var fileName = $("#fcz_sheet1").val();
 			 var options = new FileUploadOptions();  
 			    options.fileKey = "file";  
-			    options.fileName = fileName.substr(fileName.lastIndexOf('/') + 1); 
-			    alert(options.fileName);
+			    options.fileName=fileURI.substr(fileURI.lastIndexOf('/') + 1); 
 			    options.mimeType = "multipart/form-data";  
 			    options.chunkedMode = false;  
 			    ft = new FileTransfer();  
-			    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/reportImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId);  
+			    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/reportImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName);  
 			    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 			  
 			    //获取上传进度  
@@ -569,17 +569,22 @@ function dcmbadd(addIntopiece){
     	
 		    	newUser1(addIntopiece);
 		    })
+		    $("#newUsers1").click(function(){
+		    	
+		    	newUser1(addIntopiece);
+		    })
 	
 }
 //影像资料
 function yxzladd(addIntopiece){
 window.scrollTo(0,0);//滚动条回到顶端
-$("#mainPage").html("<div class='title'><img src='images/back.png' id='newUser1'/>影像资料采集</div>"+  
+$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png'/>影像资料采集</div>"+  
                     "<div class='content' style='text-align:center;'>" +  
                         "<div class='jjstep'>" +
                         "<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
                         "<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
-                        "<div class='step3'>客户影像资料采集</div>"+
+                        "<div class='step3' id='newUser1'>客户影像资料采集</div>"+
+                        "<div class='step3'>信息录入</div>"+
 							"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
 						"</div><div class='line'></div>"+
 						"<div class='bottom-content'>"+
@@ -591,7 +596,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' id='newUser1'
 								"</tr>"+
 								"<tr>"+  
 									"<td>1</td>"+
-									"<td><input type='text' id='fcz_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"fcz_sheet1\",\"img\",\"imageuri\",\"0\");' value='选择文件'/></td>"+
+									"<td><input type='text' id='qtyxzl_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");' value='选择文件'/></td>"+
 									"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
 //									"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
 								"</tr>"+
@@ -600,35 +605,49 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' id='newUser1'
 							"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
 							"<button class='add-button' onclick='removeTd(\"qtyxzl\")'><img src='images/del.png'/></button>" +
 							"</p>"+
+							"<p>" +
+							"<input type='button' class='btn btn-primary btn-large' value='查看已上传列表' id='ysctplb' />" +
+							"</p>"+
 						"</div>"+
 					"</div>");
   $(".right").hide();
   $("#mainPage").show();
   
   $("#sure").click(function(){
-	 var fileURI = document.getElementsByName("imageuri")[0].getAttribute("uri");
-	 var fileName = $("#fcz_sheet1").val();
+	  var applicationId = null;
+	  var num= $('#qtyxzl tr').length;
+	  for(var i=0;i<num;i++){
+	 var fileURI = document.getElementsByName("imageuri")[i].getAttribute("uri");
+	 var j=i+1;
+	 var fileName = $("#qtyxzl_sheet"+j).val();
 	 var options = new FileUploadOptions();  
 	    options.fileKey = "file";  
-	    options.fileName = fileName.substr(fileName.lastIndexOf('/') + 1); 
+	    options.fileName = fileName; 
 	    options.mimeType = "multipart/form-data";  
 	    options.chunkedMode = false;  
 	    ft = new FileTransfer();  
-	    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId);  
+	    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+applicationId);  
 	    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
-	  
+	  }
 //	    //获取上传进度  
 //	    ft.onprogress = uploadProcessing;  
 //	    //显示进度条  
 ////	    $('.upload_process_bar,#process_info').show(); 
   })
   
+  	  $("#ysctplb").click(function(){
+  		ckimage(addIntopiece);
+	  })
   
   	$("#khxxlb").click(function(){
     	
     	myjjgl2(addIntopiece);
     })
     $("#newUser1").click(function(){
+    	
+    	newUser1(addIntopiece);
+    })
+    $("#newUsers1").click(function(){
     	
     	newUser1(addIntopiece);
     })
@@ -643,11 +662,112 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' id='newUser1'
 
 }
 
+//查看已上传图片列表
+function ckimage(res){
+	var ysctpurl ="/ipad/JnpadImageBrowse/uploadYx.json";
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head="<tr>"+                         
+	"<th></th>"+                 
+	"<th>文件名</th>"+  
+	"<th>产品名称</th>"+
+	"<th>客户名称</th>"+
+	"<th>上传时间</th>"+
+	"</tr>";
+	$.get(wsHost+ysctpurl,{customerId:res.customerId,productId:res.productId,applicationId:res.appId},callbackfunction);
+	function  callbackfunction (json){
+		obj = $.evalJSON(json);
+		for(var i = 0;i<obj.imagerList.length;i++){
+			
+			tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.imagerList[i].id+"@"+
+			obj.imagerList[i].applicationId+"'/>"+"</span></td>"+  
+			"<td>"+obj.imagerList[i].attachment+"</td>"+
+			"<td>"+obj.imagerList[i].productName+"</td>"+
+			"<td>"+obj.imagerList[i].customerName+"</td>"+
+			"<td>"+obj.imagerList[i].createdTime+"</td></tr>"
+
+			if((i+1)%5==0){
+				result[j]=tmp;
+				j++;
+				tmp="";
+			}
+		}
+
+		result[j]=tmp;
+
+		window.scrollTo(0,0);//滚动条回到顶端
+		$("#mainPage").html("<div class='title'><img src='images/back.png' id='backs'/>已上传图片列表</div>"+  
+				"<div class='content'>" +                        
+				"<table id='bzsplb' class='cpTable jjTable' style='text-align:center;'>"+
+				head+result[page]+
+				"</table>"+
+				"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+				"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+				"<input type='button' class='btn btn-primary btn-large' value='删除' id='delete' />" +
+				"<input type='button' class='btn btn-large' value='返回' id='backk'/></p>"+
+		"</div>");
+		$(".right").hide();
+		$("#mainPage").show();  
+		$("#xyy").click(function(){
+			page=page+1;
+			if(result[page]){
+				$("#bzsplb").html(head+result[page]);
+			}else{
+				alert("当前已经是最后一页");
+				page=page-1;
+			}
+		})
+		$("#syy").click(function(){
+			page=page-1; 
+			if(result[page]){
+				$("#bzsplb").html(head+result[page]);
+			}else{
+				alert("当前已经是第一页");
+				page = page+1;
+			}
+		})
+		
+		$("#backk").click(function(){
+			yxzladd(res);
+		})
+		$("#backs").click(function(){
+			yxzladd(res);
+		})
+		  $("#delete").click(function(){
+			  if ($("input[type='radio']").is(':checked')) {
+
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var deletetpurl ="/ipad/JnpadImageBrowse/deleteImage.json";
+					  $.ajax({
+							url:wsHost+deletetpurl,
+							type: "GET",
+							dataType:'json',
+							data:{
+								imageId:values[0],
+							},
+							cache:false,
+							success: function (json){
+								var obj = $.evalJSON(json);
+								alert(obj.mess);
+								ckimage(res);
+							}
+					  })  
+					
+				}else{
+					alert("请选择一行");
+				}
+			  
+	  })
+	}
+}
 
 function openFileSelector(id,name) {  
     var source = navigator.camera.PictureSourceType.PHOTOLIBRARY;  
     //描述类型，取文件路径  
-    var destinationType = navigator.camera.DestinationType.FILE_URI; 
+//    var destinationType = navigator.camera.DestinationType.FILE_URI; 
+   destinationType = Camera.DestinationType.FILE_URI; 
     //媒体类型，设置为ALLMEDIA即支持任意文件选择  
     var mediaType = navigator.camera.MediaType.ALLMEDIA;  
     var options={  
@@ -662,8 +782,9 @@ function openFileSelector(id,name) {
 
 function getsuccess(URI){
 	
+	
+	window.resolveLocalFileSystemURI(URI, gotFileEntry, onFileFail);
 	alert(URI);
-	 window.resolveLocalFileSystemURI(URI, gotFileEntry, onFileFail);
 	    //转换URI到全路径
 		function gotFileEntry(fileEntry) {
 			var fpath = fileEntry.fullPath;
@@ -672,6 +793,7 @@ function getsuccess(URI){
 //			function testSuccess(res){
 				var url = document.getElementById(id);
 				url.value = fpath;
+				URI="file://"+fpath;
 				var lll= document.getElementsByName("imageuri")[0].setAttribute("uri",URI);
 				//alert(json);
 //			}
@@ -690,19 +812,19 @@ function getsuccess(URI){
  * 上传过程回调，用于处理上传进度，如显示进度条等。 
  */  
 function uploadProcessing(progressEvent){
-	    $("#text").html("<div class='display-div' id='xdyss'>"+
-	                        "<div class='dialog-head'>"+
-	                           "<h4>提示</h4>"+
-	                        "</div>"+
-	                        "<div class='upload_current_process'></div>"+ 
-	                        "<div class='dialog-content' id='process_info'>"+
-	                        "</div>"+
-	                        "<div class='dialog-bottom'>"+
-	                           "<button type='button' class='btn btn-default' onclick='hide_upload()'>取消</button>"+
-	                           "<button type='button' class='btn btn-danger' onclick='dc();hide_dcts()'>确定</button>"+
-	                        "</div>"+
-	                    "</div><!-- /display-div -->");
-	    $("#text").animate({top:"0px"},"500");
+//	    $("#text").html("<div class='display-div' id='xdyss'>"+
+//	                        "<div class='dialog-head'>"+
+//	                           "<h4>提示</h4>"+
+//	                        "</div>"+
+//	                        "<div class='upload_current_process'></div>"+ 
+//	                        "<div class='dialog-content' id='process_info'>"+
+//	                        "</div>"+
+//	                        "<div class='dialog-bottom'>"+
+//	                           "<button type='button' class='btn btn-default' onclick='hide_upload()'>取消</button>"+
+//	                           "<button type='button' class='btn btn-danger' onclick='dc();hide_dcts()'>确定</button>"+
+//	                        "</div>"+
+//	                    "</div><!-- /display-div -->");
+//	    $("#text").animate({top:"0px"},"500");
     if (progressEvent.lengthComputable) {  
         //已经上传  
         var loaded=progressEvent.loaded;  
@@ -711,6 +833,8 @@ function uploadProcessing(progressEvent){
         //计算百分比，用于显示进度条  
         var percent=parseInt((loaded/total)*100);  
         //换算成MB  
+        alert(total);
+        alert(percent);
         loaded=(loaded/1024/1024).toFixed(2);  
         total=(total/1024/1024).toFixed(2);  
         $('#process_info').html(loaded+'M/'+total+'M');  
@@ -723,7 +847,7 @@ function uploadProcessing(progressEvent){
  * @param r 
  */ 
 function uploadSuccess(r) {  
-    alert('文件上传成功:'+r.response);  
+    alert('文件上传成功:'+r.response);
     clearProcess();  
 }  
 

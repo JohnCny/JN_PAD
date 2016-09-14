@@ -149,6 +149,8 @@ function cysdrw(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.appId = values[3];
+					res.customerId = values[2];
+					res.productId =values[0];
 					res.applyQuota = values[1];
 					csresult(res);
 				}else{
@@ -160,6 +162,8 @@ function cysdrw(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
+					res.productId =values[0];
+					res.applicationId =values[3];
 					res.currentLoc ="cysdrw()";
 					xsyxzl(res);
 				}else{
@@ -190,7 +194,6 @@ function cysdrw(){
 
 //影像资料
 function xsyxzl(res){
-	alert(res.customerId);
 	var yxzlurl="/ipad/JnpadImageBrowse/uploadYx.json";
 	var obj;
 	var id;
@@ -204,7 +207,7 @@ function xsyxzl(res){
 //			customerId:res.customerId,
 //		},
 //		success: 
-	$.get(wsHost+yxzlurl,{customerId:res.customerId},callbackfunction);
+	$.get(wsHost+yxzlurl,{customerId:res.customerId,productId:res.productId,applicationId:res.applicationId},callbackfunction);
 		function  callbackfunction (json){
 			obj = $.evalJSON(json);
 			id=obj.imagerList[0].id;
@@ -587,6 +590,23 @@ function managerList(){
 	return opin;
 }
 
+function teacherList(){
+	var khjlxxlurl = "/ipad/intopieces/teacherInfo.json";
+	var opin="";
+	$.ajax({
+		url:wsHost+khjlxxlurl,
+		dateType:'json',
+		type:'GET',
+		async:false,
+		success:function (json){
+			var obj = $.evalJSON(json);
+			opin=obj.manager;
+		}
+	})
+	return opin;
+	
+	
+}
 //审贷决议
 function sdjy(){
 	var sdrwurl= "/ipad/intopieces/csBrowse.json";
@@ -705,6 +725,8 @@ function sdjy(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.appId = values[3];
+					res.customerId = values[2];
+					res.productId =values[0];
 					res.applyQuota = values[1];
 					xssdjy(res);
 				}else{
@@ -716,6 +738,8 @@ function sdjy(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
+					res.productId =values[0];
+					res.applicationId =values[3];
 					res.currentLoc ="sdjy()";
 					xsyxzl(res);
 				}else{
@@ -761,7 +785,7 @@ function xssdjy(res){
 		success: function (json){  
 			var obj = $.evalJSON(json);
 			var opin =window.sessionStorage.getItem("managerList");
-			
+			var teacher=teacherList();
 			var productList=obj.productList;
 			var list="";
 			for(var i = 0;i<productList.length;i++){
@@ -852,7 +876,7 @@ function xssdjy(res){
 					+opin+
 					"</select></td>"+
 					"<th>期限：</th>"+
-					"<td><select>" +
+					"<td><select id ='decisionTerm'>" +
 					"<option value = '1'>1个月</option>" +
 					"<option value = '2'>2个月</option>" +
 					"<option value = '3'>3个月</option>" +
@@ -892,6 +916,25 @@ function xssdjy(res){
 					"</select>"+
 					"</td>"+
 					"</tr>"+
+					"<tr>"+
+					"<th>审批老师：</th>"+
+					"<td><select id ='sdUser'>"+"<option value = '0'>请选择</option>"
+					+teacher+
+					"</select></td>"+
+					"<th>还款方式：</th>"+
+					"<td><select id ='hkfs'>"+"<option value = '01'>定期结息，到期日利随本清</option>"+
+					"<option value = '02'>定期结息，按合同约定分期还本</option>"+
+					"<option value = '03'>等额本息</option>"+
+					"<option value = '04'>等额本金</option>"+
+					"<option value = '05'>利随本清</option>"+
+					"<option value = '06'>其他还款方法</option>"+
+					"</select></td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu' id='beizhu'></textarea>" +
+					"</td>" +
+					"</tr>"+
 					"<tr style='display :none'>"+
 					"<th><label id ='reason' for=reason>原因:</label></th>"+
 					"<td><textarea name='decisionRefusereason' id='decisionRefusereason'></textarea>" +
@@ -900,6 +943,7 @@ function xssdjy(res){
 					"</table>"+
 					"<p>" +
 					"<input type='button' class='btn btn-primary btn-large' value='保存' id='save' />" +
+					"<input type='button' class='btn btn-primary btn-large' value='上传审贷会纪要' id='upload' />" +
 					"<input type='button' class='btn btn-large' value='返回' onclick='sdjy()'/>" +
 					"</p>"+
 			"</div>");
@@ -918,9 +962,14 @@ function xssdjy(res){
 						type:'GET',
 						data:{
 							proodId:$("#xxggcp").val(),
+							qixian:$("#qixian").val(),
 							cyUser1:$("#cyuser1").val(),
 							cyUser2:$("#cyuser2").val(),
 							fdUser:$("#fduser").val(),
+							beiZhu:$("#beizhu").val(),
+							decisionTerm:$("#decisionTerm").val(),
+							hkfs:$("#hkfs").val(),
+							sdUser:$("#sdUser").val(),
 							auditType:"2",
 							decisionRate:$("#decisionRate").val(),
 							productId:obj.customerApplicationInfo.productId,
@@ -945,13 +994,17 @@ function xssdjy(res){
 					alert("请输入正确的授信金额");
 				}
 			})
+			
+			$("#upload").click(function (){
+				scsdhjy(res);
+			})
 
 			$("#auditresult").change(function (){
 
 				var status = $("select[name=status]").val();
 				if( status == "APPROVE"){
-					$("tr:eq(9)").show();
-					$("tr:eq(12)").hide();
+					$("tr:eq(11)").show();
+					$("tr:eq(14)").hide();
 					if($("input[name=decision_amount]").val() == ""){
 						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
 					}
@@ -961,16 +1014,16 @@ function xssdjy(res){
 				}
 
 				if( status == "REJECTAPPROVE"){
-					$("tr:eq(9)").hide();
-					$("tr:eq(12)").show();
+					$("tr:eq(11)").hide();
+					$("tr:eq(14)").show();
 					if($("textarea[name=decision_refusereason]").val() == ""){
 						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
 					}
 				}
 
 				if( status == "RETURNAPPROVE"){
-					$("tr:eq(9)").hide();
-					$("tr:eq(12)").show();
+					$("tr:eq(11)").hide();
+					$("tr:eq(14)").show();
 				}
 
 				if(status =='RETURNAPPROVE'){
@@ -987,6 +1040,166 @@ function xssdjy(res){
 	})
 }
 
+//上传审贷会纪要
+function scsdhjy(res){
+	
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png'/>上传审贷会纪要</div>"+  
+			"<div class='content' style='text-align:center;'>" + 
+								"<table id='qtyxzl' class='cpTable' style='text-align:center;margin-top:20px;'>"+
+									"<tr>"+    
+										"<th style='width:40px;'>序号</th>"+ 
+										"<th>文件路径</th>"+
+										"<th>操作</th>"+
+									"</tr>"+
+									"<tr>"+  
+										"<td>1</td>"+
+										"<td><input type='text' id='qtyxzl_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");' value='选择文件'/></td>"+
+										"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
+//										"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
+									"</tr>"+
+								"</table>"+
+								"<p class='Left'>" +
+								"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
+								"<button class='add-button' onclick='removeTd(\"qtyxzl\")'><img src='images/del.png'/></button>" +
+								"</p>"+
+								"<p>" +
+								"<input type='button' class='btn btn-primary btn-large' value='确定' id='sure' />" +
+								"<input type='button' class='btn btn-primary btn-large' value='查看已上传列表' id='ysctplb' />" +
+								"<input type='button' class='btn btn-large' value='返回' id='back'/>" +
+								"</p>"+
+								
+							"</div>");
+	  $(".right").hide();
+	  $("#mainPage").show();
+	  $("#sure").click(function(){
+		  var num= $('#qtyxzl tr').length;
+		  for(var i=0;i<num;i++){
+		 var fileURI = document.getElementsByName("imageuri")[i].getAttribute("uri");
+		 var j=i+1;
+		 var fileName = $("#qtyxzl_sheet"+j).val();
+		 var options = new FileUploadOptions();  
+		    options.fileKey = "file";  
+		    options.fileName = fileName; 
+		    options.mimeType = "multipart/form-data";  
+		    options.chunkedMode = false;  
+		    ft = new FileTransfer();  
+		    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+res.productId+"&customerId="+res.customerId+"&fileName="+options.fileName+"&applicationId="+res.appId);  
+		    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
+		  }
+	  })
+	  $("#ysctplb").click(function(){
+		  ckysctplb(res);
+	  })
+	  $("#back").click(function(){
+		  xssdjy(res);
+	  })
+	  $("#newUsers1").click(function(){
+		  xssdjy(res);
+	  })
+}
+
+//查看已上传图片列表
+function ckysctplb(res){
+	var ysctpurl ="/ipad/JnpadImageBrowse/uploadYx.json";
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head="<tr>"+                         
+	"<th></th>"+                 
+	"<th>文件名</th>"+  
+	"<th>产品名称</th>"+
+	"<th>客户名称</th>"+
+	"<th>上传时间</th>"+
+	"</tr>";
+	$.get(wsHost+ysctpurl,{customerId:res.customerId,productId:res.productId,applicationId:res.appId},callbackfunction);
+	function  callbackfunction (json){
+		obj = $.evalJSON(json);
+		for(var i = 0;i<obj.imagerList.length;i++){
+			
+			tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.imagerList[i].id+"@"+
+			obj.imagerList[i].applicationId+"'/>"+"</span></td>"+  
+			"<td>"+obj.imagerList[i].attachment+"</td>"+
+			"<td>"+obj.imagerList[i].productName+"</td>"+
+			"<td>"+obj.imagerList[i].customerName+"</td>"+
+			"<td>"+obj.imagerList[i].createdTime+"</td></tr>"
+
+			if((i+1)%5==0){
+				result[j]=tmp;
+				j++;
+				tmp="";
+			}
+		}
+
+		result[j]=tmp;
+
+		window.scrollTo(0,0);//滚动条回到顶端
+		$("#mainPage").html("<div class='title'><img src='images/back.png' id='backs'/>已上传图片列表</div>"+  
+				"<div class='content'>" +                        
+				"<table id='bzsplb' class='cpTable jjTable' style='text-align:center;'>"+
+				head+result[page]+
+				"</table>"+
+				"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+				"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+				"<input type='button' class='btn btn-primary btn-large' value='删除' id='delete' />" +
+				"<input type='button' class='btn btn-large' value='返回' id='backk'/></p>"+
+		"</div>");
+		$(".right").hide();
+		$("#mainPage").show();  
+		$("#xyy").click(function(){
+			page=page+1;
+			if(result[page]){
+				$("#bzsplb").html(head+result[page]);
+			}else{
+				alert("当前已经是最后一页");
+				page=page-1;
+			}
+		})
+		$("#syy").click(function(){
+			page=page-1; 
+			if(result[page]){
+				$("#bzsplb").html(head+result[page]);
+			}else{
+				alert("当前已经是第一页");
+				page = page+1;
+			}
+		})
+		
+		$("#backk").click(function(){
+			scsdhjy(res);
+		})
+		$("#backs").click(function(){
+			scsdhjy(res);
+			
+		})
+		  $("#delete").click(function(){
+			  if ($("input[type='radio']").is(':checked')) {
+
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var deletetpurl ="/ipad/JnpadImageBrowse/deleteImage.json";
+					  $.ajax({
+							url:wsHost+deletetpurl,
+							type: "GET",
+							dataType:'json',
+							data:{
+								imageId:values[0],
+							},
+							cache:false,
+							success: function (json){
+								var obj = $.evalJSON(json);
+								alert(obj.mess);
+								ckysctplb(res);
+							}
+					  })  
+					
+				}else{
+					alert("请选择一行");
+				}
+			  
+	  })
+	}
+}
 
 //部长审批
 function buzhangsp(){
@@ -1106,6 +1319,8 @@ function buzhangsp(){
 					
 					var res ={};
 					res.appId = values[3];
+					res.customerId = values[2];
+					res.productId =values[0];
 					res.applyQuota = values[1];
 					bzspjl(res)
 				}else{
@@ -1117,6 +1332,8 @@ function buzhangsp(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
+					res.productId =values[0];
+					res.applicationId =values[3];
 					res.currentLoc ="buzhangsp()";
 					xsyxzl(res);
 				}else{
@@ -1166,6 +1383,19 @@ function bzspjl(res){
 				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
 					list =list+"<option value = '"+productList[i].id+"'>"+productList[i].productName+"</option>";
 				}
+			}
+			if(obj.appManagerAuditLog2.hkfs=="01"){
+				obj.appManagerAuditLog2.hkfs="定期结息，到期日利随本清";
+			}else if(obj.appManagerAuditLog2.hkfs=="02"){
+				obj.appManagerAuditLog2.hkfs="定期结息，按合同约定分期还本";
+			}else if(obj.appManagerAuditLog2.hkfs=="03"){
+				obj.appManagerAuditLog2.hkfs="等额本息";
+			}else if(obj.appManagerAuditLog2.hkfs=="04"){
+				obj.appManagerAuditLog2.hkfs="等额本金";
+			}else if(obj.appManagerAuditLog2.hkfs=="05"){
+				obj.appManagerAuditLog2.hkfs="利随本清";
+			}else if(obj.appManagerAuditLog2.hkfs=="06"){
+				obj.appManagerAuditLog2.hkfs="其他还款方法";
 			}
 			window.scrollTo(0,0);//滚动条回到顶端
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='buzhangsp()'/>部长审批</div>"+  
@@ -1233,6 +1463,22 @@ function bzspjl(res){
 					"<th>辅调客户经理:</th>"+
 					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_3+"' readonly ='true'>"+
 					"</td>"+
+					"<th>审贷老师:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_4+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.qx+"' readonly ='true'>"+
+					"</td>"+
+					"<th>还款方式:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.hkfs+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu'  disabled='disabled'>"+obj.appManagerAuditLog2.beiZhu+"</textarea>" +
+					"</td>" +
 					"</tr>"+
 					"<tr>"+                        
 					"<th colspan='4'>审核结论</th>"+  
@@ -1260,7 +1506,7 @@ function bzspjl(res){
 					"</tr>"+
 					"<tr>"+
 					"<th>期限：</th>"+
-					"<td><select>" +
+					"<td><select id ='decisionTerm'>" +
 					"<option value = '1'>1个月</option>" +
 					"<option value = '2'>2个月</option>" +
 					"<option value = '3'>3个月</option>" +
@@ -1300,6 +1546,11 @@ function bzspjl(res){
 					"</select>"+
 					"</td>"+
 					"</tr>"+
+					"<tr>"+
+					"<th><label id ='beizhuzz' for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu' id='beizhu'></textarea>" +
+					"</td>" +
+					"</tr>"+
 					"<tr style='display :none'>"+
 					"<th><label id ='reason' for=reason>原因:</label></th>"+
 					"<td><textarea name='decisionRefusereason' id='decisionRefusereason'></textarea>" +
@@ -1326,6 +1577,8 @@ function bzspjl(res){
 						type:'GET',
 						data:{
 							proodId:$("#xxggcp").val(),
+							beiZhu:$("#beizhu").val(),
+							decisionTerm:$("#decisionTerm").val(),
 							auditType:"3",
 							decisionRate:$("#decisionRate").val(),
 							productId:obj.customerApplicationInfo.productId,
@@ -1341,7 +1594,7 @@ function bzspjl(res){
 						success:function(json){
 							var mes = $.evalJSON(json);
 							alert(mes.message);
-							sdjy();
+							buzhangsp();
 						}
 
 
@@ -1355,8 +1608,8 @@ function bzspjl(res){
 
 				var status = $("select[name=status]").val();
 				if( status == "APPROVE"){
-					$("tr:eq(13)").show();
-					$("tr:eq(15)").hide();
+					$("tr:eq(15)").show();
+					$("tr:eq(18)").hide();
 					if($("input[name=decision_amount]").val() == ""){
 						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
 					}
@@ -1366,16 +1619,16 @@ function bzspjl(res){
 				}
 
 				if( status == "REJECTAPPROVE"){
-					$("tr:eq(13)").hide();
-					$("tr:eq(15)").show();
+					$("tr:eq(15)").hide();
+					$("tr:eq(18)").show();
 					if($("textarea[name=decision_refusereason]").val() == ""){
 						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
 					}
 				}
 
 				if( status == "RETURNAPPROVE"){
-					$("tr:eq(13)").hide();
-					$("tr:eq(15)").show();
+					$("tr:eq(15)").hide();
+					$("tr:eq(18)").show();
 				}
 
 				if(status =='RETURNAPPROVE'){
@@ -1514,6 +1767,8 @@ function lsywbfzrsp(){
 					
 					var res ={};
 					res.appId = values[3];
+					res.customerId = values[2];
+					res.productId =values[0];
 					res.applyQuota = values[1];
 					lsbywfzr(res);
 				}else{
@@ -1541,6 +1796,8 @@ function lsywbfzrsp(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
+					res.productId =values[0];
+					res.applicationId =values[3];
 					res.currentLoc ="lsywbfzrsp()";
 					xsyxzl(res);
 				}else{
@@ -1645,9 +1902,25 @@ function lsbywfzr(res){
 					"<th>辅调客户经理:</th>"+
 					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_3+"' readonly ='true'>"+
 					"</td>"+
+					"<th>审贷老师:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_4+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.qx+"' readonly ='true'>"+
+					"</td>"+
+					"<th>还款方式:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.hkfs+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu'  disabled='disabled'>"+obj.appManagerAuditLog2.beiZhu+"</textarea>" +
+					"</td>" +
 					"</tr>"+
 					"<tr>"+                        
-					"<th colspan='4'>部长结论</th>"+  
+					"<th colspan='4'>小微负责人结论</th>"+  
 					"</tr>"+
 					"<tr>"+
 					"<th>审议额度：</th>"+
@@ -1656,6 +1929,14 @@ function lsbywfzr(res){
 					"<th>利率</th>"+
 					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog3.examineLv+"' readonly ='true'/>"+
 					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog3.qx+"' readonly ='true'>"+
+					"</td>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu'  disabled='disabled'>"+obj.appManagerAuditLog3.beiZhu+"</textarea>" +
+					"</td>" +
 					"</tr>"+
 					"<tr>"+                        
 					"<th colspan='4'>审核结论</th>"+  
@@ -1682,8 +1963,11 @@ function lsbywfzr(res){
 					"</td>"+
 					"</tr>"+
 					"<tr>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu' id ='beizhu'></textarea>" +
+					"</td>" +
 					"<th>期限：</th>"+
-					"<td><select>" +
+					"<td><select id='decisionTerm'>" +
 					"<option value = '1'>1个月</option>" +
 					"<option value = '2'>2个月</option>" +
 					"<option value = '3'>3个月</option>" +
@@ -1721,7 +2005,6 @@ function lsbywfzr(res){
 					"<option value = '35'>35个月</option>" +
 					"<option value = '36'>36个月</option>" +
 					"</select>"+
-					"</td>"+
 					"</tr>"+
 					"<tr style='display :none'>"+
 					"<th><label id ='reason' for=reason>原因:</label></th>"+
@@ -1749,6 +2032,8 @@ function lsbywfzr(res){
 						type:'GET',
 						data:{
 							proodId:$("#xxggcp").val(),
+							beiZhu:$("#beizhu").val(),
+							decisionTerm:$("#decisionTerm").val(),
 							auditType:"4",
 							decisionRate:$("#decisionRate").val(),
 							productId:obj.customerApplicationInfo.productId,
@@ -1764,7 +2049,7 @@ function lsbywfzr(res){
 						success:function(json){
 							var mes = $.evalJSON(json);
 							alert(mes.message);
-							sdjy();
+							lsywbfzrsp();
 						}
 
 
@@ -1778,8 +2063,8 @@ function lsbywfzr(res){
 
 				var status = $("select[name=status]").val();
 				if( status == "APPROVE"){
-					$("tr:eq(15)").show();
-					$("tr:eq(17)").hide();
+					$("tr:eq(18)").show();
+					$("tr:eq(20)").hide();
 					if($("input[name=decision_amount]").val() == ""){
 						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
 					}
@@ -1789,16 +2074,16 @@ function lsbywfzr(res){
 				}
 
 				if( status == "REJECTAPPROVE"){
-					$("tr:eq(15)").hide();
-					$("tr:eq(17)").show();
+					$("tr:eq(18)").hide();
+					$("tr:eq(20)").show();
 					if($("textarea[name=decision_refusereason]").val() == ""){
 						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
 					}
 				}
 
 				if( status == "RETURNAPPROVE"){
-					$("tr:eq(15)").hide();
-					$("tr:eq(17)").show();
+					$("tr:eq(18)").hide();
+					$("tr:eq(20)").show();
 				}
 
 				if(status =='RETURNAPPROVE'){
@@ -1898,7 +2183,7 @@ function hzsp(){
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myshsp()'/>行长审批</div>"+  
 					"<div class='content'>" +                        
 					"<table id='hzsplb' class='cpTable jjTable' style='text-align:center;'>"+
-					result[page]+
+					head+result[page]+
 					"</table>"+
 					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
@@ -1936,6 +2221,8 @@ function hzsp(){
 					
 					var res ={};
 					res.appId = values[3];
+					res.customerId = values[2];
+					res.productId =values[0];
 					res.applyQuota = values[1];
 					hzspjl(res);
 				}else{
@@ -1962,6 +2249,8 @@ function hzsp(){
 					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 					var res ={};
 					res.customerId = values[2];
+					res.productId =values[0];
+					res.applicationId =values[3];
 					res.currentLoc ="hzsp()";
 					xsyxzl(res);
 				}else{
@@ -2065,9 +2354,25 @@ function hzspjl(res){
 					"<th>辅调客户经理:</th>"+
 					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_3+"' readonly ='true'>"+
 					"</td>"+
+					"<th>审贷老师:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.userId_4+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.qx+"' readonly ='true'>"+
+					"</td>"+
+					"<th>还款方式:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog2.hkfs+"' readonly ='true'>"+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu'  disabled='disabled'>"+obj.appManagerAuditLog2.beiZhu+"</textarea>" +
+					"</td>" +
 					"</tr>"+
 					"<tr>"+                        
-					"<th colspan='4'>部长结论</th>"+  
+					"<th colspan='4'>小微负责人结论</th>"+  
 					"</tr>"+
 					"<tr>"+
 					"<th>审议额度：</th>"+
@@ -2076,6 +2381,14 @@ function hzspjl(res){
 					"<th>利率</th>"+
 					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog3.examineLv+"' readonly ='true'/>"+
 					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog3.qx+"个月' readonly ='true'>"+
+					"</td>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu'  disabled='disabled'>"+obj.appManagerAuditLog3.beiZhu+"</textarea>" +
+					"</td>" +
 					"</tr>"+
 					"<tr>"+                        
 					"<th colspan='4'>零售部业务负责人结论</th>"+  
@@ -2087,6 +2400,14 @@ function hzspjl(res){
 					"<th>利率</th>"+
 					"<td><input type='text' name='decision_rate'  value = '"+obj.appManagerAuditLog4.examineLv+"' readonly ='true'/>"+
 					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<th>期限:</th>"+
+					"<td><input type='text' value = '"+obj.appManagerAuditLog4.qx+"个月' readonly ='true'>"+
+					"</td>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu'  disabled='disabled'>"+obj.appManagerAuditLog4.beiZhu+"</textarea>" +
+					"</td>" +
 					"</tr>"+
 					"<tr>"+                        
 					"<th colspan='4'>审核结论</th>"+  
@@ -2113,8 +2434,11 @@ function hzspjl(res){
 					"</td>"+
 					"</tr>"+
 					"<tr>"+
+					"<th><label for=reason>备注:</label></th>"+
+					"<td><textarea name='beizhu' id ='beizhu'></textarea>" +
+					"</td>" +
 					"<th>期限：</th>"+
-					"<td><select>" +
+					"<td><select id='decisionTerm'>" +
 					"<option value = '1'>1个月</option>" +
 					"<option value = '2'>2个月</option>" +
 					"<option value = '3'>3个月</option>" +
@@ -2180,6 +2504,8 @@ function hzspjl(res){
 						type:'GET',
 						data:{
 							proodId:$("#xxggcp").val(),
+							beiZhu:$("#beizhu").val(),
+							decisionTerm:$("#decisionTerm").val(),
 							auditType:"5",
 							decisionRate:$("#decisionRate").val(),
 							productId:obj.customerApplicationInfo.productId,
@@ -2209,8 +2535,8 @@ function hzspjl(res){
 
 				var status = $("select[name=status]").val();
 				if( status == "APPROVE"){
-					$("tr:eq(17)").show();
-					$("tr:eq(19)").hide();
+					$("tr:eq(21)").show();
+					$("tr:eq(23)").hide();
 					if($("input[name=decision_amount]").val() == ""){
 						$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
 					}
@@ -2220,16 +2546,16 @@ function hzspjl(res){
 				}
 
 				if( status == "REJECTAPPROVE"){
-					$("tr:eq(17)").hide();
-					$("tr:eq(19)").show();
+					$("tr:eq(21)").hide();
+					$("tr:eq(23)").show();
 					if($("textarea[name=decision_refusereason]").val() == ""){
 						$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
 					}
 				}
 
 				if( status == "RETURNAPPROVE"){
-					$("tr:eq(17)").hide();
-					$("tr:eq(19)").show();
+					$("tr:eq(21)").hide();
+					$("tr:eq(23)").show();
 				}
 
 				if(status =='RETURNAPPROVE'){

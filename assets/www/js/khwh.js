@@ -167,6 +167,7 @@ function khwhlb(){
 					objs.getCardId = values[2];
 					objs.customerId = values[3];
 					objs.appId = values[4];
+					objs.currentlo="khwhlb()";
 					tjkhwhjh(objs);
 				}else{
 					alert("请选择一行");
@@ -181,7 +182,7 @@ function khwhlb(){
 function tjkhwhjh(objs){
 	var khwejhxzurl = "/ipad/custAppInfo/insertMaintenance.json";
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khwhlb()'/>客户维护-客户维护列表-添加客户维护计划</div>"+  
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick = '"+objs.currentlo+"'/>客户维护-客户维护列表-添加客户维护计划</div>"+  
 			"<div class='content'>"+
 			"<table class='cpTable' style='text-align:center;'>"+
 			"<tr>"+                             
@@ -218,7 +219,7 @@ function tjkhwhjh(objs){
 			"</tr>"+
 			"</table>"+
 			"<p><input type='button' class='btn btn-large btn-primary' value='保存并继续' id = 'save'/>" +
-			"<input type='button' class='btn btn-large btn-primary' value='返回' onclick = 'khwhlb()'/></p>"+
+			"<input type='button' class='btn btn-large btn-primary' value='返回' onclick = '"+objs.currentlo+"'/></p>"+
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
@@ -255,8 +256,7 @@ function khwhrz(){
 
 	var khwhrz ="/ipad/product/getMaintenance.json";
 	var userId = window.sessionStorage.getItem("userId");
-//	var userType = window.sessionStorage.getItem("userType");
-	var userType = 1; 
+	var userType = window.sessionStorage.getItem("userType");
 	var tmp ="";
 	var result={};
 	var page=1;
@@ -278,7 +278,7 @@ function khwhrz(){
 			userType:userType,
 		},
 		success: function (json) {
-			obj = $.evalJSON(json);
+			var obj = $.evalJSON(json);
 			for(var i = 0;i<obj.totalCount;i++){
 				tmp=tmp+"<tr onclick='check(this)'>"+"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].chineseName+"@"+
 				obj.items[i].cardId+"@"+obj.items[i].productName+"@"+obj.items[i].productId+
