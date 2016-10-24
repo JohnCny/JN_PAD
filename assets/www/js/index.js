@@ -50,6 +50,44 @@ function  checkBox(obj,id){   //单选样式
 	
 	jyed();
 }
+
+function  checkBox2(obj,id){   //多选样式 
+    if($(obj).find('input[type=checkbox]').attr("checked")=="checked"){
+        $(obj).find('input[type=checkbox]').removeAttr('checked');
+        $(obj).attr("class","checkbox");
+    }
+    else{
+        $(obj).find('input[type=checkbox]').attr('checked','checked');
+        $(obj).attr("class","checkbox checkbox_checked");
+    }    
+}
+function  checkBox3(obj,id){   //多选样式 
+	if($(obj).find('input[type=checkbox]').attr("checked")=="checked"){
+		$(obj).find('input[type=checkbox]').removeAttr('checked');
+		$(obj).attr("class","checkbox");
+		$("input.selectmanager").prop('checked',false);
+		$(".checkbox&.checkbox_checked").removeClass("checkbox_checked");
+	}else{
+		$(obj).find('input[type=checkbox]').attr('checked','checked');
+		$(obj).attr("class","checkbox checkbox_checked");
+		$("input.selectmanager").prop('checked','checked');
+		$(".checkbox").removeClass("checkbox").addClass("checkbox checkbox_checked");
+	}    
+}
+function setSdhcy(){
+    var chk_value =[]; 
+    var select_id =[]; 
+    $("#checkbox:checked").each(function(){
+        chk_value.push($(this).parent().text());
+        select_id.push($(this).val());
+    });
+    if(chk_value[0]=="全选"){
+    	chk_value.splice(0,1);
+    	select_id.splice(0,1);
+    }
+    $("#sdhcy").val(chk_value);
+    $("#sdhcy").attr("select_id",select_id);
+}
 function qh(obj){//求和
     $(obj).parent().find(".score").html($(obj).val())
     var num=0;

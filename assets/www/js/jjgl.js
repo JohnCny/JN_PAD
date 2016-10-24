@@ -535,6 +535,7 @@ function dcmbadd(addIntopiece){
 	    });  
 	}, false); 
 	  $("#sure").click(function(){
+		  $("#sure").attr('disabled',"true");
 			 var fileURI = document.getElementsByName("imageuri")[0].getAttribute("uri");
 			 var fileName = $("#fcz_sheet1").val();
 			 var options = new FileUploadOptions();  
@@ -544,6 +545,7 @@ function dcmbadd(addIntopiece){
 			    options.chunkedMode = false;  
 			    ft = new FileTransfer();  
 			    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/reportImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName);  
+			    show_uploadModel();
 			    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 			  
 			    //获取上传进度  
@@ -627,6 +629,7 @@ $("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png
 	    options.chunkedMode = false;  
 	    ft = new FileTransfer();  
 	    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+applicationId);  
+	    show_upload(i+1);
 	    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 	  }
 //	    //获取上传进度  
@@ -784,7 +787,6 @@ function getsuccess(URI){
 	
 	
 	window.resolveLocalFileSystemURI(URI, gotFileEntry, onFileFail);
-	alert(URI);
 	    //转换URI到全路径
 		function gotFileEntry(fileEntry) {
 			var fpath = fileEntry.fullPath;
@@ -811,7 +813,7 @@ function getsuccess(URI){
 /** 
  * 上传过程回调，用于处理上传进度，如显示进度条等。 
  */  
-function uploadProcessing(progressEvent){
+//function uploadProcessing(progressEvent){
 //	    $("#text").html("<div class='display-div' id='xdyss'>"+
 //	                        "<div class='dialog-head'>"+
 //	                           "<h4>提示</h4>"+
@@ -825,30 +827,49 @@ function uploadProcessing(progressEvent){
 //	                        "</div>"+
 //	                    "</div><!-- /display-div -->");
 //	    $("#text").animate({top:"0px"},"500");
-    if (progressEvent.lengthComputable) {  
-        //已经上传  
-        var loaded=progressEvent.loaded;  
-        //文件总长度  
-        var total=progressEvent.total;  
-        //计算百分比，用于显示进度条  
-        var percent=parseInt((loaded/total)*100);  
-        //换算成MB  
-        alert(total);
-        alert(percent);
-        loaded=(loaded/1024/1024).toFixed(2);  
-        total=(total/1024/1024).toFixed(2);  
-        $('#process_info').html(loaded+'M/'+total+'M');  
-        $('.upload_current_process').css({'width':percent+'%'});  
-    }  
-}; 
+//    if (progressEvent.lengthComputable) {  
+//        //已经上传  
+//        var loaded=progressEvent.loaded;  
+//        //文件总长度  
+//        var total=progressEvent.total;  
+//        //计算百分比，用于显示进度条  
+//        var percent=parseInt((loaded/total)*100);  
+//        //换算成MB  
+//        alert(total);
+//        alert(percent);
+//        loaded=(loaded/1024/1024).toFixed(2);  
+//        total=(total/1024/1024).toFixed(2);  
+//        $('#process_info').html(loaded+'M/'+total+'M');  
+//        $('.upload_current_process').css({'width':percent+'%'});  
+//    }  
+//}; 
 
 /** 
  * 上传成功回调. 
  * @param r 
  */ 
-function uploadSuccess(r) {  
-    alert('文件上传成功:'+r.response);
-    clearProcess();  
+function uploadSuccess(r) { 
+	var obj = $.evalJSON(r.response);
+//	hide_upload();
+	if(obj.success==false){
+	if(obj.message=="001"){
+//		alert("调查模板不一致！导入失败！");
+		$("#uploadInfo").html("调查模板不一致！导入失败！");
+		 $("#diss").attr('disabled',false);
+		 $("#sure").attr('disabled',false);
+	}else{
+//		alert("导入失败！");
+		$("#uploadInfo").html("导入失败！");
+		 $("#diss").attr('disabled',false);
+    $("#sure").attr('disabled',false);
+	}
+	}else{
+//		alert("导入成功！");
+		$("#uploadInfo").html("导入成功！");
+		 $("#diss").attr('disabled',false);
+		 $("#sure").attr('disabled',false);
+	}
+	 clearProcess();
 }  
 
 /** 
@@ -856,8 +877,13 @@ function uploadSuccess(r) {
  * @param error 
  */  
 function uploadFailed(error) {  
-    alert('上传失败了。');  
+//	hide_upload();
+//    alert('文件上传失败'); 
+    $("#uploadInfo").html("导入失败！");
+    $("#diss").attr('disabled',false);
+    $("#sure").attr('disabled',false);
     clearProcess();  
+    
 } 
 
 /** 
@@ -865,7 +891,10 @@ function uploadFailed(error) {
  * @param message 
  */  
 function uploadBroken(message){  
-    alert(message);  
+//	hide_upload();
+//    alert(message); 
+	$("#uploadInfo").html(message);
+	 $("#diss").attr('disabled',false);
     clearProcess();  
 };  
   
@@ -875,7 +904,7 @@ var ft;
  * 清除上传进度，处理上传失败，上传中断，上传成功 
  */  
 function clearProcess() {  
-    $('.upload_process_bar,#process_info').hide();  
+//    $('.upload_process_bar,#process_info').hide();  
     ft.abort();  
 };
 

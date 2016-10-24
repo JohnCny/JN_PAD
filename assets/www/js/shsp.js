@@ -3,19 +3,19 @@
 function myshsp(){
 	var userType = window.sessionStorage.getItem("userType");
 	var shspshow;
-	var show1 = "<div class='box shsp1' onclick='cysdrw()'>" +                            
+	var show1 = "<div class='box shspp1' onclick='cysdrw()'><img src='images/shsp1.png'/>" +                            
 	"<span>进件初审</span>"+
 	"</div>"+
-	"<div class='box shsp2' onclick='sdjy()'>" +
+	"<div class='box shspp1' onclick='sdjy()'><img src='images/shsp2.png'/>" +
 	"<span>审贷决议</span>"+
 	"</div>";
-	var show2 = "<div class='box shsp1' onclick='buzhangsp()'>" +
-	"<span>部长审批</span>"+
+	var show2 = "<div class='box shspp1' onclick='buzhangsp()'><img src='images/shsp3.png'/>" +
+	"<span>小微负责人审批</span>"+
 	"</div>"+
-	"<div class='box shsp2' onclick='lsywbfzrsp()'>" +
+	"<div class='box shspp1' onclick='lsywbfzrsp()'><img src='images/shsp4.png'/>" +
 	"<span>零售业务部负责人审批</span>"+
 	"</div>"+
-	"<div class='box shsp1' onclick='hzsp()'>" +
+	"<div class='box shspp1' onclick='hzsp()'><img src='images/shsp5.png'/>" +
 	"<span>行长审批</span>"+
 	"</div>";
 	if(Number(userType)!=1){
@@ -194,6 +194,16 @@ function cysdrw(){
 
 //影像资料
 function xsyxzl(res){
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>影像资料</div>"+  
+			"</div>"+
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+			"</div>");
 	var yxzlurl="/ipad/JnpadImageBrowse/uploadYx.json";
 	var obj;
 	var id;
@@ -283,6 +293,16 @@ function xsyxzl(res){
 //显示调查模板
 function xszlxx(res){
 	var dcmburl="/ipad/product/browerModel.json";
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='"+res.currentLoc+"'/>调查模板</div>"+  
+			"</div>"+
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+			"</div>");
 	$.ajax({
 		url:wsHost+dcmburl,
 		type: "GET",
@@ -295,17 +315,17 @@ function xszlxx(res){
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='"+res.currentLoc+"'/>调查模板</div>"+  
 					"<div class='content'>" +
 					"<div class='tabplace'>"+
-					"<ul class='com-tab' >"+
-					"<li class='tab' id ='jyb'>建议</li>"+
-					"<li class='tab' id ='jbzkb'>基本状况</li>"+
-					"<li class='tab' id = 'zcfzb'>资产负债</li>"+
-					"<li class='tab' id = 'bzlrb'>标准利润</li>"+
-					"<li class='tab' id = 'xjlb'>现金流</li>"+
-					"<li class='tab' id = 'jcb'>交叉</li>"+
-					"<li class='tab' id = 'gzb'>固资</li>"+
-					"<li class='tab' id = 'yfysb'>应付预收</li>"+
-					"<li class='tab' id = 'ysyfb'>应收预付</li>"+
-					"<li class='tab' id = 'jueyb'>决议表</li>"+
+					"<ul class='tab' >"+
+					"<li class='tab2' id ='jyb'><span>建议</li></span>"+
+					"<li class='tab2' id ='jbzkb'><span>基本状况</span></li>"+
+					"<li class='tab2' id = 'zcfzb'><span>资产负债</span></li>"+
+					"<li class='tab2' id = 'bzlrb'><span>标准利润</span></li>"+
+					"<li class='tab2' id = 'xjlb'><span>现金流</span></li>"+
+					"<li class='tab2' id = 'jcb'><span>交叉</span></li>"+
+					"<li class='tab2' id = 'gzb'><span>固资</span></li>"+
+					"<li class='tab2' id = 'yfysb'><span>应付预收</span></li>"+
+					"<li class='tab2' id = 'ysyfb'><span>应收预付</span></li>"+
+					"<li class='tab2' id = 'jueyb'><span>决议表</span></li>"+
 					"</ul></div>"+
 					"<div id = 'resultshow'>"+
 					obj.tableContentjyb+

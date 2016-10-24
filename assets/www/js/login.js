@@ -89,5 +89,41 @@ function dc(){
 }
 
 
+function show_upload(i){//显示上传提示
+    $("#text").html("<div class='display-div' id='xdyss'>"+
+                        "<div class='dialog-head'>"+
+                           "<h4>提示</h4>"+
+                        "</div>"+
+                        "<div id = 'uploadInfo' class='dialog-content'>"+
+                           "正在上传第"+i+"张，请稍后..."+
+                        "</div>"+
+                        "<div class='dialog-bottom'>"+
+//                           "<button type='button' class='btn btn-default' onclick='hide_dcts()'>确定</button>"+
+                           "<button type='button' class='btn btn-danger' id='diss' onclick='hide_dcts()'>确定</button>"+
+                        "</div>"+
+                    "</div><!-- /display-div -->");
+    $("#text").animate({top:"0px"},"500");
+    $("#diss").attr('disabled',"true");
+}
 
-
+function show_uploadModel(){//显示上传提示
+	$("#text").html("<div class='display-div' id='xdyss'>"+
+			"<div class='dialog-head'>"+
+			"<h4>提示</h4>"+
+			"</div>"+
+			"<div id = 'uploadInfo' class='dialog-content'>"+
+			"正在上传，请稍后..."+
+			"</div>"+
+			"<div class='dialog-bottom'>"+
+//			"<button type='button' class='btn btn-default' onclick='hide_dcts()'>确定</button>"+
+                           "<button type='button' id='diss' class='btn btn-danger' onclick='hide_dcts()'>确定</button>"+
+			"</div>"+
+	"</div><!-- /display-div -->");
+	$("#text").animate({top:"0px"},"500");
+	$("#diss").attr('disabled',"true");
+}
+function hide_upload(){//隐藏登出提示
+	// $(".display-div").animate({marginTop:"-250px"},"500");
+	$("#text").animate({top:"-800px"},"500");
+	 clearProcess();
+}    

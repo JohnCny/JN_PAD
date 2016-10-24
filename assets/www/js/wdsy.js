@@ -43,12 +43,13 @@ function mywdsy(){
 		"<div class='box wdsy2' onclick='khjjxx();pie()'><img src='images/khjjxx.png'/><span>客户进件信息</span></div>"+
 		"<div class='box wdsy3' onclick='khyyzk()'><img src='images/khyyzk.png'/><span>客户运营状况</span></div>"+
 		im+
-//		"<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
+//		"<div class='box wdsy5' onclick='xxxxx()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
 		"<div class='box wdsy5' onclick ='khjlrb()'><img src='images/jljlxx.png'/><span>客户经理日报</span></div>"+ 
 		"<div class='box wdsy5' onclick ='wzxx()'><img src='images/wdzj.png'/><span>位置信息</span></div>"+ 
 //		"<div class='box wdsy5' id ='wzxx'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
 		"</div>"
 		$("#mainPage").html(content);
+		$("#nimei").html("上次登录时间：<br/>"+objs.LastLogin);
 	}
 
 	/*$("#mainPage").html("<div class='title'>我的首页</div>"+  
@@ -74,6 +75,15 @@ function mywdsy(){
 	$(".right").hide();
 	$("#mainPage").show();
 }
+function xxxxx(){
+	window.plugins.imagePluginAPI.startActivity(wrong,succ,"你是猪吗");
+}
+function wrong(ob){
+	alert("111"+ob);
+}
+function succ(ob){
+	alert("222"+ob);
+}
 //客户进件信息
 function khjjxx(){
 	window.scrollTo(0,0);//滚动条回到顶端
@@ -92,8 +102,10 @@ function khjjxx(){
 }
 function pie() {
 	var get = crud.dom.factory("GET");
-	var userId = window.sessionStorage.getItem("userId");;
-	wsAppInfo ="/ipad/custAppInfo/browse1.json?userId="+userId;
+	var userId = window.sessionStorage.getItem("userId");
+	var userType = window.sessionStorage.getItem("userType");
+//	wsAppInfo ="/ipad/custAppInfo/browse1.json?userId="+userId;
+	wsAppInfo ="/ipad/custAppInfo/browse1.json?userId="+userId+"&userType="+userType;
 	var url = wsAppInfo;
 	get.doGet(url,initAppInfoManagerContentCallback,"加载进件信息失败！");
 	function initAppInfoManagerContentCallback(json){
@@ -227,7 +239,7 @@ function jjxxlb(){
 function thkhlb(){
 	var userId = window.sessionStorage.getItem("userId");
 	var userType = window.sessionStorage.getItem("userType");
-	var jjcxurl="/ipad/customerIntopiece/browse.json";
+	var jjcxurl="/ipad/customerIntopiece/returnToFirst.json";
 	var tmp ="";
 	var result={};
 	var page=1;
@@ -288,7 +300,7 @@ function thkhlb(){
 				"<td>"+obj.items[i].fallBackReason+"</td>"+
 				"<td>"+obj.items[i].refusqlReason+"</td>"+
 				"</tr>";
-				
+
 				if((i+1)%5==0){
 					result[j]=tmp;
 					j++;
@@ -333,7 +345,7 @@ function thkhlb(){
 function jjkhlb(){
 	var userId = window.sessionStorage.getItem("userId");
 	var userType = window.sessionStorage.getItem("userType");
-	var jjcxurl="/ipad/customerIntopiece/browse.json";
+	var jjcxurl="/ipad/customerIntopiece/refuse.json";
 	var tmp ="";
 	var result={};
 	var page=1;
@@ -344,11 +356,10 @@ function jjkhlb(){
 	"<th>产品名称</th>"+
 	"<th>申请金额</th>"+
 	"<th>审贷金额</th>"+
-	"<th>合同金额</th>"+
+//	"<th>合同金额</th>"+
 	"<th>证件号码</th>"+
 	"<th>审核状态</th>"+
 	"<th>节点名称</th>"+
-	"<th>退回原因</th>"+
 	"<th>拒绝原因</th>"+
 	"</tr>";
 	$.ajax({
@@ -386,15 +397,15 @@ function jjkhlb(){
 				"<td>"+obj.items[i].chineseName+"</td>"+
 				"<td>"+obj.items[i].productName+"</td>"+
 				"<td>"+obj.items[i].applyQuota+"</td>"+
-				"<td>"+obj.items[i].finalApproval+"</td>"+
+//				"<td>"+obj.items[i].finalApproval+"</td>"+
 				"<td>"+obj.items[i].reqlmt+"</td>"+
 				"<td>"+obj.items[i].cardId+"</td>"+
 				"<td>"+obj.items[i].status+"</td>"+
 				"<td>"+obj.items[i].nodeName+"</td>"+
-				"<td>"+obj.items[i].fallBackReason+"</td>"+
+//				"<td>"+obj.items[i].fallBackReason+"</td>"+
 				"<td>"+obj.items[i].refusqlReason+"</td>"+
 				"</tr>";
-				
+
 				if((i+1)%5==0){
 					result[j]=tmp;
 					j++;
@@ -509,10 +520,20 @@ function khyyzk(){
 
 	var get = crud.dom.factory("GET");
 	wsYunyin ="/ipad/user/findYunyinstatus.json";
-	var url = wsYunyin+"?userId="+window.sessionStorage.getItem("userId");
+	var userType =window.sessionStorage.getItem("userType");
+	var show="";
+	if(userType=="1"){
+		var url = wsYunyin+"?userId="+window.sessionStorage.getItem("userId");
+	}else{
+		var url = wsYunyin+"?userId=";
+		show="<p>" +
+		"<input type='button' class='tab-button' value='查看其他统计图' onclick='ckqttjt()'/>" +
+		"</p>"; 
+	}
 	get.doGet(url,initCustManagerContentCallback,"加载客户运营状况失败！");
 	function initCustManagerContentCallback(json){
 		var objs = $.evalJSON(json);
+
 		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>客户运营状况</div>"+  
 				"<div class='content' style='width:70%;margin:0 auto;'>" +
 				"<div class='span3' style='background:#f86817;'>客户授信总额<br/><span>"+objs.result.ksze+"</span></div>"+
@@ -520,10 +541,207 @@ function khyyzk(){
 				"<div class='span3' style='background:#67cdcc;'>客户逾期余额总额<br/><span>"+objs.result.kyyeze+"</span></div>"+
 				"<div class='span2' style='background:#046589;'>逾期客户数<br/><span>"+objs.result.yqkhs+"</span></div>"+
 				"<div class='span2' style='background:#d6bf00;'>核销客户数<br/><span>"+objs.result.hxkhs+"</span></div>"+
+				show+
 		"</div>");
 	}
 	$(".right").hide();
 	$("#mainPage").show();
+}
+
+function ckqttjt(){
+	$("#mainPage").html("");
+	var url = "/ipad/tongji.json";
+	var get = crud.dom.factory("GET");
+	get.doGet(url,initTongjituCallback,"加载统计图失败！");
+
+	function initTongjituCallback(json){
+		var objs = $.evalJSON(json);
+		var value1 = objs.organApplicationAuditNumJson;		
+		value1=value1.replace(/\]/,"");
+		value1=value1.replace(/\[/,"");
+				var value11 = value1.split(",");
+				var value2 = objs.organApplicationApprovedNumJson;	
+				value2=value2.replace(/\]/,"");
+				value2=value2.replace(/\[/,"");
+						var value22 = value2.split(",");
+						var zonged = objs.organApplicationjineJson;
+						zonged=zonged.replace(/\]/,"");
+						zonged=zonged.replace(/\[/,"");
+								zonged=zonged.split(",");
+								var shouxin =objs.organApplicationsxJson;
+								shouxin=shouxin.replace(/\]/,"");
+								shouxin=shouxin.replace(/\[/,"");
+										shouxin=shouxin.split(",");
+										var yuqi=objs.organApplicationyqJson;
+										yuqi=yuqi.replace(/\]/,"");
+										yuqi=yuqi.replace(/\[/,"");
+												yuqi=yuqi.split(",");
+												var buliang=objs.organApplicationblJson;
+												buliang=buliang.replace(/\]/,"");
+												buliang=buliang.replace(/\[/,"");
+														buliang=buliang.split(",");
+														var nnnn=objs.applicationStatusJson;
+														$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khyyzk()'/>统计图</div>"+  
+																"<div class='content'>" +
+																"<div class='zingchartt' id='container' ></div>"+
+																"<p><input type='button' class='btn btn-large btn-primary' value='进件状况统计' id = 'jjzktj' />"+
+																"<input type='button' class='btn btn-large btn-primary' value='进件数量统计' id = 'jjsltj' />"+
+																"<input type='button' class='btn btn-large btn-primary' value='总额度状况统计' id = 'zedtj' />"+
+																"<input type='button' class='btn btn-large btn-primary' value='支行额度状况统计' id = 'zhedtj'/>"+
+																"<input type='button' class='btn btn-large' value='返回' onclick='khyyzk()'/></p>"+
+														"</div>");
+														$(".right").hide();
+														$("#mainPage").show();
+
+														var chartData = {
+																"type": "bar", 
+																"series": [    
+																           {"text":"已申请进件数量","values":[Number(value11[0]),Number(value11[1]),Number(value11[2]),Number(value11[3]),Number(value11[4]),Number(value11[5]),Number(value11[6])]},
+																           {"text":"通过进件数量","values":[Number(value22[0]),Number(value22[1]),Number(value22[2]),Number(value22[3]),Number(value22[4]),Number(value22[5]),Number(value22[6])]}
+																           ],
+																           "scale-x":{ 
+																        	   "values":["高新","天桥","长清","历城","历下","润丰","槐荫"],
+																           },
+																           "scale-y":{ 
+																        	   "zooming":false,
+//																        	   "zoom-to":[0,5]
+																           },
+																           "title": {
+																        	   "text":"统计各支行已申请和通过的进件数量"
+																           },
+																           "legend":{
+
+																           }
+														};
+														var chartData2 = {
+																"type": "bar", 
+																"series": [    
+																           {"text":"金额","values":[Number(zonged[0]),Number(zonged[1]),Number(zonged[2])]},
+
+																           ],
+																           "scale-x":{ 
+																        	   "values":["授信总额度","逾期总额度","不良总额度"],
+																           },
+																           "scale-y":{ 
+																        	   "zooming":false,
+//																        	   "zoom-to":[0,5]
+																           },
+																           "title": {
+																        	   "text":"统计各支行已申请和通过的进件数量"
+																           },
+																           "legend":{
+
+																           }
+														};
+														var chartData3 = {
+																"type": "bar", 
+																"series": [    
+																           {"text":"授信金额","values":[Number(shouxin[0]),Number(shouxin[1]),Number(shouxin[2]),Number(shouxin[3]),Number(shouxin[4]),Number(shouxin[5]),Number(shouxin[6])]},
+																           {"text":"逾期金额","values":[Number(yuqi[0]),Number(yuqi[1]),Number(yuqi[2]),Number(yuqi[3]),Number(yuqi[4]),Number(yuqi[5]),Number(yuqi[6])]},
+																           {"text":"不良金额","values":[Number(buliang[0]),Number(buliang[1]),Number(buliang[2]),Number(buliang[3]),Number(buliang[4]),Number(buliang[5]),Number(buliang[6])]}
+																           ],
+																           "scale-x":{ 
+																        	   "values":["高新","天桥","长清","历城","历下","润丰","槐荫"],
+																           },
+																           "scale-y":{ 
+																        	   "zooming":false,
+//																        	   "zoom-to":[0,5]
+																           },
+																           "title": {
+																        	   "text":"统计各支行已申请和通过的进件数量"
+																           },
+																           "legend":{
+
+																           }
+														};
+
+														var myConfig = {
+																"type":"pie",
+																"title":{
+																	"text":"进件状况统计"
+																},
+																"plot":{
+																	"border-width":1,
+																	"border-color":"#cccccc",
+																	"line-style":"dotted",
+																	"value-box":{
+																		"font-size":10,
+																		"text":"%t: %v (%npv%)",
+																		"font-weight":"normal",
+																		"placement":"out"
+																	}
+																},
+																"series":[
+																          {
+																        	  "values":[Number($.evalJSON(nnnn)[0].y)],
+																        	  "background-color":"#cc0000",
+																        	  "text":"拒绝"
+																          },
+																          {
+																        	  "values":[Number($.evalJSON(nnnn)[1].y)],
+																        	  "background-color":"#ff9933",
+																        	  "text":"已审批"
+																          },
+																          {
+																        	  "values":[Number($.evalJSON(nnnn)[2].y)],
+																        	  "background-color":"#88cc00",
+																        	  "text":"审批中"
+																          },
+																          {
+																        	  "values":[Number($.evalJSON(nnnn)[3].y)],
+																        	  "background-color":"#3399ff",
+																        	  "text":"退回"
+																          },
+																          {
+																        	  "values":[Number($.evalJSON(nnnn)[4].y)],
+																        	  "background-color":"#9933ff",
+																        	  "text":"放款成功"
+																          }
+																          ]
+														};
+														        zingchart.render({ 
+															            id: "container",    
+															            height: 500,       
+															            width: 700,        
+															            data: chartData
+															        });
+														$("#zedtj").click(function(){
+															 zingchart.render({ 
+																            id: "container",    
+																            height: 500,       
+																            width: 700,        
+																            data: chartData2
+																        });
+
+														})
+														$("#jjsltj").click(function(){
+															 zingchart.render({ 
+																            id: "container",    
+																            height: 500,       
+																            width: 700,        
+																            data: chartData
+																        });
+
+														})
+														$("#zhedtj").click(function(){
+															 zingchart.render({ 
+																            id: "container",    
+																            height: 500,       
+																            width: 700,        
+																            data: chartData3
+																        });
+
+														})
+														$("#jjzktj").click(function(){
+															 zingchart.render({ 
+																            id: "container",    
+																            height: 500,       
+																            width: 700,        
+																            data: myConfig
+																        });
+
+														})
+	}
 }
 //我的足迹
 function wdzj(){
@@ -549,17 +767,17 @@ function tz(){
 				"<div class='content'>" +
 				"<table class='cpTable' style='width:100%;height:85%;position:fixed;top:100px;bottom:0;text-align:center;'>"+
 				"<tr>"+                             
-				"<td style='width:33.3%;' onclick='sdhtz()'>" +
-				"<img src='images/sdh.png'/><br/><span class='tongzhi'>0</span><br/>" +
-				"<span class='tz_message'>审贷会通知</span>" +
+				"<td style='width:33.3%;'>" +// onclick='sdhtz()'
+//				"<img src='images/sdh.png'/><br/><span class='tongzhi'>0</span><br/>" +
+//				"<span class='tz_message'>审贷会通知</span>" +
 				"</td>"+                           
 				"<td style='width:33.3%;' onclick='pxjh()'>" +
 				"<img src='images/px.png'/><br/><span class='tongzhi'>"+objs.peixun+"</span><br/>" +
 				"<span class='tz_message'>培训通知</span>" +
 				"</td>"+                      
-				"<td style='width:33.3%;' onclick='fpjjtz()'>" +
-				"<img src='images/fpjj.png'/><br/><span class='tongzhi'>0</span><br/>" +
-				"<span class='tz_message'>分配进件通知</span>" +
+				"<td style='width:33.3%;' >" +//onclick='fpjjtz()'
+//				"<img src='images/fpjj.png'/><br/><span class='tongzhi'>0</span><br/>" +
+//				"<span class='tz_message'>分配进件通知</span>" +
 				"</td>"+
 				"</tr>"+
 				"<tr>"+                         
@@ -577,21 +795,26 @@ function tz(){
 				"</td>"+ 
 				"</tr>"+
 				"<tr>"+                         
-				"<td onclick='cskhtz()'>" +
-				"<img src='images/cs.png'/><br/><span class='tongzhi'>0</span><br/>" +
-				"<span class='tz_message'>催收客户通知</span>" +
+				"<td>" +//onclick='cskhtz()'
+//				"<img src='images/cs.png'/><br/><span class='tongzhi'>0</span><br/>" +
+//				"<span class='tz_message'>催收客户通知</span>" +
 				"</td>"+                    
-				"<td onclick='khzlbgtz()'>" +
-				"<img src='images/khzlbg.png'/><br/><span class='tongzhi'>0</span><br/>" +
+				"<td id='kkkk'>" +
+				"<img src='images/khzlbg.png'/><br/><span class='tongzhi'>"+objs.ziliaobiangeng+"</span><br/>" +
 				"<span class='tz_message'>客户资料变更通知</span>" +
 				"</td>"+                  
 				"<td></td>"+ 
 				"</tr>"+
 				"</table>"+
 		"</div>");
+		$("#kkkk").click(function(){
+			khzlbgtz(objs.bianggeng);
+		})
 	}
 	$(".right").hide();
 	$("#mainPage").show();
+
+
 }
 //通知-审贷会通知
 function sdhtz(){
@@ -902,7 +1125,6 @@ function fxsxtz(){
 				"<div class='content'>" +
 				"<table class='cpTable' id='fxkh' style='text-align:center;'>"+
 				head+result[page]+
-
 				"</table>"+
 				"<p>"+
 				"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
@@ -935,13 +1157,13 @@ function fxsxtz(){
 
 				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 				var ycfxurl="/ipad/NotifictionMessage/removeRisk.json";
-				
+
 				$.get(wsHost+ycfxurl,{customerId:values[1]},yichucallback);
 				function yichucallback(json){
 					var obj = $.evalJSON(json);
 					alert(obj.mess);
 				}
-				
+
 			}else{
 				alert("请选择一行");
 			}
@@ -978,31 +1200,122 @@ function cskhtz(){
 	$("#mainPage").show();
 }
 //通知-客户资料变更通知
-function khzlbgtz(){
+function khzlbgtz(customerInfo){
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head =	"<tr>"+  
+	"<th></th>"+
+	"<th>客户姓名</th>"+
+	"<th>证件类型</th>"+
+	"<th>证件号码</th>"+
+	"<th>手机</th>"+
+	"<th>状态</th>"+
+	"</tr>"; 
+	for(var i=0;i<customerInfo.length;i++){
+		if(customerInfo[i].cardtype=="0"){
+			customerInfo[i].cardtype="身份证";
+		}else if(customerInfo[i].cardtype=="1"){
+			customerInfo[i].cardtype="军官证";
+		}else if(customerInfo[i].cardtype=="2"){
+			customerInfo[i].cardtype="护照";
+		}else if(customerInfo[i].cardtype=="3"){
+			customerInfo[i].cardtype="香港身份证";
+		}else if(customerInfo[i].cardtype=="4"){
+			customerInfo[i].cardtype="澳门身份证";
+		}else if(customerInfo[i].cardtype=="5"){
+			customerInfo[i].cardtype="台湾身份证";
+		}
+		if(customerInfo[i].islook==null||customerInfo[i].islook==""){
+			customerInfo[i].islook="未查看"
+		}
+		tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+customerInfo[i].id+"@"+
+		customerInfo[i].cardnum+"'/>"+"</span></td>"+  
+		"<td>"+customerInfo[i].cname+"</td>"+
+		"<td>"+customerInfo[i].cardtype+"</td>"+
+		"<td>"+customerInfo[i].cardnum+"</td>"+
+		"<td>"+customerInfo[i].contactmobiletel+"</td>"+
+		"<td>"+customerInfo[i].islook+"</td>"+
+		"</tr>"
+
+		if((i+1)%5==0){
+			result[j]=tmp;
+			j++;
+			tmp="";
+		}
+	}
+	result[j]=tmp;
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>通知-客户资料变更通知</div>"+  
 			"<div class='content'>" +
-			"<table class='cpTable' style='text-align:center;'>"+
-			"<tr>"+                        
-			"<th>序号</th>"+  
-			"<th>客户姓名</th>"+
-			"<th>客户身份标识</th>"+
-			"<th>产品标识</th>"+
-			"<th>变更项</th>"+
-			"<th>是否变更维护计划</th>"+
-			"</tr>"+
-			"<tr>"+    
-			"<td>1</td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"</tr>"+
+			"<table id='cslb' class='cpTable' style='text-align:center;'>"+
+//			"<tr>"+                        
+//			"<th>序号</th>"+  
+//			"<th>客户姓名</th>"+
+//			"<th>客户身份标识</th>"+
+//			"<th>产品标识</th>"+
+//			"<th>变更项</th>"+
+//			"<th>是否变更维护计划</th>"+
+//			"</tr>"+
+//			"<tr>"+    
+//			"<td>1</td>"+
+//			"<td></td>"+
+//			"<td></td>"+
+//			"<td></td>"+
+//			"<td></td>"+
+//			"<td></td>"+
+//			"</tr>"+
+			head +result[page]+
 			"</table>"+
+			"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+			"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+			"<input type='button' class='btn btn-large btn-primary' value='标记为查看' id = 'bjck'/>"+
+			"<input type='button' class='btn btn-large'' value='返回' onclick='tz()'/></p>"+
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
+	$("#syy").click(function(){
+		page=page-1; 
+		if(result[page]){
+			$("#cslb").html(head+result[page]);
+		}else{
+			alert("当前已经是第一页");
+			page = page+1;
+		}
+	})
+
+	$("#xyy").click(function(){
+		page=page+1;
+		if(result[page]){
+			$("#cslb").html(head+result[page]);
+		}else{
+			alert("当前已经是最后一页");
+			page=page-1;
+		}
+	})
+	$("#bjck").click(function(){
+		if ($("input[type='radio']").is(':checked')) {
+			var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+			var chakanurl="/ipad/custAppInfo/changestate.json";
+			$.ajax({
+				url:wsHost+chakanurl,
+				type: "GET",
+				dataType:'json',
+				data:{
+					id:values[0],
+					cardId:values[1],
+				},
+				success: function (json){
+					var obj = $.evalJSON(json);
+					alert(obj.mess);
+					tz();
+				}
+			})
+		}else{
+			alert("请选择一行");
+		}
+	})
 }
 
 //额度评估工具
@@ -1263,7 +1576,8 @@ function edpggj(){
 function khjlrb(){
 	var khjirburl ="/ipad/dailyAccount/browse.json";
 	var userId = window.sessionStorage.getItem("userId"); 
-	$.get(wsHost+khjirburl,{userId:userId},callbackInfor);
+	var userType = window.sessionStorage.getItem("userType"); 
+	$.get(wsHost+khjirburl,{"userId":userId,"userType":userType},callbackInfor);
 	function callbackInfor(json){
 		var obj = $.evalJSON(json);
 		var tmp ="";
@@ -1447,29 +1761,40 @@ function myMap(){
 function wzxx(){
 	var khjlxxlurl = "/ipad/intopieces/managerInfoi.json";
 	var opin=window.sessionStorage.getItem("managerList");
+	var userType=window.sessionStorage.getItem("userType");
+	var body =	"<select id ='user'>"+"<option value = '0'>请选择客户经理</option>"+
+	opin+
+	"</select>"+
+	"<input type='button' id='ckkhjlwz' class='btn btn-primary btn-large' value='查看客户经理位置'/>";
+	if(userType==1){
+		body="";
+	}
+
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>位置信息</div>"+  
 			"</div>"+
-			"<div class='content' id='allmap' style='height:580px;margin:0 auto;'></div>"+
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
 			"<div class='content' style ='margin:0 auto;'><p align='center'>" +
-			"<select id ='user'>"+"<option value = '0'>请选择客户经理</option>"+
-//			"<option value = 'bde2c4d855150a0a015515236b48001a'>杜宇航</option>"+
-//			"<option value = 'bde2c4d855150a0a0155152c4a8a002e'>许亚鹏</option>"+
-//			"<option value = 'bde2c4d855150a0a015515300d4f0037'>赵文杰</option>"+
-//			"<option value = 'bde2c4d855150a0a01551539249d0043'>王文涓</option>"+
-//			"<option value = 'bde2c4d855150a0a0155152acc820028'>卢曼</option>"+
-//			"<option value = 'ff80808154564c840154565d19b6001a'>温健</option>"+
-			opin+
-			"</select>"+
-			"<input type='button' id='ckkhjlwz' class='btn btn-primary btn-large' value='查看客户经理位置'/>"+  
+			body+
 			"<input type='button' id='fswdwz' class='btn btn btn-primary btn-large' value='发送我的位置'/>"+  
+			"<input type='button' id='ddddd' class='btn btn btn-primary btn-large' value='刷新'/>"+  
 			"<input type='button' class='btn btn-large'  value='返回' onclick='mywdsy()'/>"+  
 			"</p></div>"
 	);
 	$(".right").hide();
 	$("#mainPage").show();
 	startGetLocation();
-
+	$("#ddddd").click(function(){
+		lon="";
+		lat="";
+		wzxx();
+	})
 	$("#ckkhjlwz").click(function(){
 		var userId = $("#user").val();
 		var gxwzUrl = "/ipad/intopieces/selectLocation.json";
@@ -1488,17 +1813,24 @@ function wzxx(){
 				if(obj.success=="true"){
 					var map = new BMap.Map("allmap"); 
 					for(var i=0;i<obj.size;i++){
-						var lon = obj.LocationInfoForm[i].longitude; 
-						var lat = obj.LocationInfoForm[i].latitude; 
-						var point = new BMap.Point(""+lon+"",""+lat+""); 
-						map.centerAndZoom(point,15); 
+						var lonnn = obj.LocationInfoForm[i].longitude; 
+						var lattt = obj.LocationInfoForm[i].latitude; 
+						var updatetime=obj.LocationInfoForm[i].updateTime;
+						var userName=obj.LocationInfoForm[i].userName;
+						var point = new BMap.Point(""+lonnn+"",""+lattt+""); 
+						map.centerAndZoom(point,12); 
 //						translateCallback = function ( point){ 
-						var marker  = new BMap.Marker(point); 
-						map.addOverlay(marker); 
-						map.setCenter(point); 
-//						}                     
-//						BMap.Convertor.translate(point,0,translateCallback);  
-						showInformation(marker,obj.LocationInfoForm[i].updateTime,point,map,obj.LocationInfoForm[i].userName);
+						BMap.Convertor.translate(point, 0, callback);
+						var callback = function(points){
+
+							var marker  = new BMap.Marker(points); 
+							map.addOverlay(marker); 
+							map.setCenter(points); 
+//							}      
+
+//							BMap.Convertor.translate(point,0,translateCallback);  
+							showInformation(marker,updatetime,points,map,userName);
+						}
 					}
 				}else if(obj.success=="false"){
 
@@ -1561,14 +1893,15 @@ function supportsGeoLocation(){
 }   
 //单次位置请求执行的函数              
 function getLocation(){ 
-	navigator.geolocation.getCurrentPosition(mapIt,locationError); 
+	var config = { enableHighAccuracy: true, maximumAge:0,timeout:15000 }; 
+	window.navigator.geolocation.getCurrentPosition(mapIt,locationError,config); 
 } 
 //定位成功时，执行的函数 
 function mapIt(position){  
 	lon = position.coords.longitude; 
 	lat = position.coords.latitude; 
-
-	//	alert("您位置的经度是："+lon+" 纬度是："+lat); 
+//	alert("您位置的经度是："+lon+" 纬度是："+lat); 
+	$("#allmap").removeClass("contents").addClass("content");
 	var map = new BMap.Map("allmap"); 
 	var point = new BMap.Point(""+lon+"",""+lat+""); 
 	map.centerAndZoom(point,19); 
@@ -1609,16 +1942,16 @@ function locationError(error)
 	switch(error.code) 
 	{ 
 	case error.PERMISSION_DENIED: 
-		alert("无法完成定位请求"); 
+		$("#allmap").html("<div class='spinner'>无法完成定位请求</div>");
 		break; 
 	case error.POSITION_UNAVAILABLE: 
-		alert("位置信息不可用"); 
+		$("#allmap").html("<div class='spinner'>位置信息不可用</div>");
 		break; 
 	case error.TIMEOUT: 
-		alert("请求超时"); 
+		$("#allmap").html("<div class='spinner'>获取位置信息失败，请检查网络连接和位置权限</div>");
 		break; 
 	case error.UNKNOWN_ERROR: 
-		alert("位置错误发生了"); 
+		$("#allmap").html("<div class='spinner'>位置错误发生了</div>");
 		break; 
 	} 
 
@@ -1626,7 +1959,8 @@ function locationError(error)
 } 
 
 function getLocations(){ 
-	navigator.geolocation.getCurrentPosition(mapIts,locationError); 
+	var config = { enableHighAccuracy: true, maximumAge:0 }; 
+	navigator.geolocation.getCurrentPosition(mapIts,locationError,config); 
 } 
 function mapIts(position){  
 	lon = position.coords.longitude; 
@@ -1648,6 +1982,8 @@ function mapIts(position){
 			success:function (json){
 				var obj = $.evalJSON(json);
 				alert(obj.message);
+				lat="";
+				lon="";
 			}
 
 		})

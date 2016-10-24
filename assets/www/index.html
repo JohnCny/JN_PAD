@@ -1,10 +1,10 @@
 <!-- Copyright (c) 2012 Mobile Developer Solutions -->
 <!DOCTYPE HTML>
-<html lang="zh-cn">
+<html lang="zh-cn" >
 <head>
-	<meta charset="utf-8"> 
+	<!-- <meta content=" text/html;charset=utf-8" >  -->
 	<!-- <meta name="viewport" content="target-densitydp=high-dpi,user-scalable=no">  -->
-    <meta http-equiv="Content-type" name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no, width=device-width"> 
+    <meta http-equiv="Content-type" name="viewport" content="text/html;charset=utf-8;initial-scale=1.0; maximum-scale=1.0; user-scalable=no; width=device-width"> 
 	<title>PAD</title> 	 	
 	<link rel="stylesheet" href="css/btn.css" /> 
 	<link rel="stylesheet" href="css/login.css" /> 	
@@ -34,7 +34,7 @@
 	<div id="page1" class="left" style="display:none;">		
 		<div onclick='showNav()' class="hidebt"><img src='images/show_list.png'/></div>		
 		<ul class="nav">
-			<li style="padding-bottom:0;"><img src="images/user/01.png" class="user"/><p>上次登录时间：<br/>2016.04.04  12:00:00</p></li>
+			<li style="padding-bottom:0;"><img src="images/user/180.jpg" class="user"/><p id ="nimei"></p></li>
 			<li class="li" id="index" onclick="changeNav(this,1);mywdsy()"><img src="images/1.png"/><span>我的首页</span></li>
 			<li class="li" id="customer" onclick="changeNav(this,2);mykhgl()"><img src="images/2.png"/><span>客户管理</span></li>
 			<li class="li" id="customer" onclick="changeNav(this,3);myjjgl()"><img src="images/3.png"/><span>进件管理</span></li>
@@ -63,7 +63,7 @@
 <!-- 饼图 -->
 <script src="js/zingchart.min.js"></script>
 <script src="js/zingchart.jquery.js"></script>
-
+<!-- <script src="http://cdn.zingchart.com/zingchart.min.js"></script> -->
 <script src="js/index.js"></script>
 <script src="js/factory.js"></script>
 <script src="js/login.js"></script>
@@ -85,6 +85,7 @@
 <script src="js/zcfzb.js"></script>
 <script src="js/xjlb.js"></script>
 <script src="js/jquery.json-2.3.js"></script>
+<script src="js/myzb.js"></script>
 
 
 <script type="text/javascript" charset="utf-8" src="apis/phonegap-1.4.1.js"></script>
@@ -93,8 +94,8 @@
 <script type="text/javascript" src="js/DBPlugin.js"></script>
 
 <!-- <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7.2/jquery.min.js"></script>  -->
-<script type="text/javascript" src="mapjs/api_v2.0.js"></script>
-<script type="text/javascript" src="mapjs/convertor.js"></script> 
+<!-- <script type="text/javascript" src="mapjs/api_v2.0.js"></script> -->
+<!-- <script type="text/javascript" src="mapjs/convertor.js"></script>  -->
 <script type="text/javascript" charset="utf-8" >
 
   	//phonegap调用相机部分
@@ -126,10 +127,11 @@
 				
 				window.plugins.imagePluginAPI.startActivity(testSuccess,testError, fpath);
 				function testSuccess(res){
+					var values=fpath.split("/");
+					URI="file://"+fpath;
 					var url = document.getElementById(idtmp);
-					url.value = res;
-					var lll= document.getElementsByName("imageuri")[num].setAttribute("uri",URI);
-
+					var lll= document.getElementsByName("imageuri")[num-1].setAttribute("uri",URI);
+					url.value = values[values.length-1];
 					//alert(json);
 				}
 				function testError(){

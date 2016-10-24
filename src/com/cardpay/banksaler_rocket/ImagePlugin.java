@@ -103,7 +103,9 @@ public class ImagePlugin extends Plugin{
 	@Override
 	public PluginResult execute(String action, JSONArray filePath, String callbackID) {
 		try {
-			String sdpath = bitmapToString(filePath.getString(0).toString());
+//			String sdpath = bitmapToString(filePath.getString(0).toString());
+			String sdpath = "啦啦啦";
+			System.out.println(filePath);
 			return new PluginResult(PluginResult.Status.OK, sdpath);
 		} catch (Exception e) {
 			return new PluginResult(PluginResult.Status.ERROR, "error");

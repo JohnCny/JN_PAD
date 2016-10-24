@@ -5,6 +5,7 @@ $("#mainPage").html("<div class='title'>客户管理</div>"+
                     "<div class='content'>" +
                         "<div class='box khgl' onclick='newUser()'><img src='images/xjkh.jpg'/><span>新建客户</span></div>"+
                         "<div class='box khgl' onclick='editUser()'><img src='images/khwh.jpg'/><span>客户维护</span></div>"+
+                        "<div class='box khgl' onclick='myzbgl()'><img src='images/wdzb.png'/><span>众包管理</span></div>"+
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
@@ -27,7 +28,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykh
                         "<p>手机号码:<input type='text' id = 'phone'/></p>"+
                         "<p>" +
                             "<input type='button' id ='sure' class='btn btn-large btn-primary' value='确定'/>"+  
-                        "</p>" +
+                            "<input type='button' class='btn btn-large' value='返回' onclick='mykhgl()'/>"+
+                            "</p>" +
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();    
