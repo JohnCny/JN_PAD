@@ -9,16 +9,22 @@ import java.io.IOException;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import com.phonegap.api.PhonegapActivity;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
-
+import android.annotation.SuppressLint;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Environment;
+import android.os.Handler;
 import android.os.Message;
+import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
 
+@SuppressLint("HandlerLeak")
 public class ImagePlugin extends Plugin{
 	// 计算图片的缩放值
 	public int calculateInSampleSize(BitmapFactory.Options options,
@@ -55,13 +61,15 @@ public class ImagePlugin extends Plugin{
 	// 把bitmap转换成String
 	public String bitmapToString(String filePath) {
 		Bitmap bm = getSmallBitmap(filePath);
+		String [] names = filePath.split("/");
 		ByteArrayOutputStream baos = new ByteArrayOutputStream();
 		bm.compress(Bitmap.CompressFormat.JPEG, 80, baos);
 		byte[] b = baos.toByteArray();
 		//return Base64.encodeToString(b, Base64.DEFAULT);
 		SaveFileService server = new SaveFileService(null);
 		try {
-			filePath = server.saveToSdCard("test.jpg",b);
+			String s = names[names.length-1];
+			filePath = server.saveToSdCard(s,b);
 			return filePath;
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
@@ -103,12 +111,13 @@ public class ImagePlugin extends Plugin{
 	@Override
 	public PluginResult execute(String action, JSONArray filePath, String callbackID) {
 		try {
-//			String sdpath = bitmapToString(filePath.getString(0).toString());
-			String sdpath = "啦啦啦";
-			System.out.println(filePath);
+			System.out.println("坑"+filePath.getString(0).toString());
+			String sdpath = bitmapToString(filePath.getString(0).toString());
+			System.out.println("66666999:"+filePath);
 			return new PluginResult(PluginResult.Status.OK, sdpath);
 		} catch (Exception e) {
 			return new PluginResult(PluginResult.Status.ERROR, "error");
 		}
 	}
+	
 }
