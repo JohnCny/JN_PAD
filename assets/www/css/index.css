@@ -173,7 +173,7 @@ input[type=button].tab-button{margin:0 40px 0 40px;padding:15px 30px;background:
 .tab li{float:left;background:#bfbfbf;border-radius:15px 15px 0 0;padding:8px 10px;list-style:none;}
 .tab .active{background:#f79646;color:#fff;}
 
-.tab2 li{background: #f6f6f6;color: #666666;display:inline;}
+.tab2 li{background: #22a5d9;color: #666666;display:inline;}
 .tab2 .active{background:#d9d9d9;color:#333333;}
 
 .rcap{background:#f2f2f2;border-radius:10px;margin:20px 50px;padding:20px;}
@@ -238,6 +238,7 @@ input[type=button]{margin:0 10px;}
 .dialog-head{border-bottom:1px solid #eee;padding:10px;}
 .dialog-head h4{color:#808080;font-size:20px;line-height:40px;font-weight:bold;}
 .dialog-content{color:#333;line-height:40px;padding:20px;}
+.dialog-contents{color:#333;line-height:40px;padding:20px;height:150px;overflow:auto;}
 .dialog-bottom{background:#f5f5f5;border-top:1px solid #ddd;text-align:center;border-radius:0 0 10px 10px;}
 .dialog-bottom button{width:70px;}
 /*<!--dialog�����֪ͨ-->*/
@@ -247,7 +248,7 @@ input[type=button]{margin:0 10px;}
 .sdhtz .dialog-head div{color:#57c5f7;display:inline-block;width:30%;margin-top:20px;margin-right:30px; }
 .sdhtz .dialog-head div span{color:#fff;}
 .sdhtz .dialog-head img{float:right;margin-top:-40px;}
-.sdhtz .dialog-content p{color:#808080;font-weight:bold;line-height:30px;}
+.sdhtz .dialog-content p{color:#808080;font-weight:bold;line-height:30px;overflow:auto;}
  .sdhtz .dialog-content p.cy{color:#a6a6a6;font-weight:normal;margin-left:20px;}
 
 #message1 td,#message2 td,#message3 td{text-align:center;}
