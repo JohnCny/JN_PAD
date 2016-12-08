@@ -6,6 +6,9 @@ function mywdjh(){
 		shows="<div class='box jhgl' onclick='pxjhlb()'><img src='images/pxjh.png' style='margin-left:-15px;'/><span>培训计划</span></div>"+
 		"<div class='box jhgl' onclick='yjjdcx()'><img src='images/gzjh.png' style='margin-left:-15px;'/><span>业绩进度查看</span></div>";
 	}
+//	if(userType==0){
+//		shows=shows+"<div class='box jhgl' onclick='zhuanyong()'><img src='images/pxjh.png' style='margin-left:-15px;'/><span>专用按钮</span></div>";
+//	}
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title'>计划管理</div>"+  
 			"<div class='content'>" +
@@ -21,6 +24,7 @@ function mywdjh(){
 	$(".right").hide();
 	$("#mainPage").show();
 }
+
 //客户维护计划
 function khwhjhlb(){
 	window.scrollTo(0,0);//滚动条回到顶端	
@@ -84,7 +88,8 @@ function khwhjhlb(){
 				if(obj[page]){
 					$("#whlb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -93,7 +98,8 @@ function khwhjhlb(){
 				if(obj[page]){
 					$("#whlb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -109,7 +115,8 @@ function khwhjhlb(){
 					objs.currentlo="khwhjhlb()";
 					tjkhwhjh(objs);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 		}
@@ -299,7 +306,8 @@ function pxjh(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -308,7 +316,8 @@ function pxjh(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -327,11 +336,14 @@ function pxjh(){
 						success:function(json){
 							var obj = $.evalJSON(json);
 							alert(obj.mess);
+							window.wxc.xcConfirm(obj.mess, "success");
 							pxjh();
 						}
 					})
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
+					
 				}
 
 			})
@@ -375,79 +387,90 @@ function gzjh(){
 	$("#mainPage").show();
 }  
 function yjjdlr(){
+	var jdlrcxurl="/ipad/performmance/insertSelect.json";
+	$.ajax({
+		url:wsHost+jdlrcxurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			userId:window.sessionStorage.getItem("userId"),
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>业绩进度录入</div>"+  
+					"<div class='content' >"+ 
+					"<table id='cslb' class='cpTable jjTable' style='text-align:center;'>"+
 
-	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>业绩进度录入</div>"+  
-			"<div class='content' >"+ 
-			"<table id='cslb' class='cpTable jjTable' style='text-align:center;'>"+
-
-			"<tr>"+                             
-			"<th style='width:100px;'>拜访数</th>"+  
-			"<td><input type='text' class='yejijindu' id='visitcount' name='visitcount' value='0' onfocus='onfocuss' onblur=alert('qqqqq')/></td>"+
-			"<th style='width:100px;'>申请数</th>"+  
-			"<td><input type='text' class='yejijindu' value='0' id='applycount' name='applycount'/></td>"+
-			"<th style='width:100px;'>申请拒绝数</th>"+  
-			"<td><input type='text' class='yejijindu' value='0' id='applyrefuse' name='applyrefuse'/></td>"+
-			"</tr>"+
-			"<tr>"+                             
-			"<th style='width:100px;'>征信数</th>"+  
-			"<td><input type='text' class='' value='0' id='creditcount' name='creditcount'/></td>"+
-//			"<td><input type='text' class='addinput' value='0' id='creditcount' name='creditcount'/></td>"+
-			"<th style='width:100px;'>征询拒绝数</th>"+  
-			"<td><input type='text' class='' value='0' id='creditrefuse' name='creditrefuse'/></td>"+
-			"<th style='width:100px;'>实调数</th>"+  
-			"<td><input type='text' class='' value='0' id='realycount' name='realycount'/></td>"+
-			"</tr>"+
-			"<tr>"+                             
-			"<th style='width:100px;'>报告数</th>"+  
-			"<td><input type='text' class='' value='0' id='reportcount' name='reportcount'/></td>"+
-			"<th style='width:100px;'>内审数</th>"+  
-			"<td><input type='text' class='' value='0' id='internalcount' name='internalcount'/></td>"+
-			"<th style='width:100px;'>上会数</th>"+  
-			"<td><input type='text' class='' value='0' id='meetingcout' name='meetingcout'/></td>"+
-			"</tr>"+
-			"<tr>"+                             
-			"<th style='width:100px;'>通过数</th>"+  
-			"<td><input type='text' class='' value='0' id='passcount' name='passcount'/></td>"+
-			"<th style='width:100px;'>签约数</th>"+  
-			"<td><input type='text' class='' value='0' id='signcount' name='signcount'/></td>"+
-			"<th style='width:100px;'>放款数</th>"+  
-			"<td><input type='text' class='' value='0' id='givemoneycount' name='givemoneycount' /></td>"+
-			"</tr>"+
-			"</table>"+
-			"<p><input type='button' class='btn btn-large btn-primary' value='保存' id = 'save' />"+
-			"<input type='button' class='btn btn-large' value='返回' onclick='mywdjh()'/></p>"+
-	"</div>");
-	$(".right").hide();
-	$("#mainPage").show();  
-	$("#save").click(function (){
-		var yjjdurl="/ipad/performmance/update.json";
-		$.ajax({
-			url:wsHost+yjjdurl,
-			type: "GET",
-			dataType:'json',
-			data:{
-				userId:window.sessionStorage.getItem("userId"),
-				visitcount:$("#visitcount").val(),
-				applycount:$("#applycount").val(),
-				applyrefuse:$("#applyrefuse").val(),
-				creditcount:$("#creditcount").val(),
-				creditrefuse:$("#creditrefuse").val(),
-				realycount:$("#realycount").val(),
-				reportcount:$("#reportcount").val(),
-				internalcount:$("#internalcount").val(),
-				meetingcout:$("#meetingcout").val(),
-				passcount:$("#passcount").val(),
-				signcount:$("#signcount").val(),
-				givemoneycount:$("#givemoneycount").val(),
-			},
-			success: function (json){
-				var obj = $.evalJSON(json);
-				alert(obj.mess);
-			}
-		})
+					"<tr>"+                             
+					"<th style='width:100px;'>拜访数</th>"+  
+					"<td><input type='text' class='yejijindu' id='visitcount' name='visitcount' value='0' onfocus='onfocuss' /></td>"+
+					"<th style='width:100px;'>申请数</th>"+  
+					"<td><input type='text' class='yejijindu' value='"+obj.applyNum+"' id='applycount' name='applycount' readonly='true'/></td>"+
+					"<th style='width:100px;'>申请拒绝数</th>"+  
+					"<td><input type='text' class='yejijindu' value='"+obj.refuseNum+"' id='applyrefuse' name='applyrefuse' readonly='true'/></td>"+
+					"</tr>"+
+					"<tr>"+                             
+					"<th style='width:100px;'>征信数</th>"+  
+					"<td><input type='text' class='' value='0' id='creditcount' name='creditcount'/></td>"+
+//					"<td><input type='text' class='addinput' value='0' id='creditcount' name='creditcount'/></td>"+
+					"<th style='width:100px;'>征询拒绝数</th>"+  
+					"<td><input type='text' class='' value='0' id='creditrefuse' name='creditrefuse'/></td>"+
+					"<th style='width:100px;'>实调数</th>"+  
+					"<td><input type='text' class='' value='0' id='realycount' name='realycount'/></td>"+
+					"</tr>"+
+					"<tr>"+                             
+					"<th style='width:100px;'>报告数</th>"+  
+					"<td><input type='text' class='' value='0' id='reportcount' name='reportcount'/></td>"+
+					"<th style='width:100px;'>内审数</th>"+  
+					"<td><input type='text' class='' value='"+obj.auditNum+"' id='internalcount' name='internalcount' readonly='true'/></td>"+
+					"<th style='width:100px;'>上会数</th>"+  
+					"<td><input type='text' class='' value='"+obj.willNum+"' id='meetingcout' name='meetingcout' readonly='true'/></td>"+
+					"</tr>"+
+					"<tr>"+                             
+					"<th style='width:100px;'>通过数</th>"+  
+					"<td><input type='text' class='' value='"+obj.passNum+"' id='passcount' name='passcount' readonly='true'/></td>"+
+					"<th style='width:100px;'>签约数</th>"+  
+					"<td><input type='text' class='' value='0' id='signcount' name='signcount'/></td>"+
+					"<th style='width:100px;'>放款数</th>"+  
+					"<td><input type='text' class='' value='0' id='givemoneycount' name='givemoneycount' /></td>"+
+					"</tr>"+
+					"</table>"+
+					"<p><input type='button' class='btn btn-large btn-primary' value='保存' id = 'save' />"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='mywdjh()'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();  
+			$("#save").click(function (){
+				var yjjdurl="/ipad/performmance/update.json";
+				$.ajax({
+					url:wsHost+yjjdurl,
+					type: "GET",
+					dataType:'json',
+					data:{
+						userId:window.sessionStorage.getItem("userId"),
+						visitcount:$("#visitcount").val(),
+						applycount:$("#applycount").val(),
+						applyrefuse:$("#applyrefuse").val(),
+						creditcount:$("#creditcount").val(),
+						creditrefuse:$("#creditrefuse").val(),
+						realycount:$("#realycount").val(),
+						reportcount:$("#reportcount").val(),
+						internalcount:$("#internalcount").val(),
+						meetingcout:$("#meetingcout").val(),
+						passcount:$("#passcount").val(),
+						signcount:$("#signcount").val(),
+						givemoneycount:$("#givemoneycount").val(),
+					},
+					success: function (json){
+						var obj = $.evalJSON(json);
+//						alert(obj.mess);
+						window.wxc.xcConfirm(obj.mess, "success");
+					}
+				})
+			})
+		}
 	})
-
 }
 
 function yjjdcx(){
@@ -461,7 +484,7 @@ function yjjdcx(){
 			"<div class='bounce3'></div>"+
 			"</div>"+
 			"</div>"+
-			"</div>");
+	"</div>");
 	var jdcxurl ="/ipad/performmance/browse.page";
 	var body ="";
 	$.get(wsHost+jdcxurl,callbackInfor);
@@ -529,7 +552,7 @@ function yjjdcx(){
 				"<p style='margin-bottom:10px;margin-top:10px;'>"+
 				"<span style='float:left; margin-top:10px; margin-bottom:10px; margin-left:30px;'>开始日期:&nbsp;<input type ='date' id='satrtDate'/></span>"+
 				"<span style='float:left; margin-top:10px; margin-bottom:10px;'>结束日期:&nbsp;<input type ='date' id='endDate'/></span>"+
-				"<input type='button' style='margin-bottom:10px; margin-top:10px;' class='btn btn-large btn-primary next' value='确定' id='sure'/></p>" +
+				"<input type='button' style='margin-bottom:10px; margin-top:10px;' class='btn btn-large btn-primary next' value='筛选' id='sure'/></p>" +
 				"<table id='sslb' class='cpTable jjTable' style='text-align:center;'>"+
 
 				head+body+
@@ -554,7 +577,7 @@ function yjjdcx(){
 					var booo="";
 					for(var i=0;i<obj.result.length;i++){
 
-						if(obj.result[i].managerName=="小计" || obj.result[i].managerName=="总计"){
+						if(obj.result[i].managerName=="小计" || obj.result[i].managerName=="汇总"){
 
 							booo=booo+"<tr><th>"+obj.result[i].name+"</th>"+
 							"<th>"+obj.result[i].managerName+"</th>"+
@@ -677,7 +700,8 @@ function yjjdxg(){
 			},
 			success: function (json){
 				var obj = $.evalJSON(json);
-				alert(obj.mess);
+//				alert(obj.mess);
+				window.wxc.xcConfirm(obj.mess, "success");
 			}
 		})
 
@@ -686,7 +710,8 @@ function yjjdxg(){
 		var managerId = $("#manager_id_s").val();
 		var changedate = $("#changeDate").val();
 		if(changedate==null||changedate==""){
-			alert("请先选择修改日期！");
+//			alert("请先选择修改日期！");
+			window.wxc.xcConfirm("请先选择修改日期", "info");
 			yjjdxg();
 		}else{
 			var xgjdurl ="/ipad/performmance/performselect.json"
@@ -793,37 +818,41 @@ function pxjhlb(){
 			if(result[page]){
 				$("#pxll").html(head+result[page]);
 			}else{
-				alert("当前已经是最后一页");
+//				alert("当前已经是最后一页");
+				window.wxc.xcConfirm("当前已经是最后一页", "info");
 				page=page-1;
 			}
 		})
 		$("#delete").click(function(){
 			var deleteurl="/ipad/retraining/delete.json";
 			var values =$('input[name="checkbox"]:checked').attr("value").split("@");
-			 if ($("input[type='radio']").is(':checked')) {
-			$.ajax({
-				url:wsHost+deleteurl,
-				dateType:'json',
-				type:'GET',
-				data:{
-					id:values[0],
-				},			
-				success:function (json){
-					var obj = $.evalJSON(json);
-					alert(obj.mess);
-					pxjhlb();
-				}
-			})
-			 }else{
-					alert("请选择一行");
-				}
+			if ($("input[type='radio']").is(':checked')) {
+				$.ajax({
+					url:wsHost+deleteurl,
+					dateType:'json',
+					type:'GET',
+					data:{
+						id:values[0],
+					},			
+					success:function (json){
+						var obj = $.evalJSON(json);
+//						alert(obj.mess);
+						window.wxc.xcConfirm(obj.mess, "info");
+						pxjhlb();
+					}
+				})
+			}else{
+//				alert("请选择一行");
+				window.wxc.xcConfirm("请选择一行", "warning");
+			}
 		})
 		$("#syy").click(function(){
 			page=page-1;
 			if(result[page]){
 				$("#pxll").html(head+result[page]);
 			}else{
-				alert("当前已经是第一页");
+//				alert("当前已经是第一页");
+				window.wxc.xcConfirm("当前已经是第一页", "info");
 				page = page+1;
 			}
 		})
@@ -904,9 +933,11 @@ function cjpxjh(){
 			success:function (json){
 				var obj = $.evalJSON(json);
 				alert(obj.mess);
+				window.wxc.xcConfirm(obj.mess, "success");
+				pxjhlb();
 			}
 		})
-		
+
 	})
 }
 
@@ -922,18 +953,18 @@ function cjpxjh2(res){
 		}
 		$("#text").html("<div class='display-div sdhtz'>"+
 				"<div class='dialog-head'>"+
-				"<h4>选择审贷会成员</h4>"+
+				"<h4>选择客户经理</h4>"+
 				"<img src='images/sdhClose.jpg' onclick='hide_dcts()'/>"+
-				/*"<input type='text' style='margin:13px 40px;' placeholder='搜索客户经理' onkeyup='search(this,\"khjl\")'/>"+*/                           
+				"<input type='text' style='margin:13px 40px;' placeholder='搜索客户经理' onkeyup='search(this,\"khjl\")'/>"+                         
 				"</div>"+
-				"<div class='dialog-content'>"+
+				"<div class='dialog-contents'>"+
 				"<p>" +
-				"<span class='khjl'><label onclick='checkBox3(this,\"sdhcy\")' class='checkbox'><input type='checkbox' id='checkbox' value=''/>全选</label></span>" +
+				"<span class='khjl'><label onclick='checkBox3(this,\"sdhcy\")' class='checkbox'><input type='checkbox' id='checkbox'  value=''/>全选</label></span>" +
 				list+
 				"</p>" +
 				"</div>"+
 				"<div class='dialog-bottom'>"+
-				"<button type='button' class='btn btn-success' onclick='setSdhcy(),hide_dcts()' id='huoqu'>提交</button>"+
+				"<button type='button' class='btn btn-success' onclick='setSdhcy(),hide_dcts()' id='huoqu'>确定</button>"+
 				"<button type='button' class='btn' onclick='hide_dcts()'>返回</button>"+
 				"</div>"+
 		"</div><!-- /display-div -->");

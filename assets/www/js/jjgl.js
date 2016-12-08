@@ -1,6 +1,15 @@
 //新建进件
 function myjjgl(){
 	$("#mainPage").html("");
+	$("#mainPage").html("<div class='title'>进件管理</div>"+  
+			"<div class='contents' style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+			"</div>");
 	var cpxxurl="/ipad/product/selectProductByFilter.json";
 	
 	var tmp ="";
@@ -62,7 +71,8 @@ $("#mainPage").html("<div class='title'>进件管理</div>"+
 		if(result[page]){
 			$("#cplb").html(head+result[page]);
 		}else{
-			alert("当前已经是最后一页");
+//			alert("当前已经是最后一页");
+			window.wxc.xcConfirm("当前已经是最后一页", "info"); 
 			page=page-1;
 		}
 	})
@@ -71,7 +81,8 @@ $("#mainPage").html("<div class='title'>进件管理</div>"+
 		if(result[page]){
 			$("#cplb").html(head+result[page]);
 		}else{
-			alert("当前已经是第一页");
+//			alert("当前已经是第一页");
+			window.wxc.xcConfirm("当前已经是第一页", "info"); 
 			page = page+1;
 		}
 	})
@@ -86,7 +97,8 @@ $("#mainPage").html("<div class='title'>进件管理</div>"+
 			res.productName = values[1];
 			myjjgl2(res);
 		}else{
-			alert("请选择一行");
+//			alert("请选择一行");
+			window.wxc.xcConfirm("请选择一行", "warning"); 
 		}
 		
 	})
@@ -171,7 +183,8 @@ $("#mainPage").html("<div class='title'>" +
 		if(result[page]){
 			$("#khlb").html(head+result[page]);
 		}else{
-			alert("当前已经是最后一页");
+//			alert("当前已经是最后一页");
+			window.wxc.xcConfirm("当前已经是最后一页", "info"); 
 			page=page-1;
 		}
 	})
@@ -180,22 +193,40 @@ $("#mainPage").html("<div class='title'>" +
 		if(result[page]){
 			$("#khlb").html(head+result[page]);
 		}else{
-			alert("当前已经是第一页");
+//			alert("当前已经是第一页");
+			window.wxc.xcConfirm("当前已经是第一页", "info"); 
 			page = page+1;
 		}
 	})
 	
 	$("#xyb").click(function(){
-		
 		if ($("input[type='radio']").is(':checked')) {
-
+			var isinlist = "/ipad/addIntopiece/isInRiskList.json";
 			var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 			productInfo.customerId = values[0];
 			productInfo.cardId = values[1];
 			productInfo.chineseName = values[2];
-			newUser1(productInfo);
+			$.ajax({
+				url:wsHost+isinlist,
+				dateType:'json',
+				type:'GET',
+				data:{
+					customerId:values[0],
+				},
+				success:function (json){
+					var obj = $.evalJSON(json);
+					if(obj.isInList){
+//						alert("亲,该客户为风险客户,请重新选择!");
+						window.wxc.xcConfirm("该客户为风险客户,请重新选择!", "warning"); 
+					}else{
+						newUser1(productInfo);
+					}
+				}
+			})
+			
 		}else{
-			alert("请选择一行");
+//			alert("请选择一行");
+			window.wxc.xcConfirm("请选择一行", "warning"); 
 			}
 		
 		})
@@ -535,6 +566,7 @@ function dcmbadd(addIntopiece){
 	    });  
 	}, false); 
 	  $("#sure").click(function(){
+		  window.wxc.xcConfirm("是否开始上传调查模板", "confirm",{onOk:function(){
 		  $("#sure").attr('disabled',"true");
 			 var fileURI = document.getElementsByName("imageuri")[0].getAttribute("uri");
 			 var fileName = $("#fcz_sheet1").val();
@@ -547,11 +579,7 @@ function dcmbadd(addIntopiece){
 			    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/reportImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName);  
 			    show_uploadModel();
 			    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
-			  
-			    //获取上传进度  
-			    ft.onprogress = uploadProcessing;  
-			    //显示进度条  
-			    $('.upload_process_bar,#process_info').show(); 
+		  }});
 		  })
 		  
 		  
@@ -599,8 +627,8 @@ $("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png
 								"<tr>"+  
 									"<td>1</td>"+
 									"<td><input type='text' id='qtyxzl_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");' value='选择文件'/></td>"+
-									"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
-//									"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
+//									"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
+									"<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");'/></td>"+
 								"</tr>"+
 							"</table>"+
 							"<p class='Left'>" +
@@ -616,8 +644,11 @@ $("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png
   $("#mainPage").show();
   
   $("#sure").click(function(){
+	  window.wxc.xcConfirm("是否开始上传影像资料","confirm",{onOk:scks});
+	  function scks(){
 	  var applicationId = null;
 	  var num= $('#qtyxzl tr').length;
+	  show_upload(0);
 	  for(var i=0;i<num;i++){
 	 var fileURI = document.getElementsByName("imageuri")[i].getAttribute("uri");
 	 var j=i+1;
@@ -629,13 +660,10 @@ $("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png
 	    options.chunkedMode = false;  
 	    ft = new FileTransfer();  
 	    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+applicationId);  
-	    show_upload(i+1);
+	    $("#uploadInfo").html("正在上传第"+(i+1)+"张，请稍后...");
 	    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 	  }
-//	    //获取上传进度  
-//	    ft.onprogress = uploadProcessing;  
-//	    //显示进度条  
-////	    $('.upload_process_bar,#process_info').show(); 
+	  }
   })
   
   	  $("#ysctplb").click(function(){
@@ -718,7 +746,8 @@ function ckimage(res){
 			if(result[page]){
 				$("#bzsplb").html(head+result[page]);
 			}else{
-				alert("当前已经是最后一页");
+//				alert("当前已经是最后一页");
+				window.wxc.xcConfirm("当前已经是最后一页", "info"); 
 				page=page-1;
 			}
 		})
@@ -727,7 +756,8 @@ function ckimage(res){
 			if(result[page]){
 				$("#bzsplb").html(head+result[page]);
 			}else{
-				alert("当前已经是第一页");
+//				alert("当前已经是第一页");
+				window.wxc.xcConfirm("当前已经是第一页", "info"); 
 				page = page+1;
 			}
 		})
@@ -753,13 +783,15 @@ function ckimage(res){
 							cache:false,
 							success: function (json){
 								var obj = $.evalJSON(json);
-								alert(obj.mess);
+//								alert(obj.mess);
+								window.wxc.xcConfirm(obj.mess, "success");
 								ckimage(res);
 							}
 					  })  
 					
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			  
 	  })
@@ -800,7 +832,8 @@ function getsuccess(URI){
 				//alert(json);
 //			}
 			function testError(){
-				alert("error");
+//				alert("error");
+				window.wxc.xcConfirm("error", "error");
 			}
 		}
 		//文件操作失败

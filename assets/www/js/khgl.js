@@ -41,7 +41,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykh
 		var tel = $("#phone").val();
 		var userId = window.sessionStorage.getItem("userId");
 		if(cardId==""||cardId==null||chineseName==""||chineseName==null){
-			alert("证件号码或姓名不能为空");
+//			alert("证件号码或姓名不能为空");
+			window.wxc.xcConfirm("证件号码或姓名不能为空", "warning");
 		}else{
 			var wsLoginUrl = "/ipad/product/customerInsert.json"+"?cardId="+cardId+"&chineseName="+chineseName+"&cardType="+cardType+"&userId="+userId+"&phoneNumber="+tel;
 			
@@ -51,7 +52,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykh
 		        dataType:'json',
 		        success: function (json) {
 		        	var objs = $.evalJSON(json);
-		        	alert(objs.message);
+//		        	alert(objs.message);
+		        	window.wxc.xcConfirm(objs.message, "success");
 		        	document.getElementById("khname").value = ""
 		        	document.getElementById("cardId").value = ""
 		        	document.getElementById("phone").value = ""

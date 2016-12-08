@@ -219,10 +219,10 @@ function check(obj){
 function search(obj){
     var value=$(obj).val();
     if(value==""){
-        $(".cplb").show();
+        $(".khjl").show();
     }
     else{
-        $(".cplb").each(function(){
+        $(".khjl").each(function(){
             if(this.innerHTML.indexOf(value)>=0){
                 $(this).show();
             }                       
@@ -434,7 +434,7 @@ function addTd(table){
         $("#"+table).append("<tr>"+    
                                 "<td>"+num+"</td>"+
                                 "<td><input type='text' id='qtyxzl_sheet"+num+"' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' value='选择文件' onclick='getMedia(\"qtyxzl_sheet"+num+"\",\"img\",\"imageuri\","+num+");'/></td>"+
-                                "<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet"+num+"\",\"img\");'/></td>"+
+                                "<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet"+num+"\",\"img\",\"imageuri\","+num+");'/></td>"+
                             "</tr>");      
     }
   if(table=="gzjh"){//工作计划

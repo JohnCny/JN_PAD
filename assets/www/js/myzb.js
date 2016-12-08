@@ -86,7 +86,8 @@ function zbjjlb(){
 					if(result[page]){
 						$("#cslb").html(head+result[page]);
 					}else{
-						alert("当前已经是最后一页");
+//						alert("当前已经是最后一页");
+						window.wxc.xcConfirm("当前已经是最后一页", "info");
 						page=page-1;
 					}
 				})
@@ -99,24 +100,29 @@ function zbjjlb(){
 						var cteatedBy =values[0];
 						var customerId = values[3];
 						if(userId==cteatedBy){
-							alert("不能抢自己的单");
+//							alert("不能抢自己的单");
+							window.wxc.xcConfirm("不能抢自己的单", "warning");
 						}else{
 						var userType = window.sessionStorage.getItem("userType");
 						if(userType!=1){
-							alert("您的角色不能抢单");
+//							alert("您的角色不能抢单");
+							window.wxc.xcConfirm("您的角色不能抢单", "warning");
 						}else{
 						var qiangUrl="/ipad/product/getcustomerbrower.json?customerId="+customerId+"&userId="+userId;
 						get.doGet(qiangUrl,qiangdancallbackInfor,"抢单超时！");
 						
 						function qiangdancallbackInfor(json){
 							var obj = $.evalJSON(json);
-							alert(obj.mess);
+//							alert(obj.mess);
+							window.wxc.xcConfirm(obj.mess, "success");
 							zbjjlb();
 						}
 						}
 					}
 					}else{
-						alert("请选择一行");
+//						alert("请选择一行");
+						window.wxc.xcConfirm("请选择一行", "warning");
+						
 					}
 				})
 				
@@ -125,7 +131,8 @@ function zbjjlb(){
 					if(result[page]){
 						$("#cslb").html(head+result[page]);
 					}else{
-						alert("当前已经是第一页");
+//						alert("当前已经是第一页");
+						window.wxc.xcConfirm("当前已经是第一页", "info");
 						page = page+1;
 					}
 				})
@@ -171,7 +178,8 @@ function zbjjxx(){
 			var tel = $("#phone").val();
 			var userId = window.sessionStorage.getItem("userId");
 			if(cardId==""||cardId==null||chineseName==""||chineseName==null){
-				alert("证件号码或姓名不能为空");
+//				alert("证件号码或姓名不能为空");
+				window.wxc.xcConfirm("证件号码或姓名不能为空", "warning");
 			}else{
 				var wsLoginUrl = "/ipad/product/zhongbaocustomerInsert.json"+"?cardId="+cardId+"&chineseName="+chineseName+"&cardType="+cardType+"&userId="+userId+"&phoneNumber="+tel;
 				
@@ -181,7 +189,8 @@ function zbjjxx(){
 			        dataType:'json',
 			        success: function (json) {
 			        	var objs = $.evalJSON(json);
-			        	alert(objs.message);
+//			        	alert(objs.message);
+			        	window.wxc.xcConfirm(objs.message, "success");
 			        	document.getElementById("khname").value = ""
 			        	document.getElementById("cardId").value = ""
 			        	document.getElementById("phone").value = ""
@@ -279,7 +288,8 @@ function zbglxx(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -288,7 +298,8 @@ function zbglxx(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})

@@ -118,11 +118,13 @@ function khcx(objs){
 						if(objs.customerInforId!=""){
 							khysxxcx(objs);
 						}else{
-							alert("无原始信息");
+//							alert("无原始信息");
+							window.wxc.xcConfirm("无原始信息", "info");
 						}
 
 					}else{
-						alert("请选择一行");
+//						alert("请选择一行");
+						window.wxc.xcConfirm("请选择一行", "warning");
 					}
 				})
 				$("#xyy").click(function(){
@@ -130,7 +132,8 @@ function khcx(objs){
 					if(result[page]){
 						$("#khxxlb").html(head+result[page]);
 					}else{
-						alert("当前已经是最后一页");
+//						alert("当前已经是最后一页");
+						window.wxc.xcConfirm("当前已经是最后一页", "info");
 						page=page-1;
 					}
 				})
@@ -139,12 +142,14 @@ function khcx(objs){
 					if(result[page]){
 						$("#khxxlb").html(head+result[page]);
 					}else{
-						alert("当前已经是第一页");
+//						alert("当前已经是第一页");
+						window.wxc.xcConfirm("当前已经是第一页", "info");
 						page = page+1;
 					}
 				})
 			}else{ 
-				alert("查询失败，无此人信息或不是您的客户");
+//				alert("查询失败，无此人信息或不是您的客户");
+				window.wxc.xcConfirm("查询失败，无此人信息或不是您的客户", "error");
 			}
 
 		}
@@ -212,7 +217,8 @@ function khwhlb(){
 				if(result[page]){
 					$("#whlb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -221,7 +227,8 @@ function khwhlb(){
 				if(result[page]){
 					$("#whlb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -237,7 +244,8 @@ function khwhlb(){
 					objs.currentlo="khwhlb()";
 					tjkhwhjh(objs);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 		}
@@ -309,12 +317,14 @@ function tjkhwhjh(objs){
 				},
 				success: function (json) {
 					obj = $.evalJSON(json);
-					alert(obj.result);
+//					alert(obj.result);
+					window.wxc.xcConfirm(obj.result, "success");
 					khwhlb();
 				}
 			})
 		}else{
-			alert("维护天数格式不正确或为空");
+//			alert("维护天数格式不正确或为空");
+			window.wxc.xcConfirm("维护天数格式不正确或为空", "warning");
 		}
 	})
 }   
@@ -408,7 +418,8 @@ function khwhrz(){
 				if(result[page]){
 					$("#rzlb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -417,7 +428,8 @@ function khwhrz(){
 				if(result[page]){
 					$("#rzlb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -430,7 +442,8 @@ function khwhrz(){
 
 					whrzlb(objs);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -495,7 +508,8 @@ function whrzlb(objs){
 					obj.customerId=objs.customerId
 					whrzxs(obj);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -650,12 +664,14 @@ function gxkhwhjh(objs){
 				},
 				success: function (json) {
 					obj = $.evalJSON(json);
-					alert(obj.messages.globalMessages[0].message);
+//					alert(obj.messages.globalMessages[0].message);
+					window.wxc.xcConfirm(obj.messages.globalMessages[0].message, "success");
 					whrzxs(obb);
 				}
 			})
 		}else{
-			alert("维护天数格式不正确或为空");
+//			alert("维护天数格式不正确或为空");
+			window.wxc.xcConfirm("维护天数格式不正确或为空", "warning");
 		}
 	})
 }   
@@ -771,7 +787,8 @@ function khcsrz(){
 				if(result[page]){
 					$("#cslb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -780,7 +797,8 @@ function khcsrz(){
 				if(result[page]){
 					$("#cslb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -790,7 +808,8 @@ function khcsrz(){
 					var id = values[0];
 					xscsjh(id);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xgcsjh").click(function(){
@@ -804,7 +823,8 @@ function khcsrz(){
 					 res.collectionTime = values[5];
 					 xgcsjh(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 		}
@@ -865,13 +885,15 @@ function xgcsjh(res){
 					},
 					success: function (json) {
 						obj = $.evalJSON(json);
-						alert(obj.mess);
+//						alert(obj.mess);
+						window.wxc.xcConfirm(obj.mess, "success");
 						khcsrz();
 					}
 				})
 
 		}else{
-			alert("请输入正确的催收天数");
+//			alert("请输入正确的催收天数");
+			window.wxc.xcConfirm("请输入正确的催收天数", "warning");
 		}
 
 	})
@@ -1000,15 +1022,18 @@ function cjcsjh(){
 					success: function (json) {
 						obj = $.evalJSON(json);
 						alert(obj.mess);
+						window.wxc.xcConfirm(obj.mess, "success");
 						mywdjh();
 					}
 				})
 			}else{
-				alert("客户经理和客户不能为空");
+//				alert("客户经理和客户不能为空");
+				window.wxc.xcConfirm("客户经理和客户不能为空", "warning");
 			}
 
 		}else{
-			alert("请输入正确的催收天数");
+//			alert("请输入正确的催收天数");
+			window.wxc.xcConfirm("请输入正确的催收天数", "warning");
 		}
 
 	})

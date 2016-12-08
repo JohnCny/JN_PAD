@@ -18,7 +18,7 @@ function mycpgl(){
 		 			"<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+"";
 		for(var i = 0;i<objs.totalCount;i++){
 			contsnt = "<div class='cplb' >" +
-					            "<img src='images/cp/jqt.png' title='集群通'/>" +
+					            "<img src='images/cp/jqt.png' title='抵押贷'/>" +
 					            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
 					            "<span class='cpqx'>产品期限："+objs.result[i].prodLiTime+"</span>"+
 					            "<span class='cpll'>产品利率(%)："+objs.result[i].rateRange+"</span>"+
@@ -248,8 +248,7 @@ if(productName=="POS流水贷"){
 	 showinfor=chengyidaiA;
 }else{
 	mycpgl();
-	alert("无详细产品信息");
-	 
+	window.wxc.xcConfirm("无详细产品信息", "info"); 
 }
 	
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mycpgl()'/>集群通</div>"+  

@@ -3,22 +3,28 @@
 function mywdsy(){
 	window.scrollTo(0,0);//滚动条回到顶端
 //	alert("GET当前登录用户ID："+window.sessionStorage.getItem("userId"));
+	$("#mainPage").html("<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
 	var get = crud.dom.factory("GET");
 	wsCustManager ="/ipad/user/findSysUserMsg.json";
 	var url = wsCustManager+"?userId="+window.sessionStorage.getItem("userId");
 	get.doGet(url,initCustManagerContentCallback,"加载客户经理信息失败！");
 	function initCustManagerContentCallback(json){
 		var objs = $.evalJSON(json);
-		var im="";
+		var im="<div class='box wdsy4' onclick='tz()'><img src='images/tz.png'/><span>通知</span></div>";
 		var gett = crud.dom.factory("GETT");
 		wsNotifiyMessage ="/ipad/custAppInfo/notifiyMessageNum.json";
 		var url = wsNotifiyMessage+"?userId="+window.sessionStorage.getItem("userId");
 		gett.doGet(url,initNotifiyMessageContentCallback,"加载通知信息失败！");
 		function initNotifiyMessageContentCallback(json){
 			var obj = $.evalJSON(json);
-			if(obj.sum==0){
-				im="<div class='box wdsy4' onclick='tz()'><img src='images/tz.png'/><span>通知</span></div>";
-			}else{
+			if(obj.sum!=0){
 				im="<div class='box wdsy4' onclick='tz()'><img src='images/tz11.png'/><span>通知</span></div>";
 			}
 		}	
@@ -76,14 +82,19 @@ function mywdsy(){
 	$("#mainPage").show();
 }
 function xxxxx(){
-	window.plugins.imagePluginAPI.startActivity(wrong,succ,"你是猪吗");
+//	window.plugins.CapturePhotosPlugin.startActivity(succ,wrong,"");
+//	window.location.href="file:///android_asset/www/map.html";
+//	window.location.href="bdapp://map/marker?location=40.05740665572,116.2964407172&title=Marker&content=makeamarker&traffic=on";
+//	window.plugins.CoordinateTranslatePlugin.startActivity(succ,wrong,ss);
 }
-function wrong(ob){
-	alert("111"+ob);
-}
-function succ(ob){
-	alert("222"+ob);
-}
+//function wrong(ob){
+//	alert("111"+ob);
+//}
+//function succ(ob){
+//	if(ob!="false"){
+//		alert("222"+ob);
+//	}
+//}
 //客户进件信息
 function khjjxx(){
 	window.scrollTo(0,0);//滚动条回到顶端
@@ -219,7 +230,8 @@ function jjxxlb(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -228,7 +240,8 @@ function jjxxlb(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -325,7 +338,8 @@ function thkhlb(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -334,7 +348,8 @@ function thkhlb(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -430,7 +445,8 @@ function jjkhlb(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -439,7 +455,8 @@ function jjkhlb(){
 				if(result[page]){
 					$("#llll").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -519,7 +536,7 @@ function khyyzk(){
 	window.scrollTo(0,0);//滚动条回到顶端
 
 	var get = crud.dom.factory("GET");
-	wsYunyin ="/ipad/user/findYunyinstatus.json";
+	var wsYunyin ="/ipad/user/findYunyinstatus.json";
 	var userType =window.sessionStorage.getItem("userType");
 	var show="";
 	if(userType=="1"){
@@ -549,7 +566,15 @@ function khyyzk(){
 }
 
 function ckqttjt(){
-	$("#mainPage").html("");
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khyyzk()'/>客户运营状况-统计图</div>"+
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
 	var url = "/ipad/tongji.json";
 	var get = crud.dom.factory("GET");
 	get.doGet(url,initTongjituCallback,"加载统计图失败！");
@@ -581,7 +606,7 @@ function ckqttjt(){
 												buliang=buliang.replace(/\[/,"");
 														buliang=buliang.split(",");
 														var nnnn=objs.applicationStatusJson;
-														$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khyyzk()'/>统计图</div>"+  
+														$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khyyzk()'/>客户运营状况-统计图</div>"+  
 																"<div class='content'>" +
 																"<div class='zingchartt' id='container' ></div>"+
 																"<p><input type='button' class='btn btn-large btn-primary' value='进件状况统计' id = 'jjzktj' />"+
@@ -943,7 +968,6 @@ function pxtz(){
 			"</div>"+""; 
 			content = content+contsnt;
 		}
-		alert(content);
 		$("#mainPage").html(title+content+"</div>");
 		window.parent.resizeFrame();
 	}
@@ -951,7 +975,6 @@ function pxtz(){
 	$("#mainPage").show();
 }
 function show_pxtz(id){
-	alert("111");
 	$("#text").html("<div class='display-div sdhtz'>"+
 			"<div class='dialog-head'>"+
 			"<h4>客户经理业务培训</h4>"+
@@ -1139,7 +1162,8 @@ function fxsxtz(){
 			if(result[page]){
 				$("#fxkh").html(head+result[page]);
 			}else{
-				alert("当前已经是最后一页");
+//				alert("当前已经是最后一页");
+				window.wxc.xcConfirm("当前已经是最后一页", "info");
 				page=page-1;
 			}
 		})
@@ -1148,7 +1172,8 @@ function fxsxtz(){
 			if(result[page]){
 				$("#fxkh").html(head+result[page]);
 			}else{
-				alert("当前已经是第一页");
+//				alert("当前已经是第一页");
+				window.wxc.xcConfirm("当前已经是第一页", "info");
 				page = page+1;
 			}
 		})
@@ -1161,11 +1186,13 @@ function fxsxtz(){
 				$.get(wsHost+ycfxurl,{customerId:values[1]},yichucallback);
 				function yichucallback(json){
 					var obj = $.evalJSON(json);
-					alert(obj.mess);
+//					alert(obj.mess);
+					window.wxc.xcConfirm(obj.mess, "success");
 				}
 
 			}else{
-				alert("请选择一行");
+//				alert("请选择一行");
+				window.wxc.xcConfirm("请选择一行", "warning");
 			}
 		})
 	}
@@ -1214,28 +1241,28 @@ function khzlbgtz(customerInfo){
 	"<th>状态</th>"+
 	"</tr>"; 
 	for(var i=0;i<customerInfo.length;i++){
-		if(customerInfo[i].cardtype=="0"){
-			customerInfo[i].cardtype="身份证";
-		}else if(customerInfo[i].cardtype=="1"){
-			customerInfo[i].cardtype="军官证";
-		}else if(customerInfo[i].cardtype=="2"){
-			customerInfo[i].cardtype="护照";
-		}else if(customerInfo[i].cardtype=="3"){
-			customerInfo[i].cardtype="香港身份证";
-		}else if(customerInfo[i].cardtype=="4"){
-			customerInfo[i].cardtype="澳门身份证";
-		}else if(customerInfo[i].cardtype=="5"){
-			customerInfo[i].cardtype="台湾身份证";
+		if(customerInfo[i].cardType=="0"){
+			customerInfo[i].cardType="身份证";
+		}else if(customerInfo[i].cardType=="1"){
+			customerInfo[i].cardType="军官证";
+		}else if(customerInfo[i].cardType=="2"){
+			customerInfo[i].cardType="护照";
+		}else if(customerInfo[i].cardType=="3"){
+			customerInfo[i].cardType="香港身份证";
+		}else if(customerInfo[i].cardType=="4"){
+			customerInfo[i].cardType="澳门身份证";
+		}else if(customerInfo[i].cardType=="5"){
+			customerInfo[i].cardType="台湾身份证";
 		}
-		if(customerInfo[i].islook==null||customerInfo[i].islook==""){
+		if(customerInfo[i].islook==1||customerInfo[i].islook=="1"){
 			customerInfo[i].islook="未查看"
 		}
 		tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+customerInfo[i].id+"@"+
-		customerInfo[i].cardnum+"'/>"+"</span></td>"+  
-		"<td>"+customerInfo[i].cname+"</td>"+
-		"<td>"+customerInfo[i].cardtype+"</td>"+
-		"<td>"+customerInfo[i].cardnum+"</td>"+
-		"<td>"+customerInfo[i].contactmobiletel+"</td>"+
+		customerInfo[i].cardId+"'/>"+"</span></td>"+  
+		"<td>"+customerInfo[i].chineseName+"</td>"+
+		"<td>"+customerInfo[i].cardType+"</td>"+
+		"<td>"+customerInfo[i].cardId+"</td>"+
+		"<td>"+customerInfo[i].telephone+"</td>"+
 		"<td>"+customerInfo[i].islook+"</td>"+
 		"</tr>"
 
@@ -1280,7 +1307,8 @@ function khzlbgtz(customerInfo){
 		if(result[page]){
 			$("#cslb").html(head+result[page]);
 		}else{
-			alert("当前已经是第一页");
+//			alert("当前已经是第一页");
+			window.wxc.xcConfirm("当前已经是第一页", "info");
 			page = page+1;
 		}
 	})
@@ -1290,7 +1318,8 @@ function khzlbgtz(customerInfo){
 		if(result[page]){
 			$("#cslb").html(head+result[page]);
 		}else{
-			alert("当前已经是最后一页");
+//			alert("当前已经是最后一页");
+			window.wxc.xcConfirm("当前已经是最后一页", "info");
 			page=page-1;
 		}
 	})
@@ -1308,12 +1337,14 @@ function khzlbgtz(customerInfo){
 				},
 				success: function (json){
 					var obj = $.evalJSON(json);
-					alert(obj.mess);
+//					alert(obj.mess);
+					window.wxc.xcConfirm(obj.mess, "success");
 					tz();
 				}
 			})
 		}else{
-			alert("请选择一行");
+//			alert("请选择一行");
+			window.wxc.xcConfirm("请选择一行", "warning");
 		}
 	})
 }
@@ -1631,7 +1662,8 @@ function khjlrb(){
 			if(result[page]){
 				$("#rblb").html(head+result[page]);
 			}else{
-				alert("当前已经是最后一页");
+//				alert("当前已经是最后一页");
+				window.wxc.xcConfirm("当前已经是最后一页", "info");
 				page=page-1;
 			}
 		})
@@ -1640,28 +1672,38 @@ function khjlrb(){
 			if(result[page]){
 				$("#rblb").html(head+result[page]);
 			}else{
-				alert("当前已经是第一页");
+//				alert("当前已经是第一页");
+				window.wxc.xcConfirm("当前已经是第一页", "info");
 				page = page+1;
 			}
 		})
 
 		$("#xgrb").click(function(){
+			if ($("input[type='radio']").is(':checked')) {
 			var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 			var resu={};
 			resu.rbId =values[0];
 			resu.tomorrowplan =values[3];
 			resu.todayplan =values[4];
 			xgkhrb(resu);
+			}else{
+//				alert("请选择一行");
+				window.wxc.xcConfirm("请选择一行", "warning");
+			}
 
 		})
 		$("#ckrb").click(function(){
+			if ($("input[type='radio']").is(':checked')) {
 			var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 			var resu={};
 			resu.rbId =values[0];
 			resu.tomorrowplan =values[3];
 			resu.todayplan =values[4];
 			xsrbxx(resu);
-
+		}else{
+//			alert("请选择一行");
+			window.wxc.xcConfirm("请选择一行", "warning");
+		}
 		})
 	}
 
@@ -1711,7 +1753,8 @@ function xgkhrb(resu){
 			},
 			success:function (json){
 				var obj = $.evalJSON(json);
-				alert(obj.message);
+//				alert(obj.message);
+				window.wxc.xcConfirm(obj.message, "info");
 				if(obj.success=="true"){
 					khjlrb();
 				}
@@ -1798,7 +1841,6 @@ function wzxx(){
 	$("#ckkhjlwz").click(function(){
 		var userId = $("#user").val();
 		var gxwzUrl = "/ipad/intopieces/selectLocation.json";
-
 		$.ajax({
 			url:wsHost+gxwzUrl,
 			dateType:'json',
@@ -1811,33 +1853,44 @@ function wzxx(){
 			success:function (json){
 				var obj = $.evalJSON(json);
 				if(obj.success=="true"){
+					Message.showNotify("点击地图上的marker可以在百度地图中查看更详细的信息",3000);
+					$("#allmap").removeClass("contents").addClass("content");
+					$("#allmap").html("");
 					var map = new BMap.Map("allmap"); 
+					map.enableScrollWheelZoom(); 
 					for(var i=0;i<obj.size;i++){
 						var lonnn = obj.LocationInfoForm[i].longitude; 
 						var lattt = obj.LocationInfoForm[i].latitude; 
 						var updatetime=obj.LocationInfoForm[i].updateTime;
 						var userName=obj.LocationInfoForm[i].userName;
 						var point = new BMap.Point(""+lonnn+"",""+lattt+""); 
-						map.centerAndZoom(point,12); 
+						
 //						translateCallback = function ( point){ 
-						BMap.Convertor.translate(point, 0, callback);
-						var callback = function(points){
-
-							var marker  = new BMap.Marker(points); 
+//						BMap.Convertor.translate(point, 0, callback);
+//						var callback = function(result){
+//							var obj = $.evalJSON(json);
+//							var point = new BMap.Point(""+obj.lonnn+"",""+obj.lattt+"");
+							var marker  = new BMap.Marker(point); 
+							map.centerAndZoom(point,12); 
 							map.addOverlay(marker); 
-							map.setCenter(points); 
+							var label = new BMap.Label(userName+":"+updatetime,{offset:new BMap.Size(20,-10)});
+							marker.setLabel(label);
+
+//							map.setCenter(point); 
 //							}      
 
 //							BMap.Convertor.translate(point,0,translateCallback);  
-							showInformation(marker,updatetime,points,map,userName);
-						}
+							showInformation(marker,updatetime,lonnn,lattt,map,userName);
+//						}
 					}
 				}else if(obj.success=="false"){
 
-					alert("该客户经理位置信息不存在");
+//					alert("该客户经理位置信息不存在");
+					window.wxc.xcConfirm("该客户经理位置信息不存在", "info");
 				}else{
 
-					alert("未知错误");
+//					alert("未知错误");
+					window.wxc.xcConfirm("未知错误", "error");
 				}
 
 
@@ -1846,9 +1899,16 @@ function wzxx(){
 		})
 	})
 	$("#fswdwz").click(function(){
+		
+		if(lon!=""&&lat!=""){
+//		var locationpoint={};
+//		locationpoint.lon = lon; 
+//		locationpoint.lat = lat; 
+//		window.plugins.CoordinateTranslatePlugin.startActivity(translateCallbacks,wrong,locationpoint);
 		var gxwzUrl = "/ipad/intopieces/updateLocation.json";
 		var userId = window.sessionStorage.getItem("userId");
-		if(lon!=""&&lat!=""){
+//		function translateCallbacks (point){ 
+//			var pointss=point.split("@");
 			$.ajax({
 				url:wsHost+gxwzUrl,
 				dateType:'json',
@@ -1862,15 +1922,19 @@ function wzxx(){
 				},
 				success:function (json){
 					var obj = $.evalJSON(json);
-					alert(obj.message);
+//					alert(obj.message);
+					window.wxc.xcConfirm(obj.message, "info");
 					lon="";
 					lat="";
 				}
 
-			})}else{
-
-				alert("位置信息为空，等待获取位置信息");
-			}
+			})
+//		}
+		}else{
+			
+//			alert("位置信息为空，等待获取位置信息");
+			window.wxc.xcConfirm("位置信息为空，等待获取位置信息", "info");
+		}
 	})
 }
 var lon="";
@@ -1881,7 +1945,8 @@ function startGetLocation(){
 	if(supportsGeoLocation()){ 
 		getLocation();
 	}else{ 
-		alert("不支持 GeoLocation.");
+//		alert("不支持 GeoLocation.");
+		window.wxc.xcConfirm("不支持 GeoLocation", "info");
 		mywdsy();
 	} 
 
@@ -1897,44 +1962,55 @@ function getLocation(){
 	window.navigator.geolocation.getCurrentPosition(mapIt,locationError,config); 
 } 
 //定位成功时，执行的函数 
-function mapIt(position){  
-	lon = position.coords.longitude; 
-	lat = position.coords.latitude; 
-//	alert("您位置的经度是："+lon+" 纬度是："+lat); 
+function mapIt(position){
+var locationpoint={};
+locationpoint.lon = position.coords.longitude; 
+locationpoint.lat = position.coords.latitude; 
+alert(locationpoint.lat);
+//alert("您位置的经度是："+lon+" 纬度是："+lat); 
+function translateCallback (point){ 
+	var pointss=point.split("@");
 	$("#allmap").removeClass("contents").addClass("content");
+	$("#allmap").html("");
+	lon=pointss[1];
+	lat=pointss[0];
+	
 	var map = new BMap.Map("allmap"); 
-	var point = new BMap.Point(""+lon+"",""+lat+""); 
-	map.centerAndZoom(point,19); 
+	var points = new BMap.Point(""+lon+"",""+lat+""); 
+	map.centerAndZoom(points,8); 
 	var gc = new BMap.Geocoder(); 
-	translateCallback = function (point){ 
-		var marker = new BMap.Marker(point);
-		var infoWindow;
-		map.addOverlay(marker); 
-		map.setCenter(point); 
-		gc.getLocation(point, function(rs){ 
-			var addComp = rs.addressComponents; 
-			if(addComp.province!==addComp.city){ 
-				var sContent = 
-					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
-					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-					"</div>";} 
-			else{ 
-				var sContent = 
-					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
-					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-					"</div>"; 
-			} 
-			infoWindow = new BMap.InfoWindow(sContent); 
-			map.openInfoWindow(infoWindow,point); 
-		});  
-		marker.addEventListener("click", function () {  
+	var marker = new BMap.Marker(points);
+	var infoWindow;
+	map.addOverlay(marker); 
+	map.setCenter(points); 
+	var sContent = 
+		"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
+		"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+无法获取详细街道信息+"</p>" +  
+		"</div>";
+	gc.getLocation(points, function(rs){ 
+		var addComp = rs.addressComponents; 
+		if(addComp.province!==addComp.city){ 
+			sContent = 
+				"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
+				"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+				"</div>";
+			}else{ 
+			vsContent = 
+				"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
+				"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+				"</div>"; 
+		} 
+	});  
+	infoWindow = new BMap.InfoWindow(sContent); 
+	map.openInfoWindow(infoWindow,points); 
+	marker.addEventListener("click", function () {  
 
-			map.openInfoWindow(infoWindow,point);  
+		map.openInfoWindow(infoWindow,point);  
 
-		}); 
-	}                     
-	BMap.Convertor.translate(point,0,translateCallback); 
-
+	}); 
+}                     
+//BMap.Convertor.translate(point,0,translateCallback); 
+window.plugins.CoordinateTranslatePlugin.startActivity(translateCallback,wrong,locationpoint);
 } 
 //定位失败时，执行的函数 
 function locationError(error) 
@@ -1942,16 +2018,24 @@ function locationError(error)
 	switch(error.code) 
 	{ 
 	case error.PERMISSION_DENIED: 
+		$("#allmap").html("");
+		$("#allmap").removeClass("content").addClass("contents");
 		$("#allmap").html("<div class='spinner'>无法完成定位请求</div>");
 		break; 
 	case error.POSITION_UNAVAILABLE: 
-		$("#allmap").html("<div class='spinner'>位置信息不可用</div>");
+		$("#allmap").html("");
+		$("#allmap").removeClass("content").addClass("contents");
+		$("#allmap").html("<div class='spinner'>获取当前位置信息失败，请检查网络连接和位置权限</div>");
 		break; 
 	case error.TIMEOUT: 
-		$("#allmap").html("<div class='spinner'>获取位置信息失败，请检查网络连接和位置权限</div>");
+		$("#allmap").html("");
+		$("#allmap").removeClass("content").addClass("contents");
+		$("#allmap").html("<div class='spinner'>获取当前位置信息超时</div>");
 		break; 
 	case error.UNKNOWN_ERROR: 
-		$("#allmap").html("<div class='spinner'>位置错误发生了</div>");
+		$("#allmap").html("");
+		$("#allmap").removeClass("content").addClass("contents");
+		$("#allmap").html("<div class='spinner'>未知错误发生了</div>");
 		break; 
 	} 
 
@@ -1963,10 +2047,16 @@ function getLocations(){
 	navigator.geolocation.getCurrentPosition(mapIts,locationError,config); 
 } 
 function mapIts(position){  
-	lon = position.coords.longitude; 
-	lat = position.coords.latitude; 
+	var locationpoint={};
+	locationpoint.lon = position.coords.longitude; 
+	locationpoint.lat = position.coords.latitude; 
+	window.plugins.CoordinateTranslatePlugin.startActivity(translateCallbacks,wrong,locationpoint);
 	var gxwzUrl = "/ipad/intopieces/updateLocation.json";
 	var userId = window.sessionStorage.getItem("userId");
+	function translateCallbacks(point){
+		var pointss=point.split("@");
+		lon=pointss[1];
+		lat=pointss[0];
 	if(lon!=""&&lat!=""){
 		$.ajax({
 			url:wsHost+gxwzUrl,
@@ -1982,6 +2072,7 @@ function mapIts(position){
 			success:function (json){
 				var obj = $.evalJSON(json);
 				alert(obj.message);
+				window.wxc.xcConfirm(obj.message, "success");
 				lat="";
 				lon="";
 			}
@@ -1989,28 +2080,40 @@ function mapIts(position){
 		})
 
 	}else{
-		alert("无法获取当前位置，请检查网络连接和GPS权限"); 
+//		alert("无法获取当前位置，请检查网络连接和GPS权限"); 
+		window.wxc.xcConfirm("无法获取当前位置，请检查网络连接和GPS权限", "error");
 
 	}
+	}
 }
-function showInformation(marker,updatetime,point,map,username){
-	var gc = new BMap.Geocoder(); 
+//在线
+//function showInformation(marker,updatetime,lonnn,lattt,map,username){
+//	var gc = new BMap.Geocoder(); 
+//	var point = new BMap.Point(""+lonnn+"",""+lattt+""); 
+//	marker.addEventListener("click", function(){
+//		gc.getLocation(point, function(rs){ 
+//			var addComp = rs.addressComponents; 
+//			if(addComp.province!==addComp.city){ 
+//				var sContent = 
+//					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+username+updatetime+"位置是：</h4>" +  
+//					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+//					"</div>";} 
+//			else{ 
+//				var sContent = 
+//					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+username+updatetime+"位置是：</h4>" +  
+//					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
+//					"</div>"; 
+//			} 
+//			var infoWindow = new BMap.InfoWindow(sContent); 
+//			map.openInfoWindow(infoWindow,point);
+//		});
+//	})
+//}
+//调用嗯本地百度APP
+function showInformation(marker,updatetime,lonnn,lattt,map,username){
 	marker.addEventListener("click", function(){
-		gc.getLocation(point, function(rs){ 
-			var addComp = rs.addressComponents; 
-			if(addComp.province!==addComp.city){ 
-				var sContent = 
-					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+username+updatetime+"位置是：</h4>" +  
-					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-					"</div>";} 
-			else{ 
-				var sContent = 
-					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+"位置是：</h4>" +  
-					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-					"</div>"; 
-			} 
-			var infoWindow = new BMap.InfoWindow(sContent); 
-			map.openInfoWindow(infoWindow,point);
-		});
-	})
+			window.wxc.xcConfirm("是否在百度地图中查看详细位置", "confirm",{onOk:function(){
+				window.location.href="bdapp://map/marker?location="+lattt+","+lonnn+"&title="+username+updatetime+"的位置&content=makeamarker&traffic=on";
+				}});
+})
 }

@@ -129,7 +129,8 @@ function cysdrw(){
 				if(result[page]){
 					$("#cslb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -138,7 +139,8 @@ function cysdrw(){
 				if(result[page]){
 					$("#cslb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -154,7 +156,8 @@ function cysdrw(){
 					res.applyQuota = values[1];
 					csresult(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xsyxzl").click(function() {
@@ -167,7 +170,8 @@ function cysdrw(){
 					res.currentLoc ="cysdrw()";
 					xsyxzl(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xszlxx").click(function() {
@@ -181,7 +185,8 @@ function cysdrw(){
 					res.currentLoc ="cysdrw()";
 					xszlxx(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -267,7 +272,8 @@ function xsyxzl(res){
 					"<img id ='images' style='text-align:center' width='500px' src='"+wsHost+lltpurl+"' alt=''/>"
 			);
 		}else{
-			alert("当前已经是第一页");
+//			alert("当前已经是第一页");
+			window.wxc.xcConfirm("当前已经是第一页", "info");
 			page = page+1;
 		}
 	})
@@ -282,7 +288,8 @@ function xsyxzl(res){
 					"<img id ='images' width='500px' height='500px'  src='"+wsHost+lltpurl+"' alt=''/>"
 			);
 		}else{
-			alert("当前已经是最后一页");
+//			alert("当前已经是最后一页");
+			window.wxc.xcConfirm("当前已经是最后一页", "info");
 			page = page-1;
 		}
 	});
@@ -294,7 +301,6 @@ function xsyxzl(res){
 function xszlxx(res){
 	var dcmburl="/ipad/product/browerModel.json";
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='"+res.currentLoc+"'/>调查模板</div>"+  
-			"</div>"+
 			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
 			"<div class='spinner'>"+
 			"<div class='bounce1'></div>"+
@@ -316,16 +322,18 @@ function xszlxx(res){
 					"<div class='content'>" +
 					"<div class='tabplace'>"+
 					"<ul class='tab' >"+
-					"<li class='tab2' id ='jyb'><span>建议</li></span>"+
-					"<li class='tab2' id ='jbzkb'><span>基本状况</span></li>"+
-					"<li class='tab2' id = 'zcfzb'><span>资产负债</span></li>"+
-					"<li class='tab2' id = 'bzlrb'><span>标准利润</span></li>"+
-					"<li class='tab2' id = 'xjlb'><span>现金流</span></li>"+
-					"<li class='tab2' id = 'jcb'><span>交叉</span></li>"+
-					"<li class='tab2' id = 'gzb'><span>固资</span></li>"+
-					"<li class='tab2' id = 'yfysb'><span>应付预收</span></li>"+
-					"<li class='tab2' id = 'ysyfb'><span>应收预付</span></li>"+
-					"<li class='tab2' id = 'jueyb'><span>决议表</span></li>"+
+					"<li name='tab2' id ='jyb' style='background:#22a5d9;'>建议</li>"+
+					"<li name='tab2' id ='jbzkb'>基本状况</li>"+
+					"<li name='tab2' id = 'zcfzb'>资产负债</li>"+
+					"<li name='tab2' id = 'bzlrb'>标准利润</li>"+
+					"<li name='tab2' id = 'xjlb'>现金流</li>"+
+					"<li name='tab2' id = 'jcb'>交叉</li>"+
+					"<li name='tab2' id = 'gzb'>固资</li>"+
+					"<li name='tab2' id = 'yfysb'>应付预收</li>"+
+					"<li name='tab2' id = 'ysyfb'>应收预付</li>"+
+					"<li name='tab2' id = 'jueyb'>决议表</li>"+
+					"<li name='tab2' id = 'ddtjy'>抵贷通经营表</li>"+
+					"<li name='tab2' id = 'ddtxf'>抵贷通消费表</li>"+
 					"</ul></div>"+
 					"<div id = 'resultshow'>"+
 					obj.tableContentjyb+
@@ -336,59 +344,85 @@ function xszlxx(res){
 			$("#mainPage").show();
 			//建议表
 			$("#jyb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentjyb);
 			})
 
 			//基本状况
 			$("#jbzkb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentjbzkb);
 			})
 
 			//资产负债
 			$("#zcfzb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentzcfzb);
 			})
 
 			//标准利润
 			$("#bzlrb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentbzlrb);
 			})
 
 			//现金流
 			$("#xjlb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentxjlb);
 			})
 
 			//交叉
 			$("#jcb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentxjXb);
 			})
 
 			//固资
 			$("#gzb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentxgzb);
 			})
 
 			//应付预收
 			$("#yfysb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentyfysb);
 			})
 
 			//应收预付
 			$("#ysyfb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentysyfb);
 			})
 
 			//决议表
 			$("#jueyb").click(function(){
+				change(this);
 				$("#resultshow").html(obj.tableContentjueyb);
+			})
+			//抵贷通经营
+			$("#ddtjy").click(function(){
+				change(this);
+				$("#resultshow").html(obj.tableContentddtjy);
+			})
+			//抵贷通消费
+			$("#ddtxf").click(function(){
+				change(this);
+				$("#resultshow").html(obj.tableContentddtxf);
 			})
 		},
 		error:function(json){
 			var obj = $.evalJSON(json);
 			alert(obj.mess);
+			window.wxc.xcConfirm(obj.mess, "error");
 		}
+		
 	})
+	function change(own){
+		$("li[name='tab2']").css("background","#bfbfbf");
+		own.style.background="#22a5d9";
+	}
 }
 //初审结论
 function csresult(res){
@@ -544,12 +578,14 @@ function csresult(res){
 						},
 						success:function(json){
 							var mes = $.evalJSON(json);
-							alert(mes.message);
+//							alert(mes.message);
+							window.wxc.xcConfirm(mes.mess, "success");
 							cysdrw();
 						}
 					})
 				}else{
-					alert("请输入正确的授信金额");
+//					alert("请输入正确的授信金额");
+					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
 				}
 			})
 
@@ -590,7 +626,8 @@ function csresult(res){
 //			})
 		},
 		error: function(){
-			alert("请求超时");
+//			alert("请求超时");
+			window.wxc.xcConfirm("请求超时", "error");
 		}
 	})
 }
@@ -725,7 +762,8 @@ function sdjy(){
 				if(result[page]){
 					$("#sdlb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "warning");
 					page=page-1;
 				}
 			})
@@ -734,7 +772,8 @@ function sdjy(){
 				if(result[page]){
 					$("#sdlb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "warning");
 					page = page+1;
 				}
 			})
@@ -750,7 +789,8 @@ function sdjy(){
 					res.applyQuota = values[1];
 					xssdjy(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xsyxzl").click(function() {
@@ -763,7 +803,8 @@ function sdjy(){
 					res.currentLoc ="sdjy()";
 					xsyxzl(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xszlxx").click(function() {
@@ -777,7 +818,8 @@ function sdjy(){
 					res.currentLoc ="sdjy()";
 					xszlxx(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -1004,14 +1046,16 @@ function xssdjy(res){
 						},
 						success:function(json){
 							var mes = $.evalJSON(json);
-							alert(mes.message);
+//							alert(mes.message);
+							window.wxc.xcConfirm(mes.message, "success");
 							sdjy();
 						}
 
 
 					})
 				}else{
-					alert("请输入正确的授信金额");
+//					alert("请输入正确的授信金额");
+					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
 				}
 			})
 			
@@ -1055,7 +1099,8 @@ function xssdjy(res){
 
 		},
 		error: function(){
-			alert("请求超时");
+//			alert("请求超时");
+			window.wxc.xcConfirm("请求超时", "error");
 		}
 	})
 }
@@ -1172,7 +1217,8 @@ function ckysctplb(res){
 			if(result[page]){
 				$("#bzsplb").html(head+result[page]);
 			}else{
-				alert("当前已经是最后一页");
+//				alert("当前已经是最后一页");
+				window.wxc.xcConfirm("当前已经是最后一页", "info");
 				page=page-1;
 			}
 		})
@@ -1181,7 +1227,8 @@ function ckysctplb(res){
 			if(result[page]){
 				$("#bzsplb").html(head+result[page]);
 			}else{
-				alert("当前已经是第一页");
+//				alert("当前已经是第一页");
+				window.wxc.xcConfirm("当前已经是第一页", "info");
 				page = page+1;
 			}
 		})
@@ -1208,13 +1255,15 @@ function ckysctplb(res){
 							cache:false,
 							success: function (json){
 								var obj = $.evalJSON(json);
-								alert(obj.mess);
+//								alert(obj.mess);
+								window.wxc.xcConfirm(obj.mess, "success");
 								ckysctplb(res);
 							}
 					  })  
 					
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			  
 	  })
@@ -1318,7 +1367,8 @@ function buzhangsp(){
 				if(result[page]){
 					$("#bzsplb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -1327,7 +1377,8 @@ function buzhangsp(){
 				if(result[page]){
 					$("#bzsplb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -1344,7 +1395,8 @@ function buzhangsp(){
 					res.applyQuota = values[1];
 					bzspjl(res)
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xsyxzl").click(function() {
@@ -1357,7 +1409,8 @@ function buzhangsp(){
 					res.currentLoc ="buzhangsp()";
 					xsyxzl(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xszlxx").click(function() {
@@ -1371,7 +1424,8 @@ function buzhangsp(){
 					res.currentLoc ="buzhangsp()";
 					xszlxx(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 		}
@@ -1613,14 +1667,16 @@ function bzspjl(res){
 						},
 						success:function(json){
 							var mes = $.evalJSON(json);
-							alert(mes.message);
+//							alert(mes.message);
+							window.wxc.xcConfirm(mes.message, "success");
 							buzhangsp();
 						}
 
 
 					})
 				}else{
-					alert("请输入正确的授信金额");
+//					alert("请输入正确的授信金额");
+					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
 				}
 			})
 
@@ -1660,7 +1716,8 @@ function bzspjl(res){
 
 		},
 		error: function(){
-			alert("请求超时");
+//			alert("请求超时");
+			window.wxc.xcConfirm("请求超时", "error");
 		}
 	})
 
@@ -1766,7 +1823,8 @@ function lsywbfzrsp(){
 				if(result[page]){
 					$("#lsywlb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "warning");
 					page=page-1;
 				}
 			})
@@ -1775,7 +1833,8 @@ function lsywbfzrsp(){
 				if(result[page]){
 					$("#lsywlb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "warning");
 					page = page+1;
 				}
 			})
@@ -1792,7 +1851,8 @@ function lsywbfzrsp(){
 					res.applyQuota = values[1];
 					lsbywfzr(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -1807,7 +1867,8 @@ function lsywbfzrsp(){
 					res.currentLoc ="lsywbfzrsp()";
 					xszlxx(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			
@@ -1821,7 +1882,8 @@ function lsywbfzrsp(){
 					res.currentLoc ="lsywbfzrsp()";
 					xsyxzl(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 		}
@@ -1855,6 +1917,19 @@ function lsbywfzr(res){
 				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
 					list =list+"<option value = '"+productList[i].id+"'>"+productList[i].productName+"</option>";
 				}
+			}
+			if(obj.appManagerAuditLog2.hkfs=="01"){
+				obj.appManagerAuditLog2.hkfs="定期结息，到期日利随本清";
+			}else if(obj.appManagerAuditLog2.hkfs=="02"){
+				obj.appManagerAuditLog2.hkfs="定期结息，按合同约定分期还本";
+			}else if(obj.appManagerAuditLog2.hkfs=="03"){
+				obj.appManagerAuditLog2.hkfs="等额本息";
+			}else if(obj.appManagerAuditLog2.hkfs=="04"){
+				obj.appManagerAuditLog2.hkfs="等额本金";
+			}else if(obj.appManagerAuditLog2.hkfs=="05"){
+				obj.appManagerAuditLog2.hkfs="利随本清";
+			}else if(obj.appManagerAuditLog2.hkfs=="06"){
+				obj.appManagerAuditLog2.hkfs="其他还款方法";
 			}
 			window.scrollTo(0,0);//滚动条回到顶端
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='lsywbfzrsp()'/>零售业务部负责人审批</div>"+  
@@ -2069,13 +2144,15 @@ function lsbywfzr(res){
 						success:function(json){
 							var mes = $.evalJSON(json);
 							alert(mes.message);
+							window.wxc.xcConfirm(mes.message, "success");
 							lsywbfzrsp();
 						}
 
 
 					})
 				}else{
-					alert("请输入正确的授信金额");
+//					alert("请输入正确的授信金额");
+					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
 				}
 			})
 
@@ -2115,7 +2192,8 @@ function lsbywfzr(res){
 
 		},
 		error: function(){
-			alert("请求超时");
+//			alert("请求超时");
+			window.wxc.xcConfirm("请求超时", "error");
 		}
 	})
 
@@ -2220,7 +2298,8 @@ function hzsp(){
 				if(result[page]){
 					$("#hzsplb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -2229,7 +2308,8 @@ function hzsp(){
 				if(result[page]){
 					$("#hzsplb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -2246,7 +2326,8 @@ function hzsp(){
 					res.applyQuota = values[1];
 					hzspjl(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -2261,7 +2342,8 @@ function hzsp(){
 					res.currentLoc ="hzsp()";
 					xszlxx(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 			$("#xsyxzl").click(function() {
@@ -2274,7 +2356,8 @@ function hzsp(){
 					res.currentLoc ="hzsp()";
 					xsyxzl(res);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 		}
@@ -2307,6 +2390,19 @@ function hzspjl(res){
 				if($.trim(productList[i].productName)!=$.trim(obj.producAttribute.productName)){
 					list =list+"<option value = '"+productList[i].id+"'>"+productList[i].productName+"</option>";
 				}
+			}
+			if(obj.appManagerAuditLog2.hkfs=="01"){
+				obj.appManagerAuditLog2.hkfs="定期结息，到期日利随本清";
+			}else if(obj.appManagerAuditLog2.hkfs=="02"){
+				obj.appManagerAuditLog2.hkfs="定期结息，按合同约定分期还本";
+			}else if(obj.appManagerAuditLog2.hkfs=="03"){
+				obj.appManagerAuditLog2.hkfs="等额本息";
+			}else if(obj.appManagerAuditLog2.hkfs=="04"){
+				obj.appManagerAuditLog2.hkfs="等额本金";
+			}else if(obj.appManagerAuditLog2.hkfs=="05"){
+				obj.appManagerAuditLog2.hkfs="利随本清";
+			}else if(obj.appManagerAuditLog2.hkfs=="06"){
+				obj.appManagerAuditLog2.hkfs="其他还款方法";
 			}
 			window.scrollTo(0,0);//滚动条回到顶端
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='hzsp()'/>行长审批结论</div>"+  
@@ -2540,14 +2636,16 @@ function hzspjl(res){
 						},
 						success:function(json){
 							var mes = $.evalJSON(json);
-							alert(mes.message);
+//							alert(mes.message);
+							window.wxc.xcConfirm(mes.message, "success");
 							sdjy();
 						}
 
 
 					})
 				}else{
-					alert("请输入正确的授信金额");
+//					alert("请输入正确的授信金额");
+					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
 				}
 			})
 
@@ -2587,7 +2685,8 @@ function hzspjl(res){
 
 		},
 		error: function(){
-			alert("请求超时");
+//			alert("请求超时");
+			window.wxc.xcConfirm("请求超时", "warning");
 		}
 	})
 
