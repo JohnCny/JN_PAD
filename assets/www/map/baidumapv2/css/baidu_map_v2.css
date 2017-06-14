@@ -1,11 +1,11 @@
 .BMap_mask {
-    background: transparent url(.. / images / blank.gif);
+    background: transparent url(map/baidumapv2/ images / blank.gif);
 }.BMap_noscreen {
     display: none;
 }.BMap_button {
     cursor: pointer;
 }.BMap_zoomer {
-    background - image: url(.. / images / mapctrls1d3.gif);
+    background - image: url(map/baidumapv2/ images / mapctrls1d3.gif);
     background - repeat: no - repeat;
     overflow: hidden;
     font - size: 1px;
@@ -18,14 +18,14 @@
     width: 44px;
     height: 44px;
     overflow: hidden;
-    background: url(.. / images / mapctrls2d0.png) no - repeat;
+    background: url(map/baidumapv2/ images / mapctrls2d0.png) no - repeat;
 }.BMap_ie6.BMap_stdMpPan {
     background: none;
 }.BMap_ie6.BMap_smcbg {
     left: 0;
     width: 44px;
     height: 464px;
-    filter: progid: DXImageTransform.Microsoft.AlphaImageLoader(src = '../images/mapctrls2d0.png');
+    filter: progid: DXImageTransform.Microsoft.AlphaImageLoader(src = 'map/baidumapv2/images/mapctrls2d0.png');
 }.BMap_ie6.BMap_stdMpPanBg {
     z - index: -1;
 }.BMap_stdMpPan.BMap_button {
@@ -56,7 +56,7 @@
     height: 21px;
     left: 12px;
     overflow: hidden;
-    background - image: url(.. / images / mapctrls2d0.png);
+    background - image: url(map/baidumapv2/ images / mapctrls2d0.png);
     background - repeat: no - repeat;
     z - index: 10;
 }.BMap_ie6.BMap_stdMpZoom.BMap_button {
@@ -78,14 +78,14 @@
     left: 18px;
     width: 10px;
     overflow: hidden;
-    background: url(.. / images / mapctrls2d0.png) no - repeat - 23px - 226px;
+    background: url(map/baidumapv2/ images / mapctrls2d0.png) no - repeat - 23px - 226px;
 }.BMap_stdMpSliderBgBot {
     left: 19px;
     height: 8px;
     width: 10px;
     top: 124px;
     overflow: hidden;
-    background: url(.. / images / mapctrls2d0.png) no - repeat - 33px bottom;
+    background: url(map/baidumapv2 / images / mapctrls2d0.png) no - repeat - 33px bottom;
 }.BMap_ie6.BMap_stdMpSliderBgTop,
 .BMap_ie6.BMap_stdMpSliderBgBot {
     background: none;
@@ -106,9 +106,9 @@
     left: 13px;
     top: 80px;
     overflow: hidden;
-    background: url(.. / images / mapctrls2d0.png) no - repeat 0 - 309px;
+    background: url(map/baidumapv2 / images / mapctrls2d0.png) no - repeat 0 - 309px;
 }.BMap_stdMpSliderBar.h {
-    background: url(.. / images / mapctrls2d0.png) no - repeat 0 - 320px;
+    background: url(map/baidumapv2 / images / mapctrls2d0.png) no - repeat 0 - 320px;
 }.BMap_ie6.BMap_stdMpSliderBar,
 .BMap_ie6.BMap_stdMpSliderBar.h {
     background: none;
@@ -124,7 +124,7 @@
     left: 34px;
     height: 21px;
     width: 28px;
-    background - image: url(.. / images / mapctrls2d0.png);
+    background - image: url(map/baidumapv2/ images / mapctrls2d0.png);
     background - repeat: no - repeat;
     font - size: 0;
     cursor: pointer;
@@ -265,7 +265,7 @@
     position: absolute;
     cursor: pointer;
     overflow: hidden;
-    background: url(.. / images / mapctrls1d3.gif) no - repeat;
+    background: url(map/baidumapv2 / images / mapctrls1d3.gif) no - repeat;
     z - index: 1210;
 }.anchorBR.BMap_omOutFrame {
     border - top: 1px solid#999;
@@ -337,7 +337,7 @@
     top: 0;
     width: 100 % ;
     height: 100 % ;
-    background: transparent url(.. / images / blank.gif);
+    background: transparent url(map/baidumapv2 / images / blank.gif);
     z - index: 1000;
 }.BMap_contextMenu {
     position: absolute;
@@ -391,7 +391,7 @@ div.BMap_cmLstItem {
 .BMap_shadow img,
 .BMap_shadow div { - moz - user - select: none; - webkit - user - select: none;
 }.BMap_checkbox {
-    background: url(.. / images / mapctrls1d3.gif);
+    background: url(map/baidumapv2 / images / mapctrls1d3.gif);
     vertical - align: middle;
     display: inline - block;
     width: 11px;
