@@ -21,7 +21,7 @@ public class CapturePhotosPlugin extends Plugin{
 	public PluginResult execute(String arg0, JSONArray arg1, String arg2) {
 		callbackIDs=arg2;
 		try {
-			getpucture();
+			getpucture(arg1.get(0));
 			PluginResult r=new PluginResult(PluginResult.Status.OK, "false");	
 			r.setKeepCallback(true);
 			System.out.println(r.getMessage());
@@ -32,12 +32,14 @@ public class CapturePhotosPlugin extends Plugin{
 	}
 
 	
-	public void getpucture(){
+	public void getpucture( Object object){
 		
-		
+		if(object==null||object==""){
+			object="default";
+		}
 	Intent imageCaptureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
 	strImgPath = Environment.getExternalStorageDirectory()
-			.toString() + "/pccredit/";// 存放照片的文件夹
+			.toString() + "/pccredit/"+object+"/";// 存放照片的文件夹
 	String fileName =  System.currentTimeMillis() + ".jpg";// 照片命名
 	File out = new File(strImgPath);
 	if (!out.exists()) {
@@ -56,7 +58,7 @@ public class CapturePhotosPlugin extends Plugin{
 		 if(requestCode==11){
 	           if(resultCode == Activity.RESULT_OK){
 	              //返回时调用
-	              Log.e("test", strImgPath); 
+	              Log.i("test", strImgPath); 
 	              this.success(new PluginResult(PluginResult.Status.OK, strImgPath), callbackIDs);
 	           }
 	       }else{
