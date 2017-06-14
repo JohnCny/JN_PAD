@@ -3,12 +3,13 @@
 <html lang="zh-cn" >
 <head>
 	<!-- <meta content=" text/html;charset=utf-8" >  -->
-	<!-- <meta name="viewport" content="target-densitydp=high-dpi,user-scalable=no">  -->
-    <meta http-equiv="Content-type" name="viewport" content="text/html;charset=utf-8;initial-scale=1.0; maximum-scale=1.0; user-scalable=no; width=device-width"> 
+	<meta name="viewport" content="initial-scale=1.0,maximum-scale=1.0,user-scalable=0,width=device-width"/> 
+    <meta http-equiv="Content-type" content="text/html; charset=utf-8;"/> 
 	<title>PAD</title> 	 	
 	<link rel="stylesheet" href="css/btn.css" /> 
 	<link rel="stylesheet" href="css/login.css" /> 	
 	<link rel="stylesheet" href="css/index.css" />	
+	<link rel="stylesheet" href="confirm/css/xcConfirm.css" />
 </head>
 <body>
 	<div id="login">
@@ -37,7 +38,7 @@
 			<li style="padding-bottom:0;"><img src="images/user/180.jpg" class="user"/><p id ="nimei"></p></li>
 			<li class="li" id="index" onclick="changeNav(this,1);mywdsy()"><img src="images/1.png"/><span>我的首页</span></li>
 			<li class="li" id="customer" onclick="changeNav(this,2);mykhgl()"><img src="images/2.png"/><span>客户管理</span></li>
-			<li class="li" id="customer" onclick="changeNav(this,3);myjjgl()"><img src="images/3.png"/><span>进件管理</span></li>
+			<li class="li"  onclick="changeNav(this,3);myjjgl()"><img src="images/3.png"/><span>进件管理</span></li>
 			<li class="li" onclick="changeNav(this,4);mywdjh()"><img src="images/4.png"/><span>计划管理</span></li>
 			<li class="li" onclick="changeNav(this,5);myshsp()"><img src="images/5.png"/><span>审核审批</span></li>
 		</ul>
@@ -52,6 +53,13 @@
 			<!-- 客户影像资料khyxzl.js -->
 		<!-- 计划管理 wdjh.js -->
 		<!-- 审核审批 shsp.js -->
+		<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>
+			<div class='spinner'>
+			<div class='bounce1'></div>
+			<div class='bounce2'></div>
+			<div class='bounce3'></div>
+			</div>
+			</div>
 	</div>
 	<div id="jjsp" class="right" style="display:none;">
 	</div>
@@ -86,18 +94,37 @@
 <script src="js/xjlb.js"></script>
 <script src="js/jquery.json-2.3.js"></script>
 <script src="js/myzb.js"></script>
+<script src="js/myLocation.js"></script>
+<script src="js/getLocationOnline.js"></script>
 
 
 <script type="text/javascript" charset="utf-8" src="apis/phonegap-1.4.1.js"></script>
 <script type="text/javascript" src="js/CardPlugin.js"></script>
 <script type="text/javascript" src="js/ImagePlugin.js"></script>
+<script type="text/javascript" src="js/TakePhotoPlugin.js"></script>
 <script type="text/javascript" src="js/DBPlugin.js"></script>
+<script type="text/javascript" src="js/CoordinateTranslatePlugin.js"></script>
+<script type="text/javascript" src="js/CapturePhotosPlugin.js"></script>
+<script type="text/javascript" src="js/GetLocationOffline.js"></script>
+<script type="text/javascript" src="js/showBo.js"></script>
+<script type="text/javascript" src="confirm/js/xcConfirm.js"></script>
+<script type="text/javascript" src="js/GpsToBd09llPlugin.js"></script>
 
-<!-- <script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7.2/jquery.min.js"></script>  -->
-<!-- <script type="text/javascript" src="mapjs/api_v2.0.js"></script> -->
-<!-- <script type="text/javascript" src="mapjs/convertor.js"></script>  -->
+
+  <script src="js/plusview.js"></script>
+<!-- <script type="text/javascript" src="mapjs/api_v2.0.js"></script>
+<script type="text/javascript" src="mapjs/convertor.js"></script>  -->
+<script type="text/javascript" src="map/baidumapv2/baidumap_offline_v2_load.js"></script>
 <script type="text/javascript" charset="utf-8" >
-
+$(function(){
+$(document).click(function(){
+	 if($(".left").css("left")=="0px"){
+	       // $(".left").show();
+	       $(".left").animate({left:"-13.1em"},"500");
+	        //$(".right").animate({left:"13.1em"},"500"); 
+	    }
+});
+});
   	//phonegap调用相机部分
 	var pictureSource;      //图片来源
 	var destinationType;        //设置返回值的格式
@@ -106,34 +133,37 @@
 	
 	//********************************照片******************************
 	//事件触发函数
-	function getMedia(id,type,name,num) {
+function getMedia(id,type,name,num) {
 	    idtmp=id;
-	    pictureSource=navigator.camera.PictureSourceType;
+	   /* pictureSource=navigator.camera.PictureSourceType;
 	    destinationType=navigator.camera.DestinationType;
 	    mediaType=navigator.camera.MediaType;
 	    
 	    // 从设定的来源处获取图像文件URI
 	    navigator.camera.getPicture(onURISuccess, onFail, {quality:50,
 	    destinationType: destinationType.FILE_URI,
-	    sourceType: pictureSource.PHOTOLIBRARY,mediaType:mediaType.ALLMEDIA});
-	    
+	    sourceType: pictureSource.SAVEDPHOTOALBUM,mediaType:mediaType.PICTURE}); */
+	    window.plugins.TakePhotoPlugin.startActivity(gotFileEntry,onFileFail,"","select");
 	    // 当成功得到一张照片的URI后被调用
-		function onURISuccess(URI) {
-		    window.resolveLocalFileSystemURI(URI, gotFileEntry, onFileFail);
+//		function onURISuccess(URI) {
+//	    	alert(URI);
+//		    window.resolveLocalFileSystemURI(URI, gotFileEntry, onFileFail);
 		    
 		    //转换URI到全路径
 			function gotFileEntry(fileEntry) {
-				var fpath = fileEntry.fullPath;
+		    	if(fileEntry!="false"){
+//				var fpath = fileEntry.fullPath;
+				var fpath = fileEntry;
 				
 				window.plugins.imagePluginAPI.startActivity(testSuccess,testError, fpath);
 				function testSuccess(res){
-					var values=fpath.split("/");
-					URI="file://"+fpath;
+					var values=res.split("/");
+					var URI="file://"+fpath;
 					var url = document.getElementById(idtmp);
 					var lll= document.getElementsByName("imageuri")[num-1].setAttribute("uri",URI);
 					url.value = values[values.length-1];
 					//alert(json);
-				}
+			    }
 				function testError(){
 					alert("error");
 				}
@@ -147,11 +177,12 @@
 			    //    url.value = res.response;
 			    //}
 			}
+			}
 			//文件操作失败
 			function onFileFail(error) { 
-				toLog("error code: "+ error.code);
+				toLog("error code: "+ error);
 			};
-		}
+//		}
 		
 		// 当有错误发生时触发此函数
 		function onFail(mesage) {
@@ -161,11 +192,11 @@
 	
 	//********************************拍照、录像、录音******************************
 	// “Capture”按钮点击事件触发函数
-	function capture(id,type) {
+	function capture(id,type,name,num,customer) {
 		idtmp=id;
 	    // 启动设备的摄像头应用程
 	    // 允许用户最多采集1个图像
-	    if(type == "img"){
+	    /* if(type == "img"){
 	    	navigator.device.capture.captureImage(captureSuccess, captureError, {limit: 1});
 	    }
 	    else if(type == "video"){
@@ -173,18 +204,24 @@
 	    }
 	    else if(type == "voice"){
 	    	navigator.device.capture.captureAudio(captureSuccess, captureError, {limit: 1}); 
-	    }
+	    } */
 	    // 采集操作成功完成后的回调函数
+	    window.plugins.CapturePhotosPlugin.startActivity(captureSuccess,captureError,customer);
 		function captureSuccess(mediaFiles) { 
-		    var i, len; 
-		    for (i = 0, len = mediaFiles.length; i < len; i += 1) { 
+		 if(mediaFiles!="false"){
+			//  var i, len; 
+		    //for (i = 0, len = mediaFiles.length; i < len; i += 1) { 
 		        //uploadFile(mediaFiles[i]); 
-		        
-		        window.plugins.imagePluginAPI.startActivity(testSuccess,testError, mediaFiles[i].fullPath);
+		        //alert(mediaFiles[i].fullPath);
+		        //window.plugins.imagePluginAPI.startActivity(testSuccess,testError, mediaFiles[i].fullPath);
+		        window.plugins.imagePluginAPI.startActivity(testSuccess,testError, mediaFiles);
 				function testSuccess(res){
+					var values=res.split("/")
+					var URI="file://"+res;
 					var url = document.getElementById(idtmp);
-					url.value = res;
-					alert(res);
+					var lll= document.getElementsByName("imageuri")[num-1].setAttribute("uri",URI);
+					url.value = values[values.length-1];
+					$("#sure").click()
 					//alert(json);
 				}
 				function testError(){
@@ -199,6 +236,7 @@
 			    //    var url = document.getElementById(idtmp);
 			    //    url.value = res.response;
 			    //}
+		    //}
 		    }      
 		} 
 		
@@ -208,26 +246,5 @@
 		    navigator.notification.alert(msg, null, 'Uh oh!'); 
 		} 
 	}
-/*******************************************************************************************/
-	
-	
-	function capturePhoto() {
-		destinationType=navigator.camera.DestinationType;
-        navigator.camera.getPicture(oAddPhoto, oonFail, {
-            quality : 100,
-            destinationType : destinationType.FILE_URI,//这里要用FILE_URI，才会返回文件的URI地址            sourceType : Camera.PictureSourceType.CAMERA,
-            allowEdit : true,
-            encodingType : Camera.EncodingType.JPEG,
-           // popoverOptions : CameraPopoverOptions,
-            saveToPhotoAlbum : true
-        });
-   
-	function oonFail(message) {
-        alert('拍照失败的原因: ' + message);
-    }
-    
-    function oAddPhoto(imageURI) {
-        alert(imageURI);
-    }
-	 }
+
 </script>
