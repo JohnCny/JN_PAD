@@ -18,8 +18,8 @@ function mycpgl(){
 		 			"<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+"";
 		for(var i = 0;i<objs.totalCount;i++){
 			contsnt = "<div class='cplb' >" +
-					            "<img src='images/cp/jqt.png' title='抵押贷'/>" +
-					            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
+					          "<img src='images/cp/jqt.png' title='抵押贷'/>" +
+				            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
 					            "<span class='cpqx'>产品期限："+objs.result[i].prodLiTime+"</span>"+
 					            "<span class='cpll'>产品利率(%)："+objs.result[i].rateRange+"</span>"+
 					            "<img src='images/new.png' class='new'/>" +
@@ -136,7 +136,7 @@ function xxxx(objs){
 function mycpxx1(productName){
 window.scrollTo(0,0);//滚动条回到顶端
 var showinfor;
-
+var lock=false;
 var diyidaiA="<td style='width:50%;padding:1% 2%;'>" +
 "<div class='cpTitle'>产品类别:</div>"+
 "<div class='cpMessage'>抵押类贷款</div>"+
@@ -236,21 +236,27 @@ var posliushuidai="<td style='width:50%;padding:1% 2%;'>" +
 "<div class='cpMessage'>信用免担保</div>";
 if(productName=="POS流水贷"){
 	 showinfor=posliushuidai;
+	 lock=true;
 }else if(productName=="抵易贷A款"){
 	 showinfor=diyidaiA;
+	 lock=true;
 }else if(productName=="抵易贷B款"){
 	 showinfor=diyidaiB;
+	 lock=true;
 }else if(productName=="保易贷"){
 	 showinfor=baoyidai;
+	 lock=true;
 }else if(productName=="诚易贷B款"){
 	 showinfor=chengyidaiB;
+	 lock=true;
 }else if(productName=="诚易贷A款"){
 	 showinfor=chengyidaiA;
+	 lock=true;
 }else{
 	mycpgl();
 	window.wxc.xcConfirm("无详细产品信息", "info"); 
 }
-	
+if(lock){	
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mycpgl()'/>集群通</div>"+  
                    "<div class='content' style='padding-bottom:1em'>"+
                        "<table>" +
@@ -383,6 +389,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mycp
                    "</div>");
    $(".right").hide();
    $("#mainPage").show();
+}
 }
 
 //产品信息

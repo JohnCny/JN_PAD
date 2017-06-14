@@ -3,7 +3,7 @@ function myzbgl(){
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykhgl()'/>客户管理-众包管理</div>"+  
 			"<div class='content'>" +
-			"<div class='box shsp1' onclick='zbjjlb()'>" +                            
+			"<div class='box shsp1' onclick='zbjjlb(2)'>" +                            
 			"<span>众包进件</span>"+
 			"</div>"+
 			"<div class='box shsp2' onclick='zbglxx()'>" +
@@ -14,7 +14,7 @@ function myzbgl(){
 	$("#mainPage").show();
 	
 }
-function zbjjlb(){
+function zbjjlb(loc){
 	
 	var userId = window.sessionStorage.getItem("userId");
 	var obj = null;
@@ -26,7 +26,7 @@ function zbjjlb(){
 	var head =	"<tr>"+  
 	"<th></th>"+
 	"<th>客户姓名</th>"+
-	"<th>申请金额</th>"+
+//	"<th>申请金额</th>"+
 	"<th>证件类型</th>"+
 	"<th>证件号码</th>"+
 	"<th>手机</th>"+
@@ -54,7 +54,7 @@ function zbjjlb(){
 				obj.list[i].applyQuota+"@"+obj.list[i].customerId+"@"+obj.list[i].id+
 				"@"+obj.list[i].status+"@"+obj.list[i].examineAmount+"'/>"+"</span></td>"+  
 				"<td>"+obj.list[i].chineseName+"</td>"+
-				"<td>"+obj.list[i].applyQuota+"</td>"+
+//				"<td>"+obj.list[i].applyQuota+"</td>"+
 				"<td>"+obj.list[i].cardType+"</td>"+
 				"<td>"+obj.list[i].cardId+"</td>"+
 				"<td>"+obj.list[i].telephone+"</td>"+
@@ -68,19 +68,33 @@ function zbjjlb(){
 			}
 			result[j]=tmp;
 				window.scrollTo(0,0);//滚动条回到顶端
-				$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='myzbgl()'/>客户管理-众包管理-众包进件</div>"+  
+				$("#mainPage").html("<div class='title'><img src='images/back.png' id='backtop'/>众包进件</div>"+  
 						"<div class='content'>"+
 						"<table class='cpTable' id = 'cslb' style='text-align:center;'>"+
 						head +result[page]+
 						"</table>"+
 						"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 						"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
-						"<input type='button' class='btn btn-large btn-primary' onclick ='zbjjxx()' value='发布进件'/>"+ 
+						"<input type='button' class='btn btn-large btn-primary' onclick ='zbjjxx("+loc+")' value='发布进件'/>"+ 
 						"<input type='button' id ='sure' class='btn btn-large btn-primary' value='抢单'/>"+ 
-						"<input type='button' class='btn btn-large'' value='返回' onclick='myzbgl()'/></p>"+
+						"<input type='button' class='btn btn-large'' value='返回' id='backdown'/></p>"+
 				"</div>");
 				$(".right").hide();
 				$("#mainPage").show();
+				$("#backdown").click(function(){
+					if(loc==1){
+						tz();
+					}else{
+						myzbgl();
+					}
+				});
+				$("#backtop").click(function(){
+					if(loc==1){
+						tz();
+					}else{
+						myzbgl();
+					}
+				});
 				$("#xyy").click(function(){
 					page=page+1;
 					if(result[page]){
@@ -148,9 +162,9 @@ function zbjjlb(){
 	
 	
 }
-function zbjjxx(){
+function zbjjxx(loc){
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='zbjjlb()'/>客户管理-众包管理-众包进件</div>"+  
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='zbjjlb("+loc+")'/>众包进件-发布进件</div>"+  
 	                    "<div class='content' style='height:320px;padding-top:80px;background:url(images/book.jpg) no-repeat center center;'>" +
 	                        "<p>客户姓名:<input type='text' id ='khname'/></p>"+
 	                        "<p>证件类型:<select id ='cardType'>" +
@@ -165,7 +179,7 @@ function zbjjxx(){
 	                        "<p>手机号码:<input type='text' id = 'phone'/></p>"+
 	                        "<p>" +
 	                            "<input type='button' id ='sure' class='btn btn-large btn-primary' value='发布'/>"+  
-	                            "<input type='button' class='btn btn-large' value='返回' onclick='zbjjlb()'/>"+
+	                            "<input type='button' class='btn btn-large' value='返回' onclick='zbjjlb("+loc+")'/>"+
 	                            "</p>" +
 	                    "</div>");
 	    $(".right").hide();

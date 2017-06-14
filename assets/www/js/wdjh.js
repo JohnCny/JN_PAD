@@ -4,7 +4,7 @@ function mywdjh(){
 	var shows="";
 	if(userType!=1){
 		shows="<div class='box jhgl' onclick='pxjhlb()'><img src='images/pxjh.png' style='margin-left:-15px;'/><span>培训计划</span></div>"+
-		"<div class='box jhgl' onclick='yjjdcx()'><img src='images/gzjh.png' style='margin-left:-15px;'/><span>业绩进度查看</span></div>";
+		"<div class='box jhgl' onclick='yjjdcx()'><img src='images/yjjdcx.png' style='margin-left:-15px;'/><span>业绩进度查看</span></div>";
 	}
 //	if(userType==0){
 //		shows=shows+"<div class='box jhgl' onclick='zhuanyong()'><img src='images/pxjh.png' style='margin-left:-15px;'/><span>专用按钮</span></div>";
@@ -13,13 +13,10 @@ function mywdjh(){
 	$("#mainPage").html("<div class='title'>计划管理</div>"+  
 			"<div class='content'>" +
 			"<div class='box jhgl' onclick='khwhjhlb()'><img src='images/khwhjh.png' style='margin-left:-15px;'/><span>客户维护计划</span></div>"+
-			"<div class='box jhgl' onclick='cjcsjh()'><img src='images/khcsjh.png' style='margin-left:-15px;'/><span>客户催收计划</span></div>"+
+			"<div class='box jhgl' onclick='cjcsjh(2)'><img src='images/khcsjh.png' style='margin-left:-15px;'/><span>客户催收计划</span></div>"+
+			"<div class='box jhgl' onclick='khjlrb()'><img src='images/gzjh.png' style='margin-left:-15px;'/><span>客户经理日报</span></div>"+                       
 			shows+
-//			"<div class='box jhgl' onclick='khcsjh()'><img src='images/khcsjh.png' style='margin-left:-15px;'/><span>客户催收计划</span></div>"+
-//			"<div class='box jhgl' onclick='pxjhlb()'><img src='images/pxjh.png' style='margin-left:-15px;'/><span>培训计划</span></div>"+
-//			"<div class='box jhgl' onclick='gzjh()'><img src='images/gzjh.png' style='margin-left:-15px;'/><span>工作计划</span></div>"+                       
 			"<div class='box jhgl' onclick='yjjdlr()'><img src='images/sdh.png' style='margin-left:-15px;'/><span>业绩进度录入</span></div>"+ 
-//			"<div class='box jhgl' onclick='yjjdcx()'><img src='images/gzjh.png' style='margin-left:-15px;'/><span>业绩进度查看</span></div>"+ 
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
@@ -406,9 +403,9 @@ function yjjdlr(){
 					"<th style='width:100px;'>拜访数</th>"+  
 					"<td><input type='text' class='yejijindu' id='visitcount' name='visitcount' value='0' onfocus='onfocuss' /></td>"+
 					"<th style='width:100px;'>申请数</th>"+  
-					"<td><input type='text' class='yejijindu' value='"+obj.applyNum+"' id='applycount' name='applycount' readonly='true'/></td>"+
+					"<td><input type='text' class='yejijindu' value='"+obj.applyNum+"' id='applycount' name='applycount' /></td>"+
 					"<th style='width:100px;'>申请拒绝数</th>"+  
-					"<td><input type='text' class='yejijindu' value='"+obj.refuseNum+"' id='applyrefuse' name='applyrefuse' readonly='true'/></td>"+
+					"<td><input type='text' class='yejijindu' value='"+obj.refuseNum+"' id='applyrefuse' name='applyrefuse' /></td>"+
 					"</tr>"+
 					"<tr>"+                             
 					"<th style='width:100px;'>征信数</th>"+  
@@ -423,13 +420,13 @@ function yjjdlr(){
 					"<th style='width:100px;'>报告数</th>"+  
 					"<td><input type='text' class='' value='0' id='reportcount' name='reportcount'/></td>"+
 					"<th style='width:100px;'>内审数</th>"+  
-					"<td><input type='text' class='' value='"+obj.auditNum+"' id='internalcount' name='internalcount' readonly='true'/></td>"+
+					"<td><input type='text' class='' value='"+obj.auditNum+"' id='internalcount' name='internalcount' /></td>"+
 					"<th style='width:100px;'>上会数</th>"+  
-					"<td><input type='text' class='' value='"+obj.willNum+"' id='meetingcout' name='meetingcout' readonly='true'/></td>"+
+					"<td><input type='text' class='' value='"+obj.willNum+"' id='meetingcout' name='meetingcout' /></td>"+
 					"</tr>"+
 					"<tr>"+                             
 					"<th style='width:100px;'>通过数</th>"+  
-					"<td><input type='text' class='' value='"+obj.passNum+"' id='passcount' name='passcount' readonly='true'/></td>"+
+					"<td><input type='text' class='' value='"+obj.passNum+"' id='passcount' name='passcount' /></td>"+
 					"<th style='width:100px;'>签约数</th>"+  
 					"<td><input type='text' class='' value='0' id='signcount' name='signcount'/></td>"+
 					"<th style='width:100px;'>放款数</th>"+  
@@ -508,7 +505,9 @@ function yjjdcx(){
 				"<th>"+obj.result[i].meetingcout_s+"("+obj.result[i].meetingcout+")"+"</th>"+
 				"<th>"+obj.result[i].passcount_s+"("+obj.result[i].passcount+")"+"</th>"+
 				"<th>"+obj.result[i].signcount_s+"("+obj.result[i].signcount+")"+"</th>"+
-				"<th>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</th></tr>";
+				"<th>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</th>" +
+				"<th>"+obj.result[i].money+"</th>" +
+				"</tr>";
 
 			}else{
 
@@ -525,7 +524,9 @@ function yjjdcx(){
 				"<td>"+obj.result[i].meetingcout_s+"("+obj.result[i].meetingcout+")"+"</td>"+
 				"<td>"+obj.result[i].passcount_s+"("+obj.result[i].passcount+")"+"</td>"+
 				"<td>"+obj.result[i].signcount_s+"("+obj.result[i].signcount+")"+"</td>"+
-				"<td>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</td></tr>";
+				"<td>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</td>" +
+				"<td>"+obj.result[i].money+"</td>" +
+				"</tr>";
 
 			}
 
@@ -544,7 +545,9 @@ function yjjdcx(){
 		"<th>上会数:</th>"+
 		"<th>通过数:</th>"+
 		"<th>签约数:</th>"+
-		"<th>放款数:</th></tr>";
+		"<th>放款数:</th>"+
+		"<th>放款金额:</th>"+
+		"</tr>";
 
 		window.scrollTo(0,0);//滚动条回到顶端
 		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>业绩进度查询</div>"+  
@@ -553,11 +556,13 @@ function yjjdcx(){
 				"<span style='float:left; margin-top:10px; margin-bottom:10px; margin-left:30px;'>开始日期:&nbsp;<input type ='date' id='satrtDate'/></span>"+
 				"<span style='float:left; margin-top:10px; margin-bottom:10px;'>结束日期:&nbsp;<input type ='date' id='endDate'/></span>"+
 				"<input type='button' style='margin-bottom:10px; margin-top:10px;' class='btn btn-large btn-primary next' value='筛选' id='sure'/></p>" +
-				"<table id='sslb' class='cpTable jjTable' style='text-align:center;'>"+
-
+				"<table id='sslb' class='cpTable jjTable' style='text-align:center;'><colgroup>"+
 				head+body+
 				"</table>"+
-				"<p><input type='button' class='btn btn-large btn-primary' value='修改业绩进度' id = 'save' onclick='yjjdxg()' />"+
+				"<p>" +
+				"<input type='button' class='btn btn-large btn-primary' value='修改业绩进度' id = 'save' onclick='yjjdxg()' />"+
+				"<input type='button' class='btn btn-large btn-primary' value='查看转化率' id = 'zhl' onclick='yjjdzhl()' />"+
+				"<input type='button' class='btn btn-large btn-primary' value='查看排名' id = 'ckpm' onclick='yjjdpm()' />"+
 				"<input type='button' class='btn btn-large' value='返回' onclick='mywdjh()'/></p>"+
 		"</div>");
 		$(".right").hide();
@@ -592,7 +597,9 @@ function yjjdcx(){
 							"<th>"+obj.result[i].meetingcout_s+"("+obj.result[i].meetingcout+")"+"</th>"+
 							"<th>"+obj.result[i].passcount_s+"("+obj.result[i].passcount+")"+"</th>"+
 							"<th>"+obj.result[i].signcount_s+"("+obj.result[i].signcount+")"+"</th>"+
-							"<th>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</th></tr>";
+							"<th>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</th>" +
+							"<th>"+obj.result[i].money+"</th>" +
+							"</tr>";
 
 						}else{
 
@@ -609,7 +616,9 @@ function yjjdcx(){
 							"<td>"+obj.result[i].meetingcout_s+"("+obj.result[i].meetingcout+")"+"</td>"+
 							"<td>"+obj.result[i].passcount_s+"("+obj.result[i].passcount+")"+"</td>"+
 							"<td>"+obj.result[i].signcount_s+"("+obj.result[i].signcount+")"+"</td>"+
-							"<td>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</td></tr>";
+							"<td>"+obj.result[i].givemoneycount_s+"("+obj.result[i].givemoneycount+")"+"</td>" +
+							"<th>"+obj.result[i].money+"</th>" +
+							"</tr>";
 
 						}
 
@@ -804,7 +813,8 @@ function pxjhlb(){
 				head+result[page]+
 				"</table>"+
 				"<p>" +
-				"<input type='button' class='btn btn-large btn-primary' value='创建' onclick = 'cjpxjh()'/>"+
+				"<input type='button' class='btn btn-large btn-primary' value='创建培训计划' onclick = 'cjpxjh()'/>"+
+				"<input type='button' class='btn btn-large btn-primary' value='审贷会通知' onclick = 'sdhtzlb()'/>"+
 				"<input type='button' class='btn btn-large btn-primary' value='删除' id = 'delete'/>"+
 				"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 				"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
@@ -821,6 +831,16 @@ function pxjhlb(){
 //				alert("当前已经是最后一页");
 				window.wxc.xcConfirm("当前已经是最后一页", "info");
 				page=page-1;
+			}
+		})
+		$("#syy").click(function(){
+			page=page-1;
+			if(result[page]){
+				$("#pxll").html(head+result[page]);
+			}else{
+//				alert("当前已经是第一页");
+				window.wxc.xcConfirm("当前已经是第一页", "info");
+				page = page+1;
 			}
 		})
 		$("#delete").click(function(){
@@ -844,16 +864,6 @@ function pxjhlb(){
 			}else{
 //				alert("请选择一行");
 				window.wxc.xcConfirm("请选择一行", "warning");
-			}
-		})
-		$("#syy").click(function(){
-			page=page-1;
-			if(result[page]){
-				$("#pxll").html(head+result[page]);
-			}else{
-//				alert("当前已经是第一页");
-				window.wxc.xcConfirm("当前已经是第一页", "info");
-				page = page+1;
 			}
 		})
 	}
@@ -932,7 +942,7 @@ function cjpxjh(){
 			},			
 			success:function (json){
 				var obj = $.evalJSON(json);
-				alert(obj.mess);
+//				alert(obj.mess);
 				window.wxc.xcConfirm(obj.mess, "success");
 				pxjhlb();
 			}
@@ -980,4 +990,385 @@ function cjpxjh2(res){
 		}
 		$("#text").animate({top:"0px"},"500");
 	}	
+}
+function sdhtzlb(){
+	var khjlurl="/ipad/custAppInfo/cxshendaihuitz.json";
+	var tmp="";
+	var result=[];
+	var page=1;
+	var j=1;
+	$.get(wsHost+khjlurl,shendaihuicallbackInfor);
+	function shendaihuicallbackInfor(json){
+		var obj = $.evalJSON(json);
+		for(var i =0;i<obj.result.length;i++){
+			if(obj.result[i].isCheck=="0"){
+				obj.result[i].isCheck="<span class='label label-warning'>未阅读</span>";
+			}else if(obj.result[i].isCheck=="1"){
+				obj.result[i].isCheck="<span class='label label-success'>已接受</span>";
+			}else if(obj.result[i].isCheck=="2"){
+				obj.result[i].isCheck="<span class='label label-important'>已拒绝</span>";
+			}
+			tmp += "<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.result[i].id+"@"+obj.result[i].createdBy+"'/></span></td>"+
+			"<td>"+obj.result[i].noticeTitle+"</td>"+
+			"<td>"+obj.result[i].userId+"</td>"+
+			"<td>"+obj.result[i].noticeContent+"</td>" +
+			"<td>"+obj.result[i].modifiedTime+"</td>" +
+			"<td>"+obj.result[i].isCheck+"</td>" +
+			"</tr>";
+			if((i+1)%5==0){
+				result[j]=tmp;
+				tmp="";
+				j++;
+			}
+		}
+		result[j]=tmp;
+	var head ="<tr>"+                             
+	"<th></th>"+  
+	"<th>上会客户</th>"+
+	"<th>上会客户经理</th>"+
+	"<th>通知内容</th>"+
+	"<th>上会时间时间</th>"+
+	"<th>通知结果</th>"+
+	"</tr>";
+	
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>计划管理-审贷会通知</div>"+ 
+			"<div class='content'>"+
+			"<table class='cpTable' id='pxll' style='text-align:center;'>"+
+			head+result[page]+
+			"</table>"+
+			"<p>" +
+			"<input type='button' class='btn btn-large btn-primary' value='创建上会通知' onclick='cjshtz()'/>"+
+			"<input type='button' class='btn btn-large btn-primary' value='删除' id = 'delete'/>"+
+			"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+			"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+			"<input type='button' class='btn btn-large' value='返回' onclick='pxjhlb()'/></p>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+	$("#xyy").click(function(){
+		page=page+1;
+		if(result[page]){
+			$("#pxll").html(head+result[page]);
+		}else{
+//			alert("当前已经是最后一页");
+			window.wxc.xcConfirm("当前已经是最后一页", "info");
+			page=page-1;
+		}
+	})
+	$("#syy").click(function(){
+		page=page-1;
+		if(result[page]){
+			$("#pxll").html(head+result[page]);
+		}else{
+//			alert("当前已经是第一页");
+			window.wxc.xcConfirm("当前已经是第一页", "info");
+			page = page+1;
+		}
+	})
+	$("#delete").click(function(){
+	var	sdhscurl="/ipad/custAppInfo/changesdhtzstatus.json";
+	var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+	if ($("input[type='radio']").is(':checked')) {
+		$.ajax({
+			url:wsHost+sdhscurl,
+			dateType:'json',
+			type:'GET',
+			data:{
+				id:values[0],
+				status:"4"
+			},			
+			success:function (json){
+				var obj = $.evalJSON(json);
+//				alert(obj.mess);
+				window.wxc.xcConfirm(obj.mess, "info");
+				sdhtzlb();
+			}
+		})
+	}else{
+//		alert("请选择一行");
+		window.wxc.xcConfirm("请选择一行", "warning");
+	}
+	})
+	}
+}
+function cjshtz(){
+	var	managerList=window.sessionStorage.getItem("managerList");
+	var sdhtzurl="/ipad/custAppInfo/cjshendaihuitz.json";
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='sdhtzlb()'/>计划管理-培训计划-创建上会通知</div>"+ 
+			"<div class='content'>"+
+			"<table class='cpTable' id='pxll' style='text-align:center;'>"+
+			"<tr><th colspan='4'>创建上会通知</th></tr>"+
+			"<tr>"+
+			"<th>上会客户:</th>"+
+			"<td style='width:300px;'><input type='text' class='addinput' value='' id='trainingObjective' name='trainingObjective'/>"+
+			"</td>" +
+			"<th >指定上会日期</th>"+  
+			"<td style='width:300px;'><input class='addinput' type ='date' id='changeDate'/></td>"+
+			"</tr>"+
+			"<tr>"+ 
+			"<th >客户经理</th>"+  
+			"<td style='width:300px;'><select id ='manager_id_s' name='manager_id' >"+"<option value = '0'>请选择</option>"
+			+managerList+
+			"</select></td>"+
+			"</tr>"+
+			"<tr>"+
+			"<th><label id ='reason' for=reason>通知内容:</label></th>"+
+			"<td colspan='3'><textarea style='height:80px' name='trainingContent' id='trainingContent' value=''></textarea>" +
+			"</td>" +
+			"</tr>"+
+			"</table>"+
+			"<p>" +
+			"<input type='button' class='btn btn-large btn-primary' value='保存' id = 'sure'/>"+
+			"<input type='button' class='btn btn-large' value='返回' onclick='sdhtzlb()'/></p>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+	$("#sure").click(function(){
+		$.ajax({
+			url:wsHost+sdhtzurl,
+			type: "GET",
+			dataType:'json',
+			data:{
+				userId:$("#manager_id_s").val(),
+				noticeType:"shendaihui",
+				noticeContent:$("#trainingContent").val(),
+				isCheck:"0",
+				noticeTitle:$("#trainingObjective").val(),
+				zhidingdate:$("#changeDate").val(),
+				createdBy:window.sessionStorage.getItem("userId")
+			},
+			success: function (json){
+				var objs = $.evalJSON(json);
+				window.wxc.xcConfirm(objs.mess, "info")
+			}
+		})
+
+	})
+}
+function yjjdzhl(){
+	var url = "/ipad/performmance/performMakeRates.json";
+	var get = crud.dom.factory("GET");
+	get.doGet(url,initTongjituCallback,"加载统计图失败！");
+	function initTongjituCallback(json){
+		var objs = $.evalJSON(json);
+		var value1 = $.parseJSON(objs.classifiedJsonData);	
+		window.scrollTo(0,0);//滚动条回到顶端
+		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='yjjdcx()'/>业绩进度-转化率统计图</div>"+  
+				"<div class='content'>" +
+				"<p style='margin-bottom:10px;margin-top:10px;'>"+
+				"<span style='float:left; margin-top:10px; margin-bottom:10px; margin-left:30px;'>开始日期:&nbsp;<input type ='date' id='satrtDate'/></span>"+
+				"<span style='float:left; margin-top:10px; margin-bottom:10px;'>结束日期:&nbsp;<input type ='date' id='endDate'/></span>"+
+				"<span style='float:left; margin-top:10px; margin-bottom:10px;'>支行名称:&nbsp;<select style='text-align:center;' id ='bankList'>"+"<option value = ''></option>"+
+				objs.bankList+"</select></span>"+
+				"<input type='button' style='margin-bottom:10px; margin-top:10px;' class='btn btn-large btn-primary next' value='筛选' id='sure'/></p>" +
+				"<div class='zingchartt' id='container' ></div>"+
+				"<p><input type='button' class='btn btn-large' value='返回' onclick='yjjdcx()'/></p>"+
+		"</div>");
+		$(".right").hide();
+		$("#mainPage").show();
+	var chartData = {
+			"type": "bar", 
+			"series": [    
+			           {"text":"通过进件数量","values":value1}
+			           ],
+			           "scale-x":{ 
+			        	   "values":["拜访到申请转化率","申请到内审转化率","内审到上会的转化率","过会比率","放款比率进行统计"],
+			           },
+			           "scale-y":{ 
+			        	   "zooming":false,
+//			        	   "zoom-to":[0,5]
+			        	   "label":{text:"百分比(%)"},
+			        	   "values":"0:100:10"
+			           },
+			           "title": {
+			        	   "text":"统计业绩进度转化率"
+			           },
+			           "legend":{
+
+			           }
+			         
+	};
+	 zingchart.render({ 
+		            id: "container",    
+		            height: 500,       
+		            width: 700,        
+		            data: chartData
+		        });
+	
+	$("#sure").click(function(){
+		$.ajax({
+			url:wsHost+url,
+			type: "GET",
+			dataType:'json',
+			data:{
+				startdate:$("#satrtDate").val(),
+				enddate:$("#endDate").val(),
+				orgId:$("#bankList").val(),
+			},
+			success: function (json){
+				var objs = $.evalJSON(json);
+				var value1 = $.parseJSON(objs.classifiedJsonData);
+				var chartData = {
+						"type": "bar", 
+						"series": [    
+						           {"text":"通过进件数量","values":value1}
+						           ],
+						           "scale-x":{ 
+						        	   "values":["拜访到申请转化率","申请到内审转化率","内审到上会转化率","过会比率","放款比率进行统计"],
+						           },
+						           "scale-y":{ 
+						        	   "zooming":false,
+//						        	   "zoom-to":[0,5]
+						        	   "label":{text:"百分比(%)"},
+						        	   "values":"0:100:10"
+						           },
+						           "title": {
+						        	   "text":"统计业绩进度转化率"
+						           },
+						           "legend":{
+
+						           }
+						         
+				};
+				 zingchart.render({ 
+					            id: "container",    
+					            height: 500,       
+					            width: 700,        
+					            data: chartData
+					        });
+			}
+		})
+
+	})
+	}
+}
+function yjjdpm(){
+	$("#mainPage").html("");
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>业绩进度查询</div>"+  
+			"</div>"+
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
+	var jdcxurl ="/ipad/performmance/performRanking.json";
+	var body ="";
+	$.get(wsHost+jdcxurl,callbackInfor);
+
+	function callbackInfor(json){
+		var obj = $.evalJSON(json);
+		for(var i=0;i<obj.result.length;i++){
+
+			body=body+"<tr><td>"+(i+1)+"</td>"+
+			"<td>"+obj.result[i].managername+"</td>"+
+			"<td>"+obj.result[i].visitcount+"</td>"+
+			"<td>"+obj.result[i].applycount+"</td>"+
+			"<td>"+obj.result[i].applyrefuse+"</td>"+
+			"<td>"+obj.result[i].creditcount+"</td>"+
+			"<td>"+obj.result[i].creditrefuse+"</td>"+
+			"<td>"+obj.result[i].realycount+"</td>"+
+			"<td>"+obj.result[i].reportcount+"</td>"+
+			"<td>"+obj.result[i].internalcount+"</td>"+
+			"<td>"+obj.result[i].meetingcout+"</td>"+
+			"<td>"+obj.result[i].passcount+"</td>"+
+			"<td>"+obj.result[i].signcount+"</td>"+
+			"<td>"+obj.result[i].givemoneycount+"</td>" +
+			"<td>"+obj.result[i].money+"</td>" +
+			"</tr>";
+
+		}
+		var head ="<tr>"+
+		"<th>排名:</th>"+
+		"<th>客户经理:</th>"+
+		"<th>拜访数:</th>"+
+		"<th>申请数:</th>"+
+		"<th>申请拒绝数:</th>"+
+		"<th>征信数:</th>"+
+		"<th>征信拒绝数:</th>"+
+		"<th>实调数:</th>"+
+		"<th>报告数:</th>"+
+		"<th>内审数:</th>"+
+		"<th>上会数:</th>"+
+		"<th>通过数:</th>"+
+		"<th>签约数:</th>"+
+		"<th>放款数:</th>"+
+		"<th>放款金额:</th>"+
+		"</tr>";
+
+		window.scrollTo(0,0);//滚动条回到顶端
+		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='yjjdcx()'/>业绩进度查询-业绩进度排名</div>"+  
+				"<div class='content' >"+ 
+				"<p style='margin-bottom:10px;margin-top:10px;'>"+
+				"<span style='float:left; margin-top:10px; margin-bottom:10px; margin-left:30px;'>开始日期:&nbsp;<input type ='date' id='satrtDate'/></span>"+
+				"<span style='float:left; margin-top:10px; margin-bottom:10px;'>结束日期:&nbsp;<input type ='date' id='endDate'/></span>"+
+				"<span style='float:left; margin-top:10px; margin-bottom:10px;'>排名方式:&nbsp;<select style='text-align:center;' id ='rankway'>"+"<option value = ''></option>"+
+				"<option value = 'money'>放款金额</option>"+
+				"<option value = 'visitcount'>拜访数</option>"+
+				"<option value = 'applycount'>申请数</option>"+
+				"<option value = 'applyrefuse'>申请拒绝数</option>"+
+				"<option value = 'creditcount'>征信数</option>"+
+				"<option value = 'creditrefuse'>征信拒绝数</option>"+
+				"<option value = 'realycount'>实调数</option>"+
+				"<option value = 'reportcount'>报告数</option>"+
+				"<option value = 'internalcount'>内审数</option>"+
+				"<option value = 'meetingcout'>上会数</option>"+
+				"<option value = 'passcount'>通过数</option>"+
+				"<option value = 'signcount'>签约数</option>"+
+				"<option value = 'givemoneycount'>放款数</option>"+
+				"</select></span>"+
+				"<span style='float:left; margin-top:10px; margin-bottom:10px;'>支行名称:&nbsp;<select style='text-align:center;' id ='bankList'>"+"<option value = ''></option>"+
+				obj.bankList+"</select></span>"+
+				"<input type='button' style='margin-bottom:10px; margin-top:10px;' class='btn btn-large btn-primary next' value='筛选' id='sure'/></p>" +
+				"<table id='sslb' class='cpTable jjTable' style='text-align:center;'>"+
+				head+body+
+				"</table>"+
+				"<p>" +
+				"<input type='button' class='btn btn-large' value='返回' onclick='yjjdcx()'/></p>"+
+		"</div>");
+		$(".right").hide();
+		$("#mainPage").show(); 
+
+		$("#sure").click(function(){
+			$.ajax({
+				url:wsHost+jdcxurl,
+				type: "GET",
+				dataType:'json',
+				data:{
+					startdate:$("#satrtDate").val(),
+					enddate:$("#endDate").val(),
+					classes:$("#rankway").val(),
+					orgId:$("#bankList").val(),
+				},
+				success: function (json){
+					var obj = $.evalJSON(json);
+					var booo="";
+					for(var i=0;i<obj.result.length;i++){
+						booo=booo+"<tr><td>"+(i+1)+"</td>"+
+						"<td>"+obj.result[i].managername+"</td>"+
+						"<td>"+obj.result[i].visitcount+"</td>"+
+						"<td>"+obj.result[i].applycount+"</td>"+
+						"<td>"+obj.result[i].applyrefuse+"</td>"+
+						"<td>"+obj.result[i].creditcount+"</td>"+
+						"<td>"+obj.result[i].creditrefuse+"</td>"+
+						"<td>"+obj.result[i].realycount+"</td>"+
+						"<td>"+obj.result[i].reportcount+"</td>"+
+						"<td>"+obj.result[i].internalcount+"</td>"+
+						"<td>"+obj.result[i].meetingcout+"</td>"+
+						"<td>"+obj.result[i].passcount+"</td>"+
+						"<td>"+obj.result[i].signcount+"</td>"+
+						"<td>"+obj.result[i].givemoneycount+"</td>" +
+						"<td>"+obj.result[i].money+"</td>" +
+						"</tr>";
+					}
+					$("#sslb").html(head+booo);
+				}
+			})
+
+		})
+	}
 }

@@ -52,10 +52,18 @@ function checkLoginCallback(json){
     //alert(obj.result.user.id);
     session.setItem("userId",obj.result.user.id);
     session.setItem("userType",obj.result.user.userType);
+    session.setItem("login",obj.login);
+    session.setItem("displayName",obj.result.user.displayName);
     session.setItem("managerList",manggerList);
+    session.setItem("LocationType",obj.LocationType);
     //定时定位
-//    var location = window.setInterval(getLocations,1000*60*5);
-    var location = window.setTimeout(getLocations,1000*60*5);
+    if(obj.LocationType=="H5"){
+//    	var location = window.setTimeout(getonlinepush,1000*60*5);	
+    	var location = window.setInterval(getonlinepush,1000*60*5);
+    }else{
+//    	var location = window.setTimeout(pushposition,1000*60*5);
+    	var location = window.setInterval(pushposition,1000*60*5);
+    }
 
     //alert("getItem:"+session.getItem("id"));
     //alert(sssion.getItem("user_id"));
@@ -81,16 +89,30 @@ function show_dcts(){//显示登出提示
 }
 function hide_dcts(){//隐藏登出提示
    // $(".display-div").animate({marginTop:"-250px"},"500");
-//	clearInterval(location); 
-	clearTimeout(location); 
+
     $("#text").animate({top:"-800px"},"500");
 }    
 //登出
 function dc(){
-    $("#login").show();
-    $(".right").hide();
-    $(".left .nav li").css("background","#009fe7");
-    $(".left").hide();
+	var wsLoginUrl = "/ipad/user/logout.json"+"?login="+window.sessionStorage.getItem("login");
+    $.ajax({
+        url:wsHost + wsLoginUrl,
+        type: "GET",
+        dataType:'json',
+        success: function (json) {
+        	window.clearInterval(location);
+//        	clearTimeout(location); 
+        	    $("#login").show();
+        	    $(".right").hide();
+        	    $(".left .nav li").css("background","#009fe7");
+        	    $(".left").hide();
+        },
+        error: function(xhr){
+//        	 alert("登录失败!");
+        	 window.wxc.xcConfirm("退出失败", "error");
+        }
+    });
+   
 }
 
 

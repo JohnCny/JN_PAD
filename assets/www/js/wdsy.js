@@ -3,14 +3,15 @@
 function mywdsy(){
 	window.scrollTo(0,0);//滚动条回到顶端
 //	alert("GET当前登录用户ID："+window.sessionStorage.getItem("userId"));
-	$("#mainPage").html("<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
-			"<div class='spinner'>"+
-			"<div class='bounce1'></div>"+
-			"<div class='bounce2'></div>"+
-			"<div class='bounce3'></div>"+
-			"</div>"+
-			"</div>"+
-	"</div>");
+//	$("#mainPage").html("<div class='title'>我的首页</div>"+ 
+//			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+//			"<div class='spinner'>"+
+//			"<div class='bounce1'></div>"+
+//			"<div class='bounce2'></div>"+
+//			"<div class='bounce3'></div>"+
+//			"</div>"+
+//			"</div>"+
+//	"</div>");
 	var get = crud.dom.factory("GET");
 	wsCustManager ="/ipad/user/findSysUserMsg.json";
 	var url = wsCustManager+"?userId="+window.sessionStorage.getItem("userId");
@@ -18,9 +19,10 @@ function mywdsy(){
 	function initCustManagerContentCallback(json){
 		var objs = $.evalJSON(json);
 		var im="<div class='box wdsy4' onclick='tz()'><img src='images/tz.png'/><span>通知</span></div>";
+		var locationType="<div class='box wdsy5' onclick ='getGPS()'><img src='images/wdzj.png'/><span>位置信息</span></div>";
 		var gett = crud.dom.factory("GETT");
 		wsNotifiyMessage ="/ipad/custAppInfo/notifiyMessageNum.json";
-		var url = wsNotifiyMessage+"?userId="+window.sessionStorage.getItem("userId");
+		var url = wsNotifiyMessage+"?userId="+window.sessionStorage.getItem("userId")+"&userType="+window.sessionStorage.getItem("userType");
 		gett.doGet(url,initNotifiyMessageContentCallback,"加载通知信息失败！");
 		function initNotifiyMessageContentCallback(json){
 			var obj = $.evalJSON(json);
@@ -31,7 +33,23 @@ function mywdsy(){
 		if(objs.result.age==null){
 			objs.result.age="";
 		}
-		var content = "<div class='title'>我的首页</div>"+  
+		
+		if(window.sessionStorage.getItem("LocationType")=="H5"){
+			locationType="<div class='box wdsy5' onclick='wzxx()'><img src='images/wdzj.png'/><span>位置信息</span></div>"
+		}
+		var zhiwei="客户经理";
+		if(window.sessionStorage.getItem("userType")==5){
+			zhiwei="风险岗";
+		}else if(window.sessionStorage.getItem("userType")==0){
+			zhiwei="系统管理员";
+		}else if(window.sessionStorage.getItem("userType")==4){
+			zhiwei="微贷团队";
+		}else if(window.sessionStorage.getItem("userType")==3){
+			zhiwei="机构主管";
+		}else if(window.sessionStorage.getItem("userType")==2){
+			zhiwei="部门主管";
+		}
+		var content = "<div class='title'>我的首页</div>"+ 
 		"<div class='content'>" +
 		"<div class='user-info'>" +
 		"<img src='images/sq.jpg'/>"+
@@ -41,7 +59,7 @@ function mywdsy(){
 		"<p>年龄："+objs.result.age+"</p>"+
 		"<p>所属银行："+objs.result.org+"</p>"+
 		"<p>客户经理编号："+objs.result.externalId+"</p>"+
-		"<p>职位：客户经理</p>"+
+		"<p>职位："+zhiwei+"</p>"+
 		/*"<p>授信权限：50万</p>"+*/
 //		"<p>放款总额：100万</p>"+
 		"</div>"+
@@ -49,13 +67,13 @@ function mywdsy(){
 		"<div class='box wdsy2' onclick='khjjxx();pie()'><img src='images/khjjxx.png'/><span>客户进件信息</span></div>"+
 		"<div class='box wdsy3' onclick='khyyzk()'><img src='images/khyyzk.png'/><span>客户运营状况</span></div>"+
 		im+
-//		"<div class='box wdsy5' onclick='xxxxx()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+ 
-		"<div class='box wdsy5' onclick ='khjlrb()'><img src='images/jljlxx.png'/><span>客户经理日报</span></div>"+ 
-		"<div class='box wdsy5' onclick ='wzxx()'><img src='images/wdzj.png'/><span>位置信息</span></div>"+ 
-//		"<div class='box wdsy5' id ='wzxx'><img src='images/jljlxx.png'/><span>位置信息</span></div>"+ 
-		"</div>"
+		"<div class='box wdsy5' onclick ='jljlxx()'><img src='images/jljlxx.png'/><span>奖励激励信息</span></div>"+ 
+		locationType+
+		"</div>";
 		$("#mainPage").html(content);
 		$("#nimei").html("上次登录时间：<br/>"+objs.LastLogin);
+		$(".right").hide();
+		$("#mainPage").show();
 	}
 
 	/*$("#mainPage").html("<div class='title'>我的首页</div>"+  
@@ -78,22 +96,20 @@ function mywdsy(){
                             "<div class='box wdsy4' onclick='tz()'><img src='images/tz.png'/><span>通知</span></div>"+
                             "<div class='box wdsy5' onclick='edpggj()'><img src='images/jljlxx.png'/><span>额度评估工具</span></div>"+                           
                         "</div>");*/
-	$(".right").hide();
-	$("#mainPage").show();
+	
 }
-function xxxxx(){
-//	window.plugins.CapturePhotosPlugin.startActivity(succ,wrong,"");
-//	window.location.href="file:///android_asset/www/map.html";
-//	window.location.href="bdapp://map/marker?location=40.05740665572,116.2964407172&title=Marker&content=makeamarker&traffic=on";
-//	window.plugins.CoordinateTranslatePlugin.startActivity(succ,wrong,ss);
-}
-//function wrong(ob){
+//function xxxxx(){
+//	window.plugins.GpsToBd09llPlugin.startActivity(succs,wrongs,"","get");
+////	window.location.href="file:///android_asset/www/map.html";
+////	window.location.href="bdapp://map/marker?location=40.05740665572,116.2964407172&title=Marker&content=makeamarker&traffic=on";
+////	window.plugins.CoordinateTranslatePlugin.startActivity(succ,wrong,ss);
+//}
+//function wrongs(ob){
 //	alert("111"+ob);
 //}
-//function succ(ob){
-//	if(ob!="false"){
-//		alert("222"+ob);
-//	}
+//function succs(ob){
+//	alert(ob);
+////		alert("---"+ob.Longitude+"-----"+ob.Longitude);
 //}
 //客户进件信息
 function khjjxx(){
@@ -132,6 +148,9 @@ function pie() {
 				           },
 				           {   
 				        	   "backgroundColor":"#4e74c0","text": "审核通过数量  "+obj.result.approvedNum,"values": [obj.result.approvedNum]
+				           },
+				           {   
+				        	   "backgroundColor":"#edd400","text": "进件总数 "+obj.sums
 				           }
 				           ]
 		};
@@ -193,7 +212,7 @@ function jjxxlb(){
 				}
 				tmp=tmp+"<tr onclick='check(this)'>"+
 				"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].chineseName+"@"+
-				obj.items[i].productName+"'"+"/>"+"</span></td>"+
+				obj.items[i].productName+"@"+obj.items[i].id+"@"+obj.items[i].customerId+"@"+obj.items[i].productId+"@"+obj.items[i].status+"'"+"/>"+"</span></td>"+
 				"<td>"+obj.items[i].chineseName+"</td>"+
 				"<td>"+obj.items[i].productName+"</td>"+
 				"<td>"+obj.items[i].applyQuota+"</td>"+
@@ -221,6 +240,7 @@ function jjxxlb(){
 					"</table>"+
 					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='补充调查' id = 'bcdc'/>"+
 					"<input type='button' class='btn btn-large' value='返回' onclick='khjjxx();pie()'/></p>"+
 			"</div>");
 			$(".right").hide();
@@ -245,9 +265,241 @@ function jjxxlb(){
 					page = page+1;
 				}
 			})
+			$("#bcdc").click(function(){
+			if ($("input[type='radio']").is(':checked')) {
+				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+             if(values[5]=="退回至客户经理"){
+			var res={};
+			res.appId=values[2];
+			res.customerId=values[3];
+			res.productId=values[4];
+			bcdcimage(res);
+                }else{
+                	window.wxc.xcConfirm("进件状态非退回不能补充资料", "info");
+                }
+			}else{
+//				alert("请选择一行");
+				window.wxc.xcConfirm("请选择一行", "warning");
+			}
+
+		})
 		}
 	})
 }   
+//补充调查
+function bcdcimage(res){
+	
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title' onclick='jjxxlb()'><img src='images/back.png'/>客户进件列表-补充调查</div>"+  
+			"<div class='content' style='text-align:center;'>" + 
+								"<table id='qtyxzl' class='cpTable' style='text-align:center;margin-top:20px;'>"+
+									"<tr>"+    
+										"<th style='width:40px;'>序号</th>"+ 
+										"<th>文件路径</th>"+
+										"<th>操作</th>"+
+									"</tr>"+
+									"<tr>"+  
+										"<td>1</td>"+
+										"<td><input type='text' id='qtyxzl_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");' value='选择文件'/></td>"+
+										"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
+//										"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
+									"</tr>"+
+								"</table>"+
+								"<p class='Left'>" +
+								"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
+								"<button class='add-button' onclick='removeTd(\"qtyxzl\")'><img src='images/del.png'/></button>" +
+								"</p>"+
+								"<p>" +
+								"<input type='button' class='btn btn-primary btn-large' value='确定' id='sure' />" +
+								"<input type='button' class='btn btn-primary btn-large' value='查看已上传列表' id='ysctplb' />" +
+								"<input type='button' class='btn btn-large' value='返回' id='back' onclick='jjxxlb()'/>" +
+								"</p>"+
+							"</div>");
+	  $(".right").hide();
+	  $("#mainPage").show();
+	  $("#sure").click(function(){
+		  window.wxc.xcConfirm("是否开始上传影像资料","confirm",{onOk:sckss});
+		  function sckss(){
+		  var num= $('#qtyxzl tr').length;
+		  show_upload(0);
+		  for(var i=0;i<num;i++){
+		 var fileURI = document.getElementsByName("imageuri")[i].getAttribute("uri");
+		 var j=i+1;
+		 var fileName = $("#qtyxzl_sheet"+j).val();
+		 var options = new FileUploadOptions();  
+		    options.fileKey = "file";  
+		    options.fileName = fileName; 
+		    options.mimeType = "multipart/form-data";  
+		    options.chunkedMode = false;  
+		    ft = new FileTransfer();  
+		    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+res.productId+"&customerId="+res.customerId+"&fileName="+options.fileName+"&applicationId="+res.appId);  
+		    $("#uploadInfo").html("正在上传第"+(i+1)+"张，请稍后...");
+		    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
+		  }
+		  }
+	  })
+	  $("#ysctplb").click(function(){
+		  bcdcimagelb(res);
+	  })
+//	  /** 
+//	   * 上传成功回调. 
+//	   * @param r 
+//	   */ 
+//	  function uploadSuccesss(r) { 
+//	  	var obj = $.evalJSON(r.response);
+////	  	hide_upload();
+//	  	if(obj.success==false){
+//	  	if(obj.message=="001"){
+////	  		alert("调查模板不一致！导入失败！");
+//	  		$("#uploadInfo").html("调查模板不一致！导入失败！");
+//	  		 $("#diss").attr('disabled',false);
+//	  		 $("#sure").attr('disabled',false);
+//	  	}else{
+////	  		alert("导入失败！");
+//	  		$("#uploadInfo").html("导入失败！");
+//	  		 $("#diss").attr('disabled',false);
+//	      $("#sure").attr('disabled',false);
+//	  	}
+//	  	}else{
+////	  		alert("导入成功！");
+//	  		$("#uploadInfo").html("导入成功！");
+//	  		 $("#diss").attr('disabled',false);
+//	  		 $("#sure").attr('disabled',false);
+//	  	}
+//	  	 clearProcess();
+//	  }  
+//
+//	  /** 
+//	   * 上传失败回调. 
+//	   * @param error 
+//	   */  
+//	  function uploadFaileds(error) {  
+////	  	hide_upload();
+////	      alert('文件上传失败'); 
+//	      $("#uploadInfo").html("导入失败！");
+//	      $("#diss").attr('disabled',false);
+//	      $("#sure").attr('disabled',false);
+//	      clearProcess();  
+//	      
+//	  } 
+}
+//补充调查已上传列表
+function bcdcimagelb(res){
+	var ysctpurl ="/ipad/JnpadImageBrowse/uploadYx.json";
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
+	var head="<tr>"+                         
+	"<th></th>"+                 
+	"<th>文件名</th>"+  
+	"<th>产品名称</th>"+
+	"<th>客户名称</th>"+
+	"<th>上传时间</th>"+
+	"</tr>";
+	$.get(wsHost+ysctpurl,{customerId:res.customerId,productId:res.productId,applicationId:res.appId},callbackfunction);
+	function  callbackfunction (json){
+		obj = $.evalJSON(json);
+		for(var i = 0;i<obj.imagerList.length;i++){
+
+			tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.imagerList[i].id+"@"+
+			obj.imagerList[i].applicationId+"'/>"+"</span></td>"+  
+			"<td>"+obj.imagerList[i].attachment+"</td>"+
+			"<td>"+obj.imagerList[i].productName+"</td>"+
+			"<td>"+obj.imagerList[i].customerName+"</td>"+
+			"<td>"+obj.imagerList[i].createdTime+"</td></tr>"
+
+			if((i+1)%5==0){
+				result[j]=tmp;
+				j++;
+				tmp="";
+			}
+		}
+
+		result[j]=tmp;
+
+		window.scrollTo(0,0);//滚动条回到顶端
+		$("#mainPage").html("<div class='title'><img src='images/back.png' id='backs'/>已上传图片列表</div>"+  
+				"<div class='content'>" +                        
+				"<table id='bzsplb' class='cpTable jjTable' style='text-align:center;'>"+
+				head+result[page]+
+				"</table>"+
+				"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+				"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+				"<input type='button' class='btn btn-large btn-primary' value='查看' id = 'browse'/>"+
+				"<input type='button' class='btn btn-primary btn-large' value='删除' id='delete' />" +
+				"<input type='button' class='btn btn-large' value='返回' id='backk'/></p>"+
+		"</div>");
+		$(".right").hide();
+		$("#mainPage").show();  
+		$("#xyy").click(function(){
+			page=page+1;
+			if(result[page]){
+				$("#bzsplb").html(head+result[page]);
+			}else{
+//				alert("当前已经是最后一页");
+				window.wxc.xcConfirm("当前已经是最后一页", "info"); 
+				page=page-1;
+			}
+		})
+		$("#syy").click(function(){
+			page=page-1; 
+			if(result[page]){
+				$("#bzsplb").html(head+result[page]);
+			}else{
+//				alert("当前已经是第一页");
+				window.wxc.xcConfirm("当前已经是第一页", "info"); 
+				page = page+1;
+			}
+		})
+
+		$("#backk").click(function(){
+			bcdcimage(res);
+		})
+		$("#backs").click(function(){
+			bcdcimage(res);
+		})
+		$("#browse").click(function(){
+			if ($("input[type='radio']").is(':checked')) {
+
+				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+				res.imageId=values[0];
+				res.back="bcdcimage";
+				browseimage(res);
+			}else{
+//				alert("请选择一行");
+				window.wxc.xcConfirm("请选择一行", "warning");
+			}	
+		})
+		$("#delete").click(function(){
+			if ($("input[type='radio']").is(':checked')) {
+
+				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+				var deletetpurl ="/ipad/JnpadImageBrowse/deleteImage.json";
+				$.ajax({
+					url:wsHost+deletetpurl,
+					type: "GET",
+					dataType:'json',
+					data:{
+						imageId:values[0],
+					},
+					cache:false,
+					success: function (json){
+						var obj = $.evalJSON(json);
+//						alert(obj.mess);
+						window.wxc.xcConfirm(obj.mess, "success");
+						ckimage(res);
+					}
+				})  
+
+			}else{
+//				alert("请选择一行");
+				window.wxc.xcConfirm("请选择一行", "warning");
+			}
+
+		})
+	}
+}
 //退回客户列表
 function thkhlb(){
 	var userId = window.sessionStorage.getItem("userId");
@@ -700,17 +952,17 @@ function ckqttjt(){
 																          {
 																        	  "values":[Number($.evalJSON(nnnn)[0].y)],
 																        	  "background-color":"#cc0000",
-																        	  "text":"拒绝"
+																        	  "text":"审批中"
 																          },
 																          {
 																        	  "values":[Number($.evalJSON(nnnn)[1].y)],
 																        	  "background-color":"#ff9933",
-																        	  "text":"已审批"
+																        	  "text":"拒绝"
 																          },
 																          {
 																        	  "values":[Number($.evalJSON(nnnn)[2].y)],
 																        	  "background-color":"#88cc00",
-																        	  "text":"审批中"
+																        	  "text":"放款成功"
 																          },
 																          {
 																        	  "values":[Number($.evalJSON(nnnn)[3].y)],
@@ -720,7 +972,7 @@ function ckqttjt(){
 																          {
 																        	  "values":[Number($.evalJSON(nnnn)[4].y)],
 																        	  "background-color":"#9933ff",
-																        	  "text":"放款成功"
+																        	  "text":"已审批"
 																          }
 																          ]
 														};
@@ -768,42 +1020,41 @@ function ckqttjt(){
 														})
 	}
 }
-//我的足迹
-function wdzj(){
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>杨景琳&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 01010419</div>"+  
-			"<div class='content'>" +
-			"<div class='map'>地图</div>"+
-	"</div>");
-	$(".right").hide();
-	$("#mainPage").show();
-}
 //通知
 function tz(){
-	window.scrollTo(0,0);//滚动条回到顶端
-
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>通知</div>"+ 
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
 	var get = crud.dom.factory("GET");
 	wsNotifiyMessage ="/ipad/custAppInfo/notifiyMessageNum.json";
-	var url = wsNotifiyMessage+"?userId="+window.sessionStorage.getItem("userId");
+	var url = wsNotifiyMessage+"?userId="+window.sessionStorage.getItem("userId")+"&userType="+window.sessionStorage.getItem("userType");
 	get.doGet(url,initNotifiyMessageContentCallback,"加载通知信息失败！");
 	function initNotifiyMessageContentCallback(json){
 		var objs = $.evalJSON(json);
 		//alert(json);
+		window.scrollTo(0,0);//滚动条回到顶端
 		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>通知</div>"+  
 				"<div class='content'>" +
 				"<table class='cpTable' style='width:100%;height:85%;position:fixed;top:100px;bottom:0;text-align:center;'>"+
 				"<tr>"+                             
-				"<td style='width:33.3%;'>" +// onclick='sdhtz()'
-//				"<img src='images/sdh.png'/><br/><span class='tongzhi'>0</span><br/>" +
-//				"<span class='tz_message'>审贷会通知</span>" +
+				"<td style='width:33.3%;' onclick='sdhtz()'>" +// onclick='sdhtz()'
+				"<img src='images/sdh.png'/><br/><span class='tongzhi'>"+objs.shendaihui+"</span><br/>" +
+				"<span class='tz_message'>审贷会通知</span>" +
 				"</td>"+                           
 				"<td style='width:33.3%;' onclick='pxjh()'>" +
 				"<img src='images/px.png'/><br/><span class='tongzhi'>"+objs.peixun+"</span><br/>" +
 				"<span class='tz_message'>培训通知</span>" +
 				"</td>"+                      
-				"<td style='width:33.3%;' >" +//onclick='fpjjtz()'
-//				"<img src='images/fpjj.png'/><br/><span class='tongzhi'>0</span><br/>" +
-//				"<span class='tz_message'>分配进件通知</span>" +
-				"</td>"+
+				"<td onclick='cskhtz()'>" +
+				"<img src='images/cs.png'/><br/><span class='tongzhi'>"+objs.yuqi+"</span><br/>" +
+				"<span class='tz_message'>催收客户通知</span>" +
+				"</td>"+   
 				"</tr>"+
 				"<tr>"+                         
 				"<td onclick='fxsxtz()'>" +
@@ -819,11 +1070,11 @@ function tz(){
 				"<span class='tz_message'>拒绝进件通知</span>" +
 				"</td>"+ 
 				"</tr>"+
-				"<tr>"+                         
-				"<td>" +//onclick='cskhtz()'
-//				"<img src='images/cs.png'/><br/><span class='tongzhi'>0</span><br/>" +
-//				"<span class='tz_message'>催收客户通知</span>" +
-				"</td>"+                    
+				"<tr>"+ 
+				"<td style='width:33.3%;' onclick='zbjjlb(1)'>" +
+				"<img src='images/fpjj.png'/><br/><span class='tongzhi'>"+objs.qita+"</span><br/>" +
+				"<span class='tz_message'>分配进件通知</span>" +
+				"</td>"+
 				"<td id='kkkk'>" +
 				"<img src='images/khzlbg.png'/><br/><span class='tongzhi'>"+objs.ziliaobiangeng+"</span><br/>" +
 				"<span class='tz_message'>客户资料变更通知</span>" +
@@ -843,73 +1094,192 @@ function tz(){
 }
 //通知-审贷会通知
 function sdhtz(){
+	var khjlurl="/ipad/custAppInfo/cxshendaihuitz.json";
+	var tmp="";
+	var result=[];
+	var page=1;
+	var j=1;
+	$.get(wsHost+khjlurl,{managerId:window.sessionStorage.getItem("userId")},shendaihuicallbackInfor);
+	function shendaihuicallbackInfor(json){
+		var obj = $.evalJSON(json);
+		for(var i =0;i<obj.result.length;i++){
+			tmp += "<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.result[i].id+"@"+obj.result[i].createdBy+"'/></span></td>"+
+			"<td>"+obj.result[i].noticeTitle+"</td>"+
+			"<td>"+obj.result[i].userId+"</td>"+
+			"<td>"+obj.result[i].noticeContent+"</td>" +
+			"<td>"+obj.result[i].modifiedTime+"</td>" +
+			"</tr>";
+			if((i+1)%5==0){
+				result[j]=tmp;
+				tmp="";
+				j++;
+			}
+		}
+		result[j]=tmp;
+	var head ="<tr>"+                             
+	"<th></th>"+  
+	"<th>上会客户</th>"+
+	"<th>上会客户经理</th>"+
+	"<th>通知内容</th>"+
+	"<th>上会时间时间</th>"+
+	"</tr>";
+	
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>通知-审贷会通知</div>"+  
-			"<div class='content' style='margin-top:146px;'>" +
-			"<div class='rcap' onclick='show_sdhtz()'>" +
-			"<table>" +
-			"<tr>" +
-			"<td class='center' style='width:20%;'>2015-06-12 13:00<br/>~<br/>2015-06-12 14:00</td>"+
-			"<td style='width:40%;'>" +
-			"<p class='rcTitle'>王军忠进件002316审贷会</p>" +
-			"<p class='cyz'>参与者</p>" +
-			"<p class='cyzxm'>王旭、朱远炎、宋辰、谭文华</p>" +
-			"</td>"+
-			"<td style='width:35%;'>" +
-			"<p class='center'>江苏省常州市九州环宇505</p>" +
-			"</td>"+
-			"<td style='width:5%;'>" +
-			"<img src='images/right.png'/>" +
-			"</td>"+
-			"</tr>"+                            
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>通知-审贷会通知</div>"+ 
+			"<div class='content'>"+
+			"<table class='cpTable' id='pxll' style='text-align:center;'>"+
+			head+result[page]+
 			"</table>"+
-			"</div>"+
-			"<div class='rcap' onclick='show_sdhtz()'>" +
-			"<table>" +
-			"<tr>" +
-			"<td class='center' style='width:20%;'>2015-06-13 13:00<br/>~<br/>2015-06-13 14:00</td>"+
-			"<td style='width:40%;'>" +
-			"<p class='rcTitle'>王军忠进件02356561审贷会</p>" +
-			"<p class='cyz'>参与者</p>" +
-			"<p class='cyzxm'>王旭、朱远炎</p>" +
-			"</td>"+
-			"<td style='width:35%;'>" +
-			"<p class='center'>江苏省常州市九州环宇505</p>" +
-			"</td>"+
-			"<td style='width:5%;'>" +
-			"<img src='images/right.png'/>" +
-			"</td>"+
-			"</tr>"+                            
-			"</table>"+
-			"</div>"+
-			/*"<table class='cpTable' style='text-align:center;'>"+
-                            "<tr>"+                       
-                                "<th></th>"+           
-                                "<th style='width:25%;'>审贷会时间</th>"+          
-                                "<th>审贷会地点</th>"+       
-                                "<th>审贷会进件提示</th>"+   
-                            "</tr>"+
-                            "<tr onclick='check(this)'>"+       
-                                "<td><span class='radio'><input type='radio'/></span></td>"+              
-                                "<td>2015-06-12</td>"+          
-                                "<td>综合部</td>"+          
-                                "<td></td>"+
-                            "</tr>"+
-                            "<tr onclick='check(this)'>"+       
-                                "<td><span class='radio'><input type='radio'/></span></td>"+              
-                                "<td>2015-06-15</td>"+          
-                                "<td>综合部</td>"+          
-                                "<td></td>"+
-                            "</tr>"+
-                        "</table>"+
-                        "<p>" +
-                            "<button class='success-button'><img src='images/yes.png'/> 确认</button>" +
-                            "<button class='error-button'><img src='images/no.png'/> 拒绝</button>" +
-                        "</p>" +*/
+			"<p>" +
+			"<input type='button' class='btn btn-large btn-primary' value='接受' id = 'oks'/>"+
+			"<input type='button' class='btn btn-large btn-primary' value='拒绝' id = 'refuse'/>"+
+			"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+			"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+			"<input type='button' class='btn btn-large' value='返回' onclick='tz()'/></p>"+
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
+	$("#xyy").click(function(){
+		page=page+1;
+		if(result[page]){
+			$("#pxll").html(head+result[page]);
+		}else{
+//			alert("当前已经是最后一页");
+			window.wxc.xcConfirm("当前已经是最后一页", "info");
+			page=page-1;
+		}
+	})
+	$("#syy").click(function(){
+		page=page-1;
+		if(result[page]){
+			$("#pxll").html(head+result[page]);
+		}else{
+//			alert("当前已经是第一页");
+			window.wxc.xcConfirm("当前已经是第一页", "info");
+			page = page+1;
+		}
+	})
+	$("#oks").click(function(){
+	var	sdhscurl="/ipad/custAppInfo/changesdhtzstatus.json";
+	var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+	if ($("input[type='radio']").is(':checked')) {
+		$.ajax({
+			url:wsHost+sdhscurl,
+			dateType:'json',
+			type:'GET',
+			data:{
+				id:values[0],
+				status:"1"
+			},			
+			success:function (json){
+				var obj = $.evalJSON(json);
+//				alert(obj.mess);
+				window.wxc.xcConfirm(obj.mess, "info");
+				sdhtz();
+			}
+		})
+	}else{
+//		alert("请选择一行");
+		window.wxc.xcConfirm("请选择一行", "warning");
+	}
+	})
+	$("#refuse").click(function(){
+	var	sdhscurl="/ipad/custAppInfo/changesdhtzstatus.json";
+	var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+	if ($("input[type='radio']").is(':checked')) {
+		window.wxc.xcConfirm("是否拒绝上会", "confirm",{onOk:function(){
+		$.ajax({
+			url:wsHost+sdhscurl,
+			dateType:'json',
+			type:'GET',
+			data:{
+				id:values[0],
+				status:"2"
+			},			
+			success:function (json){
+				var obj = $.evalJSON(json);
+//				alert(obj.mess);
+				window.wxc.xcConfirm(obj.mess, "info");
+				sdhtz();
+			}
+		})
+		}});
+	}else{
+//		alert("请选择一行");
+		window.wxc.xcConfirm("请选择一行", "warning");
+	}
+	})
+	}
 }
+//通知-审贷会通知
+//function sdhtz(){
+//	window.scrollTo(0,0);//滚动条回到顶端
+//	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>通知-审贷会通知</div>"+  
+//			"<div class='content' style='margin-top:146px;'>" +
+//			"<div class='rcap' onclick='show_sdhtz()'>" +
+//			"<table>" +
+//			"<tr>" +
+//			"<td class='center' style='width:20%;'>2015-06-12 13:00<br/>~<br/>2015-06-12 14:00</td>"+
+//			"<td style='width:40%;'>" +
+//			"<p class='rcTitle'>王军忠进件002316审贷会</p>" +
+//			"<p class='cyz'>参与者</p>" +
+//			"<p class='cyzxm'>王旭、朱远炎、宋辰、谭文华</p>" +
+//			"</td>"+
+//			"<td style='width:35%;'>" +
+//			"<p class='center'>江苏省常州市九州环宇505</p>" +
+//			"</td>"+
+//			"<td style='width:5%;'>" +
+//			"<img src='images/right.png'/>" +
+//			"</td>"+
+//			"</tr>"+                            
+//			"</table>"+
+//			"</div>"+
+//			"<div class='rcap' onclick='show_sdhtz()'>" +
+//			"<table>" +
+//			"<tr>" +
+//			"<td class='center' style='width:20%;'>2015-06-13 13:00<br/>~<br/>2015-06-13 14:00</td>"+
+//			"<td style='width:40%;'>" +
+//			"<p class='rcTitle'>王军忠进件02356561审贷会</p>" +
+//			"<p class='cyz'>参与者</p>" +
+//			"<p class='cyzxm'>王旭、朱远炎</p>" +
+//			"</td>"+
+//			"<td style='width:35%;'>" +
+//			"<p class='center'>江苏省常州市九州环宇505</p>" +
+//			"</td>"+
+//			"<td style='width:5%;'>" +
+//			"<img src='images/right.png'/>" +
+//			"</td>"+
+//			"</tr>"+                            
+//			"</table>"+
+//			"</div>"+
+//			/*"<table class='cpTable' style='text-align:center;'>"+
+//                            "<tr>"+                       
+//                                "<th></th>"+           
+//                                "<th style='width:25%;'>审贷会时间</th>"+          
+//                                "<th>审贷会地点</th>"+       
+//                                "<th>审贷会进件提示</th>"+   
+//                            "</tr>"+
+//                            "<tr onclick='check(this)'>"+       
+//                                "<td><span class='radio'><input type='radio'/></span></td>"+              
+//                                "<td>2015-06-12</td>"+          
+//                                "<td>综合部</td>"+          
+//                                "<td></td>"+
+//                            "</tr>"+
+//                            "<tr onclick='check(this)'>"+       
+//                                "<td><span class='radio'><input type='radio'/></span></td>"+              
+//                                "<td>2015-06-15</td>"+          
+//                                "<td>综合部</td>"+          
+//                                "<td></td>"+
+//                            "</tr>"+
+//                        "</table>"+
+//                        "<p>" +
+//                            "<button class='success-button'><img src='images/yes.png'/> 确认</button>" +
+//                            "<button class='error-button'><img src='images/no.png'/> 拒绝</button>" +
+//                        "</p>" +*/
+//	"</div>");
+//	$(".right").hide();
+//	$("#mainPage").show();
+//}
 function show_sdhtz(){
 	$("#text").html("<div class='display-div sdhtz'>"+
 			"<div class='dialog-head'>"+
@@ -1152,7 +1522,7 @@ function fxsxtz(){
 				"<p>"+
 				"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 				"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
-				"<input type='button' class='btn btn-large btn-primary' value='移除风险客户名单' id = 'ycfx'/>"+
+				"<input type='button' class='btn btn-large btn-primary' value='移除风险名单' id = 'ycfx'/>"+
 				"<input type='button' class='btn btn-large btn-primary' value='返回' onclick='tz()'/></p>"+
 		"</div>");
 		$(".right").hide();
@@ -1182,14 +1552,15 @@ function fxsxtz(){
 
 				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 				var ycfxurl="/ipad/NotifictionMessage/removeRisk.json";
-
-				$.get(wsHost+ycfxurl,{customerId:values[1]},yichucallback);
-				function yichucallback(json){
-					var obj = $.evalJSON(json);
-//					alert(obj.mess);
-					window.wxc.xcConfirm(obj.mess, "success");
-				}
-
+				window.wxc.xcConfirm("是否确定将该客户移除风险客户名单", "confirm",{onOk:function(){
+					$.get(wsHost+ycfxurl,{customerId:values[1]},yichucallback);
+					function yichucallback(json){
+						var obj = $.evalJSON(json);
+//						alert(obj.mess);
+						window.wxc.xcConfirm(obj.mess, "success");
+						fxsxtz();
+					}
+				}});
 			}else{
 //				alert("请选择一行");
 				window.wxc.xcConfirm("请选择一行", "warning");
@@ -1199,32 +1570,95 @@ function fxsxtz(){
 }
 //通知-催收客户通知
 function cskhtz(){
-	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>通知-催收客户通知</div>"+  
-			"<div class='content'>" +
-			"<table class='cpTable' style='text-align:center;'>"+
-			"<tr>"+                        
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>通知-催收客户通知</div>"+ 
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
+	var csurl="/ipad/risk/getCustomerRiskInfo.json";
+	$.ajax({
+		url:wsHost+csurl,
+		dateType:'json',
+		type:'GET',
+		data:{
+			userType:window.sessionStorage.getItem("userType"),
+			managerId:window.sessionStorage.getItem("userId")
+		},			
+		success:function (json){
+			var obj = $.evalJSON(json);
+			var tmp ="";
+			var result={};
+			var page=1;
+			var j = 1;
+			var head= "<tr>"+                        
 			"<th>序号</th>"+  
 			"<th>客户姓名</th>"+
 			"<th>客户身份标识</th>"+
-			"<th>产品标识</th>"+
+			"<th>放款金额</th>"+
 			"<th>逾期金额</th>"+
-			"<th>逾期期数</th>"+
-			"<th>是否变更维护计划</th>"+
-			"</tr>"+
-			"<tr>"+    
-			"<td>1</td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"<td></td>"+
-			"</tr>"+
+			"<th>本金逾期天数</th>"+
+			"<th>本金逾期天数</th>"+
+			"<th>是否创建催收计划</th>"+
+			"</tr>";
+			for(var i=0;i<obj.length;i++){
+				tmp+="<tr onclick='check(this)'>"+    
+				"<td>"+(i+1)+"</td>"+
+				"<td>"+obj[i].name+"</td>"+
+				"<td>"+obj[i].cardId+"</td>"+
+				"<td>"+obj[i].money+"</td>"+
+				"<td>"+obj[i].dlaymat+"</td>"+
+				"<td>"+obj[i].delayamtdays+"</td>"+
+				"<td>"+obj[i].delayinterestdays+"</td>"+
+				"<td><input type='button' onclick='cjcsjh(1)' class='btn btn-warning' value='是'/></td>"+
+				"</tr>";
+
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+
+			}
+			result[j]=tmp;
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>通知-催收客户通知</div>"+  
+			"<div class='content'>" +
+			"<table class='cpTable' style='text-align:center;' id='fxkh'>"+
+			head+result[page]+
 			"</table>"+
+			"<p>"+
+			"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+			"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+			"<input type='button' class='btn btn-large btn-primary' value='返回' onclick='tz()'/></p>"+
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
+	$("#xyy").click(function(){
+		page=page+1;
+		if(result[page]){
+			$("#fxkh").html(head+result[page]);
+		}else{
+//			alert("当前已经是最后一页");
+			window.wxc.xcConfirm("当前已经是最后一页", "info");
+			page=page-1;
+		}
+	})
+	$("#syy").click(function(){
+		page=page-1; 
+		if(result[page]){
+			$("#fxkh").html(head+result[page]);
+		}else{
+//			alert("当前已经是第一页");
+			window.wxc.xcConfirm("当前已经是第一页", "info");
+			page = page+1;
+		}
+	})
+		}
+	})
 }
 //通知-客户资料变更通知
 function khzlbgtz(customerInfo){
@@ -1605,9 +2039,27 @@ function edpggj(){
 
 //客户经理日报
 function khjlrb(){
+	$("#mainPage").html("");
+	$("#mainPage").html("<div class='title'>进件管理</div>"+  
+			"<div class='contents' style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
 	var khjirburl ="/ipad/dailyAccount/browse.json";
 	var userId = window.sessionStorage.getItem("userId"); 
 	var userType = window.sessionStorage.getItem("userType"); 
+	var opin=window.sessionStorage.getItem("managerList");
+	var body =	"<select id ='user'>"+"<option value = '0'>请选择客户经理</option>"+
+	opin+
+	"</select>"+
+	"<input type='button' id='ckkhjlrb' class='btn btn-primary btn-large' value='筛选客户经理'/>";
+	if(userType==1){
+		body="";
+	}
 	$.get(wsHost+khjirburl,{"userId":userId,"userType":userType},callbackInfor);
 	function callbackInfor(json){
 		var obj = $.evalJSON(json);
@@ -1627,7 +2079,7 @@ function khjlrb(){
 			tmp+="<tr onclick='check(this)'>"+    
 			"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].id+"@"+obj.items[i].displayName+"@"+
 			obj.items[i].whatDay+"@"+obj.items[i].tomorrowplan+"@"+obj.items[i].todayplan+
-			"@"+obj.items[i].modifiedTime+"'/>"+"</span></td>"+
+			"@"+obj.items[i].modifiedTime+"@"+obj.items[i].reportDate+"@"+obj.items[i].managerId+"'/>"+"</span></td>"+
 			"<td>"+obj.items[i].displayName+"</td>"+
 			"<td>"+obj.items[i].whatDay+"</td>"+
 			"<td>"+obj.items[i].title+"</td>"+
@@ -1644,16 +2096,18 @@ function khjlrb(){
 		}
 		result[j]=tmp;
 		window.scrollTo(0,0);//滚动条回到顶端
-		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>客户经理日报</div>"+  
+		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>客户经理日报</div>"+  
 				"<div class='content'>" +
 				"<table class='cpTable' id='rblb' style='text-align:center;'>"+
 				head+result[page]+ 
 				"</table>"+
-				"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+				"<p>" +
+				body+
+				"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 				"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
 				"<input type='button' class='btn btn-large btn-primary' value='修改' id ='xgrb'/>"+
 				"<input type='button' class='btn btn-large btn-primary' value='查看' id ='ckrb'/>"+
-				"<input type='button' class='btn btn-large' value='返回' onclick='mywdsy()'/></p>"+
+				"<input type='button' class='btn btn-large' value='返回' onclick='mywdjh()'/></p>"+
 		"</div>");
 		$(".right").hide();
 		$("#mainPage").show();
@@ -1666,6 +2120,40 @@ function khjlrb(){
 				window.wxc.xcConfirm("当前已经是最后一页", "info");
 				page=page-1;
 			}
+		})
+		$("#ckkhjlrb").click(function(){
+			var userids=$("#user").val();
+			if(userids!="0"){
+			result={};
+			page=1;
+			j = 1;
+			$.get(wsHost+khjirburl,{"loginId":userids,"userType":userType},callbackInforlist);
+			function callbackInforlist(json){
+				var obj = $.evalJSON(json);
+			for(var i=0;i<obj.totalCount;i++){
+				tmp+="<tr onclick='check(this)'>"+    
+				"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].id+"@"+obj.items[i].displayName+"@"+
+				obj.items[i].whatDay+"@"+obj.items[i].tomorrowplan+"@"+obj.items[i].todayplan+
+				"@"+obj.items[i].modifiedTime+"@"+obj.items[i].reportDate+"@"+obj.items[i].managerId+"'/>"+"</span></td>"+
+				"<td>"+obj.items[i].displayName+"</td>"+
+				"<td>"+obj.items[i].whatDay+"</td>"+
+				"<td>"+obj.items[i].title+"</td>"+
+				"<td>"+obj.items[i].createdTime+"</td>"+
+				"<td>"+obj.items[i].modifiedTime+"</td>"+
+				"</tr>";
+
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+			}
+			result[j]=tmp;
+			$("#rblb").html(head+result[page]);
+			}
+		}else{
+			window.wxc.xcConfirm("请选择客户经理", "info");
+		}
 		})
 		$("#syy").click(function(){
 			page=page-1; 
@@ -1685,6 +2173,8 @@ function khjlrb(){
 			resu.rbId =values[0];
 			resu.tomorrowplan =values[3];
 			resu.todayplan =values[4];
+			resu.reportDate=values[6];
+			resu.managerId=values[7];
 			xgkhrb(resu);
 			}else{
 //				alert("请选择一行");
@@ -1699,6 +2189,8 @@ function khjlrb(){
 			resu.rbId =values[0];
 			resu.tomorrowplan =values[3];
 			resu.todayplan =values[4];
+			resu.reportDate=values[6];
+			resu.managerId=values[7];
 			xsrbxx(resu);
 		}else{
 //			alert("请选择一行");
@@ -1712,10 +2204,97 @@ function khjlrb(){
 }
 
 function xgkhrb(resu){
-
+	var pmcurl="/ipad/dailyAccount/getpermanceByDateandId.json";
+	$.ajax({
+		url:wsHost+pmcurl,
+		dateType:'json',
+		type:'GET',
+		//是否异步		
+		//			async:false,
+		data:{
+			userId:resu.managerId,
+			reportDate:resu.reportDate
+		},
+		success:function (json){
+			var obj = $.evalJSON(json);
+			var promance="";
+			if(obj!=null){
+				promance="<table id='cslb' class='cpTable jjTable' style='text-align:center;'>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>拜访数</th>"+  
+				"<td><input type='text' class='yejijindu' id='visitcount' name='visitcount' value='"+obj.visitcount+"' onfocus='onfocuss' readonly='true' /></td>"+
+				"<th style='width:100px;'>申请数</th>"+  
+				"<td><input type='text' class='yejijindu' value='"+obj.applycount+"' id='applycount' name='applycount' readonly='true'/></td>"+
+				"<th style='width:100px;'>申请拒绝数</th>"+  
+				"<td><input type='text' class='yejijindu' value='"+obj.applyrefuse+"' id='applyrefuse' name='applyrefuse' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>征信数</th>"+  
+				"<td><input type='text' class='' value='"+obj.creditcount+"' id='creditcount' name='creditcount' readonly='true'/></td>"+
+//				"<td><input type='text' class='addinput' value='0' id='creditcount' name='creditcount'/></td>"+
+				"<th style='width:100px;'>征询拒绝数</th>"+  
+				"<td><input type='text' class='' value='"+obj.creditrefuse+"' id='creditrefuse' name='creditrefuse' readonly='true'/></td>"+
+				"<th style='width:100px;'>实调数</th>"+  
+				"<td><input type='text' class='' value='"+obj.realycount+"' id='realycount' name='realycount' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>报告数</th>"+  
+				"<td><input type='text' class='' value='"+obj.reportcount+"' id='reportcount' name='reportcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>内审数</th>"+  
+				"<td><input type='text' class='' value='"+obj.internalcount+"' id='internalcount' name='internalcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>上会数</th>"+  
+				"<td><input type='text' class='' value='"+obj.meetingcout+"' id='meetingcout' name='meetingcout' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>通过数</th>"+  
+				"<td><input type='text' class='' value='"+obj.passcount+"' id='passcount' name='passcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>签约数</th>"+  
+				"<td><input type='text' class='' value='"+obj.signcount+"' id='signcount' name='signcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>放款数</th>"+  
+				"<td><input type='text' class='' value='"+obj.givemoneycount+"' id='givemoneycount' name='givemoneycount' readonly='true'/></td>"+
+				"</tr>"+
+				"</table>";
+			}else{
+				promance="<table id='cslb' class='cpTable jjTable' style='text-align:center;'>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>拜访数</th>"+  
+				"<td><input type='text' class='yejijindu' id='visitcount' name='visitcount' value='' onfocus='onfocuss' readonly='true'/></td>"+
+				"<th style='width:100px;'>申请数</th>"+  
+				"<td><input type='text' class='yejijindu' value='' id='applycount' name='applycount' readonly='true'/></td>"+
+				"<th style='width:100px;'>申请拒绝数</th>"+  
+				"<td><input type='text' class='yejijindu' value='' id='applyrefuse' name='applyrefuse' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>征信数</th>"+  
+				"<td><input type='text' class='' value='' id='creditcount' name='creditcount' readonly='true'/></td>"+
+//				"<td><input type='text' class='addinput' value='0' id='creditcount' name='creditcount'/></td>"+
+				"<th style='width:100px;'>征询拒绝数</th>"+  
+				"<td><input type='text' class='' value='' id='creditrefuse' name='creditrefuse' readonly='true'/></td>"+
+				"<th style='width:100px;'>实调数</th>"+  
+				"<td><input type='text' class='' value='' id='realycount' name='realycount' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>报告数</th>"+  
+				"<td><input type='text' class='' value='' id='reportcount' name='reportcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>内审数</th>"+  
+				"<td><input type='text' class='' value='' id='internalcount' name='internalcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>上会数</th>"+  
+				"<td><input type='text' class='' value='' id='meetingcout' name='meetingcout' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>通过数</th>"+  
+				"<td><input type='text' class='' value='' id='passcount' name='passcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>签约数</th>"+  
+				"<td><input type='text' class='' value='' id='signcount' name='signcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>放款数</th>"+  
+				"<td><input type='text' class='' value='' id='givemoneycount' name='givemoneycount' readonly='true'/></td>"+
+				"</tr>"+
+				"</table>";
+			}
 	var rbxgurl="/ipad/dailyAccount/update.json";
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khjlrb()'/>客户经理日报</div>"+  
 			"<div class='content'>" +
+			promance+
 			"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
 			"<tr>"+                        
 			"<th colspan='4'>今日工作内容</th></tr>"+ 
@@ -1762,16 +2341,104 @@ function xgkhrb(resu){
 		})
 	})
 
-
+		}
+	})
 }
 
 
 //显示日报信息
 
 function xsrbxx(resu){
-
+	var pmcurl="/ipad/dailyAccount/getpermanceByDateandId.json";
+	$.ajax({
+		url:wsHost+pmcurl,
+		dateType:'json',
+		type:'GET',
+		//是否异步		
+		//			async:false,
+		data:{
+			userId:resu.managerId,
+			reportDate:resu.reportDate
+		},
+		success:function (json){
+			var obj = $.evalJSON(json);
+			var promance="";
+			if(obj!=null){
+				promance="<table id='cslb' class='cpTable jjTable' style='text-align:center;'>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>拜访数</th>"+  
+				"<td><input type='text' class='yejijindu' id='visitcount' name='visitcount' value='"+obj.visitcount+"' onfocus='onfocuss' readonly='true' /></td>"+
+				"<th style='width:100px;'>申请数</th>"+  
+				"<td><input type='text' class='yejijindu' value='"+obj.applycount+"' id='applycount' name='applycount' readonly='true'/></td>"+
+				"<th style='width:100px;'>申请拒绝数</th>"+  
+				"<td><input type='text' class='yejijindu' value='"+obj.applyrefuse+"' id='applyrefuse' name='applyrefuse' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>征信数</th>"+  
+				"<td><input type='text' class='' value='"+obj.creditcount+"' id='creditcount' name='creditcount' readonly='true'/></td>"+
+//				"<td><input type='text' class='addinput' value='0' id='creditcount' name='creditcount'/></td>"+
+				"<th style='width:100px;'>征询拒绝数</th>"+  
+				"<td><input type='text' class='' value='"+obj.creditrefuse+"' id='creditrefuse' name='creditrefuse' readonly='true'/></td>"+
+				"<th style='width:100px;'>实调数</th>"+  
+				"<td><input type='text' class='' value='"+obj.realycount+"' id='realycount' name='realycount' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>报告数</th>"+  
+				"<td><input type='text' class='' value='"+obj.reportcount+"' id='reportcount' name='reportcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>内审数</th>"+  
+				"<td><input type='text' class='' value='"+obj.internalcount+"' id='internalcount' name='internalcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>上会数</th>"+  
+				"<td><input type='text' class='' value='"+obj.meetingcout+"' id='meetingcout' name='meetingcout' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>通过数</th>"+  
+				"<td><input type='text' class='' value='"+obj.passcount+"' id='passcount' name='passcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>签约数</th>"+  
+				"<td><input type='text' class='' value='"+obj.signcount+"' id='signcount' name='signcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>放款数</th>"+  
+				"<td><input type='text' class='' value='"+obj.givemoneycount+"' id='givemoneycount' name='givemoneycount' readonly='true'/></td>"+
+				"</tr>"+
+				"</table>";
+			}else{
+				promance="<table id='cslb' class='cpTable jjTable' style='text-align:center;'>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>拜访数</th>"+  
+				"<td><input type='text' class='yejijindu' id='visitcount' name='visitcount' value='' onfocus='onfocuss' readonly='true'/></td>"+
+				"<th style='width:100px;'>申请数</th>"+  
+				"<td><input type='text' class='yejijindu' value='' id='applycount' name='applycount' readonly='true'/></td>"+
+				"<th style='width:100px;'>申请拒绝数</th>"+  
+				"<td><input type='text' class='yejijindu' value='' id='applyrefuse' name='applyrefuse' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>征信数</th>"+  
+				"<td><input type='text' class='' value='' id='creditcount' name='creditcount' readonly='true'/></td>"+
+//				"<td><input type='text' class='addinput' value='0' id='creditcount' name='creditcount'/></td>"+
+				"<th style='width:100px;'>征询拒绝数</th>"+  
+				"<td><input type='text' class='' value='' id='creditrefuse' name='creditrefuse' readonly='true'/></td>"+
+				"<th style='width:100px;'>实调数</th>"+  
+				"<td><input type='text' class='' value='' id='realycount' name='realycount' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>报告数</th>"+  
+				"<td><input type='text' class='' value='' id='reportcount' name='reportcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>内审数</th>"+  
+				"<td><input type='text' class='' value='' id='internalcount' name='internalcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>上会数</th>"+  
+				"<td><input type='text' class='' value='' id='meetingcout' name='meetingcout' readonly='true'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<th style='width:100px;'>通过数</th>"+  
+				"<td><input type='text' class='' value='' id='passcount' name='passcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>签约数</th>"+  
+				"<td><input type='text' class='' value='' id='signcount' name='signcount' readonly='true'/></td>"+
+				"<th style='width:100px;'>放款数</th>"+  
+				"<td><input type='text' class='' value='' id='givemoneycount' name='givemoneycount' readonly='true'/></td>"+
+				"</tr>"+
+				"</table>";
+			}
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khjlrb()'/>客户经理日报</div>"+  
 			"<div class='content'>" +
+			promance+
 			"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
 			"<tr>"+                        
 			"<th colspan='4'>今日工作内容</th></tr>"+ 
@@ -1794,8 +2461,46 @@ function xsrbxx(resu){
 	"</div>");
 
 
+		}
+	})
+}
 
-
+function jljlxx(){
+	var jlxxurl="/ipad/custAppInfo/returnPrepareAmount.json";
+	$.ajax({
+		url:wsHost+jlxxurl,
+		dateType:'json',
+		type:'GET',
+		//是否异步		
+		//			async:false,
+		data:{
+			userId:window.sessionStorage.getItem("userId"),
+			userType:window.sessionStorage.getItem("userType"),
+		},
+		success:function (json){
+			var obj = $.evalJSON(json);
+			window.scrollTo(0,0);//滚动条回到顶端
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>客户经理日报</div>"+  
+					"<div class='content'>" +
+					"<table class='cpTable' id='rblb' style='text-align:center;'>"+
+					"<tr>"+
+					"<td style='width:300px;'>上月奖励激励金额</td>"+
+					"<td>"+obj.reward_incentive+
+					"</td>"+
+					"</tr>"+
+					"<tr>"+
+					"<td style='width:300px;'>风险保证金余额</td>"+
+					"<td>"+obj.return_prepare_amount+
+					"</td>"+
+					"</tr>"+
+					"</table>"+
+					"<p>" +
+					"<input type='button' class='btn btn-large' value='返回' onclick='mywdsy()'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+		}
+	})
 }
 //地图
 function myMap(){
@@ -1832,7 +2537,7 @@ function wzxx(){
 	);
 	$(".right").hide();
 	$("#mainPage").show();
-	startGetLocation();
+	locationOnline();
 	$("#ddddd").click(function(){
 		lon="";
 		lat="";
@@ -1857,6 +2562,8 @@ function wzxx(){
 					$("#allmap").removeClass("contents").addClass("content");
 					$("#allmap").html("");
 					var map = new BMap.Map("allmap"); 
+					map.setMaxZoom(15);
+					map.setMinZoom(4);
 					map.enableScrollWheelZoom(); 
 					for(var i=0;i<obj.size;i++){
 						var lonnn = obj.LocationInfoForm[i].longitude; 
@@ -1865,31 +2572,18 @@ function wzxx(){
 						var userName=obj.LocationInfoForm[i].userName;
 						var point = new BMap.Point(""+lonnn+"",""+lattt+""); 
 						
-//						translateCallback = function ( point){ 
-//						BMap.Convertor.translate(point, 0, callback);
-//						var callback = function(result){
-//							var obj = $.evalJSON(json);
-//							var point = new BMap.Point(""+obj.lonnn+"",""+obj.lattt+"");
 							var marker  = new BMap.Marker(point); 
 							map.centerAndZoom(point,12); 
 							map.addOverlay(marker); 
 							var label = new BMap.Label(userName+":"+updatetime,{offset:new BMap.Size(20,-10)});
 							marker.setLabel(label);
-
-//							map.setCenter(point); 
-//							}      
-
-//							BMap.Convertor.translate(point,0,translateCallback);  
 							showInformation(marker,updatetime,lonnn,lattt,map,userName);
-//						}
 					}
 				}else if(obj.success=="false"){
 
-//					alert("该客户经理位置信息不存在");
 					window.wxc.xcConfirm("该客户经理位置信息不存在", "info");
 				}else{
 
-//					alert("未知错误");
 					window.wxc.xcConfirm("未知错误", "error");
 				}
 
@@ -1901,14 +2595,8 @@ function wzxx(){
 	$("#fswdwz").click(function(){
 		
 		if(lon!=""&&lat!=""){
-//		var locationpoint={};
-//		locationpoint.lon = lon; 
-//		locationpoint.lat = lat; 
-//		window.plugins.CoordinateTranslatePlugin.startActivity(translateCallbacks,wrong,locationpoint);
 		var gxwzUrl = "/ipad/intopieces/updateLocation.json";
 		var userId = window.sessionStorage.getItem("userId");
-//		function translateCallbacks (point){ 
-//			var pointss=point.split("@");
 			$.ajax({
 				url:wsHost+gxwzUrl,
 				dateType:'json',
@@ -1922,7 +2610,6 @@ function wzxx(){
 				},
 				success:function (json){
 					var obj = $.evalJSON(json);
-//					alert(obj.message);
 					window.wxc.xcConfirm(obj.message, "info");
 					lon="";
 					lat="";
@@ -1932,7 +2619,6 @@ function wzxx(){
 //		}
 		}else{
 			
-//			alert("位置信息为空，等待获取位置信息");
 			window.wxc.xcConfirm("位置信息为空，等待获取位置信息", "info");
 		}
 	})
@@ -1940,124 +2626,95 @@ function wzxx(){
 var lon="";
 var lat="";
 
-function startGetLocation(){
-
-	if(supportsGeoLocation()){ 
-		getLocation();
-	}else{ 
-//		alert("不支持 GeoLocation.");
-		window.wxc.xcConfirm("不支持 GeoLocation", "info");
-		mywdsy();
-	} 
-
-}
-
-//检测浏览器是否支持HTML5 
-function supportsGeoLocation(){ 
-	return !!navigator.geolocation; 
-}   
-//单次位置请求执行的函数              
 function getLocation(){ 
-	var config = { enableHighAccuracy: true, maximumAge:0,timeout:15000 }; 
-	window.navigator.geolocation.getCurrentPosition(mapIt,locationError,config); 
+	window.plugins.CoordinateTranslatePlugin.startActivity(locationsuccess,SdkLicationErro,"","get");
 } 
-//定位成功时，执行的函数 
-function mapIt(position){
-var locationpoint={};
-locationpoint.lon = position.coords.longitude; 
-locationpoint.lat = position.coords.latitude; 
-alert(locationpoint.lat);
-//alert("您位置的经度是："+lon+" 纬度是："+lat); 
-function translateCallback (point){ 
-	var pointss=point.split("@");
+function locationsuccess(position){
+	if(position.LocType=="61"||position.LocType=="161"||position.LocType=="65"||position.LocType=="66"){
 	$("#allmap").removeClass("contents").addClass("content");
 	$("#allmap").html("");
-	lon=pointss[1];
-	lat=pointss[0];
-	
+	var LocType;
+	var adress;
+	if(position.LocType=="61"){
+		LocType="GPS定位结果";
+	}else if(position.LocType=="161"){
+		LocType="网络定位结果";
+	}else if(position.LocType=="65"){
+		LocType="缓存位置结果";
+	}
+	if(position.AddrStr){
+		adress=position.AddrStr;
+	}else{
+		adress="无法从网络获取地址信息,请根据地图marker辨别位置";
+	}
+	lon=position.Longitude;
+	lat=position.Latitude;
 	var map = new BMap.Map("allmap"); 
 	var points = new BMap.Point(""+lon+"",""+lat+""); 
-	map.centerAndZoom(points,8); 
+	map.centerAndZoom(points,12); 
 	var gc = new BMap.Geocoder(); 
 	var marker = new BMap.Marker(points);
 	var infoWindow;
 	map.addOverlay(marker); 
 	map.setCenter(points); 
+	map.setMaxZoom(15);
+	map.setMinZoom(4);
 	var sContent = 
-		"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
-		"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+无法获取详细街道信息+"</p>" +  
-		"</div>";
-	gc.getLocation(points, function(rs){ 
-		var addComp = rs.addressComponents; 
-		if(addComp.province!==addComp.city){ 
-			sContent = 
-				"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
-				"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-				"</div>";
-			}else{ 
-			vsContent = 
-				"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>你当前的位置是：</h4>" +  
-				"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-				"</div>"; 
-		} 
-	});  
-	infoWindow = new BMap.InfoWindow(sContent); 
+		"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>当前"+LocType+"是：</h4>" +  
+		"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+adress+"</p>" +  
+		"</div>"; 
+	var infoWindow = new BMap.InfoWindow(sContent); 
 	map.openInfoWindow(infoWindow,points); 
 	marker.addEventListener("click", function () {  
-
-		map.openInfoWindow(infoWindow,point);  
-
+		window.wxc.xcConfirm("是否在百度地图中查看详细位置", "confirm",{onOk:function(){
+			window.location.href="bdapp://map/marker?location="+lat+","+lon+"&title=您当前的位置&content=makeamarker&traffic=on";
+			}});
 	}); 
-}                     
-//BMap.Convertor.translate(point,0,translateCallback); 
-window.plugins.CoordinateTranslatePlugin.startActivity(translateCallback,wrong,locationpoint);
-} 
-//定位失败时，执行的函数 
-function locationError(error) 
-{ 
-	switch(error.code) 
-	{ 
-	case error.PERMISSION_DENIED: 
-		$("#allmap").html("");
-		$("#allmap").removeClass("content").addClass("contents");
-		$("#allmap").html("<div class='spinner'>无法完成定位请求</div>");
-		break; 
-	case error.POSITION_UNAVAILABLE: 
-		$("#allmap").html("");
-		$("#allmap").removeClass("content").addClass("contents");
-		$("#allmap").html("<div class='spinner'>获取当前位置信息失败，请检查网络连接和位置权限</div>");
-		break; 
-	case error.TIMEOUT: 
-		$("#allmap").html("");
-		$("#allmap").removeClass("content").addClass("contents");
-		$("#allmap").html("<div class='spinner'>获取当前位置信息超时</div>");
-		break; 
-	case error.UNKNOWN_ERROR: 
-		$("#allmap").html("");
-		$("#allmap").removeClass("content").addClass("contents");
-		$("#allmap").html("<div class='spinner'>未知错误发生了</div>");
-		break; 
-	} 
-
-
-} 
-
+	}
+else if(position.LocType=="62"){
+	$("#allmap").html("");
+	$("#allmap").removeClass("content").addClass("contents");
+	$("#allmap").html("<div class='spinner'>62 ：无法获取有效定位依据，定位失败，请检查运营商网络或者WiFi网络是否正常开启，尝试重新请求定位。</div>");
+}
+else if(position.LocType=="63"){
+	$("#allmap").html("");
+	$("#allmap").removeClass("content").addClass("contents");
+	$("#allmap").html("<div class='spinner'>63 ：网络异常，没有成功向服务器发起请求，请确认当前测试手机网络是否通畅，尝试重新请求定位。</div>");
+}
+else if(position.LocType=="67"){
+	$("#allmap").html("");
+	$("#allmap").removeClass("content").addClass("contents");
+	$("#allmap").html("<div class='spinner'>67 ：离线定位失败。通过requestOfflineLocaiton调用时对应的返回结果。</div>");
+}
+else if(position.LocType=="167"){
+	$("#allmap").html("");
+	$("#allmap").removeClass("content").addClass("contents");
+	$("#allmap").html("<div class='spinner'>167 ：服务端定位失败，请您检查是否禁用获取位置信息权限，尝试重新请求定位。</div>");
+}
+else if(position.LocType=="162"){
+	$("#allmap").html("");
+	$("#allmap").removeClass("content").addClass("contents");
+	$("#allmap").html("<div class='spinner'>162 ： 请求串密文解析失败。</div>");
+}else{
+	$("#allmap").html("");
+	$("#allmap").removeClass("content").addClass("contents");
+	$("#allmap").html("<div class='spinner'>错误代码："+position.LocType+"</div>");
+}
+}
+function SdkLicationErro(erro){
+	$("#allmap").html("");
+	$("#allmap").removeClass("content").addClass("contents");
+	$("#allmap").html("<div class='spinner'>未知错误</div>");
+}
 function getLocations(){ 
-	var config = { enableHighAccuracy: true, maximumAge:0 }; 
-	navigator.geolocation.getCurrentPosition(mapIts,locationError,config); 
+	window.plugins.CoordinateTranslatePlugin.startActivity(mapIts,SdkLicationErro,"","get");
 } 
 function mapIts(position){  
-	var locationpoint={};
-	locationpoint.lon = position.coords.longitude; 
-	locationpoint.lat = position.coords.latitude; 
-	window.plugins.CoordinateTranslatePlugin.startActivity(translateCallbacks,wrong,locationpoint);
 	var gxwzUrl = "/ipad/intopieces/updateLocation.json";
 	var userId = window.sessionStorage.getItem("userId");
-	function translateCallbacks(point){
-		var pointss=point.split("@");
-		lon=pointss[1];
-		lat=pointss[0];
-	if(lon!=""&&lat!=""){
+	lon=position.Longitude;
+	lat=position.Latitude;
+	if(lon!=""&&lat!=""&&(position.LocType=="61"||position.LocType=="161")){
 		$.ajax({
 			url:wsHost+gxwzUrl,
 			dateType:'json',
@@ -2071,8 +2728,7 @@ function mapIts(position){
 			},
 			success:function (json){
 				var obj = $.evalJSON(json);
-				alert(obj.message);
-				window.wxc.xcConfirm(obj.message, "success");
+				window.wxc.xcConfirm(obj.message, "info");
 				lat="";
 				lon="";
 			}
@@ -2081,34 +2737,11 @@ function mapIts(position){
 
 	}else{
 //		alert("无法获取当前位置，请检查网络连接和GPS权限"); 
-		window.wxc.xcConfirm("无法获取当前位置，请检查网络连接和GPS权限", "error");
+		window.wxc.xcConfirm("获取位置失败，无法自动提交位置信息", "error");
 
 	}
-	}
+//	}
 }
-//在线
-//function showInformation(marker,updatetime,lonnn,lattt,map,username){
-//	var gc = new BMap.Geocoder(); 
-//	var point = new BMap.Point(""+lonnn+"",""+lattt+""); 
-//	marker.addEventListener("click", function(){
-//		gc.getLocation(point, function(rs){ 
-//			var addComp = rs.addressComponents; 
-//			if(addComp.province!==addComp.city){ 
-//				var sContent = 
-//					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+username+updatetime+"位置是：</h4>" +  
-//					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+addComp.province + ", " + addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-//					"</div>";} 
-//			else{ 
-//				var sContent = 
-//					"<div><h4 style='margin:0 0 5px 0;padding:0.2em 0'>"+username+updatetime+"位置是：</h4>" +  
-//					"<p style='margin:0;line-height:1.5;font-size:13px;text-indent:2em'>"+ addComp.city + ", " + addComp.district + ", " + addComp.street + ", " + addComp.streetNumber+"</p>" +  
-//					"</div>"; 
-//			} 
-//			var infoWindow = new BMap.InfoWindow(sContent); 
-//			map.openInfoWindow(infoWindow,point);
-//		});
-//	})
-//}
 //调用嗯本地百度APP
 function showInformation(marker,updatetime,lonnn,lattt,map,username){
 	marker.addEventListener("click", function(){
@@ -2116,4 +2749,124 @@ function showInformation(marker,updatetime,lonnn,lattt,map,username){
 				window.location.href="bdapp://map/marker?location="+lattt+","+lonnn+"&title="+username+updatetime+"的位置&content=makeamarker&traffic=on";
 				}});
 })
+}
+
+function wzxx2(){
+//百度sdk
+	var khjlxxlurl = "/ipad/intopieces/managerInfoi.json";
+	var opin=window.sessionStorage.getItem("managerList");
+	var userType=window.sessionStorage.getItem("userType");
+	var body =	"<select id ='user'>"+"<option value = '0'>请选择客户经理</option>"+
+	opin+
+	"</select>"+
+	"<input type='button' id='ckkhjlwz' class='btn btn-primary btn-large' value='查看客户经理位置'/>";
+	if(userType==1){
+		body="";
+	}
+
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>位置信息</div>"+  
+			"</div>"+
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+			"<div class='content' style ='margin:0 auto;'><p align='center'>" +
+			body+
+			"<input type='button' id='fswdwz' class='btn btn btn-primary btn-large' value='发送我的位置'/>"+  
+			"<input type='button' id='ddddd' class='btn btn btn-primary btn-large' value='刷新'/>"+  
+			"<input type='button' class='btn btn-large'  value='返回' onclick='mywdsy()'/>"+  
+			"</p></div>"
+	);
+	$(".right").hide();
+	$("#mainPage").show();
+	getLocation();
+	$("#ddddd").click(function(){
+		lon="";
+		lat="";
+		wzxx2();
+	})
+	$("#ckkhjlwz").click(function(){
+		var userId = $("#user").val();
+		var gxwzUrl = "/ipad/intopieces/selectLocation.json";
+		$.ajax({
+			url:wsHost+gxwzUrl,
+			dateType:'json',
+			type:'GET',
+			//是否异步		
+			//			async:false,
+			data:{
+				userId:userId,
+			},
+			success:function (json){
+				var obj = $.evalJSON(json);
+				if(obj.success=="true"){
+					Message.showNotify("点击地图上的marker可以在百度地图中查看更详细的信息",3000);
+					$("#allmap").removeClass("contents").addClass("content");
+					$("#allmap").html("");
+					var map = new BMap.Map("allmap"); 
+					map.setMaxZoom(15);
+					map.setMinZoom(4);
+					map.enableScrollWheelZoom(); 
+					for(var i=0;i<obj.size;i++){
+						var lonnn = obj.LocationInfoForm[i].longitude; 
+						var lattt = obj.LocationInfoForm[i].latitude; 
+						var updatetime=obj.LocationInfoForm[i].updateTime;
+						var userName=obj.LocationInfoForm[i].userName;
+						var point = new BMap.Point(""+lonnn+"",""+lattt+""); 
+						
+							var marker  = new BMap.Marker(point); 
+							map.centerAndZoom(point,12); 
+							map.addOverlay(marker); 
+							var label = new BMap.Label(userName+":"+updatetime,{offset:new BMap.Size(20,-10)});
+							marker.setLabel(label);
+							showInformation(marker,updatetime,lonnn,lattt,map,userName);
+//						}
+					}
+				}else if(obj.success=="false"){
+
+					window.wxc.xcConfirm("该客户经理位置信息不存在", "info");
+				}else{
+
+					window.wxc.xcConfirm("未知错误", "error");
+				}
+
+
+			}
+
+		})
+	})
+	$("#fswdwz").click(function(){
+		
+		if(lon!=""&&lat!=""){
+		var gxwzUrl = "/ipad/intopieces/updateLocation.json";
+		var userId = window.sessionStorage.getItem("userId");
+			$.ajax({
+				url:wsHost+gxwzUrl,
+				dateType:'json',
+				type:'GET',
+				//是否异步		
+				//			async:false,
+				data:{
+					lat:lat,
+					lon:lon,
+					userId:userId,
+				},
+				success:function (json){
+					var obj = $.evalJSON(json);
+					window.wxc.xcConfirm(obj.message, "info");
+					lon="";
+					lat="";
+				}
+
+			})
+		}else{
+			
+			window.wxc.xcConfirm("位置信息为空，等待获取位置信息", "info");
+		}
+	})
+
 }

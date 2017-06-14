@@ -256,9 +256,9 @@ function addTd(table){
         var num= $('#lxrxx tr').length;
         $("#"+table).append("<tr>"+    
                                 "<td>"+num+"</td>"+
-                                "<td><input type='text' value=''/></td>"+
-                                "<td><input type='text' value=''/></td>"+
-                                "<td><input type='text' value=''/></td>"+
+                                "<td><input type='text' value='' id='contactName"+num+"'/></td>"+
+                                "<td><input type='text' value='' id='relation"+num+"'/></td>"+
+                                "<td><input type='text' value='' id='contactTel"+num+"'/></td>"+
                             "</tr>");      
     }
     if(table=="csqy"){//初始权益
@@ -295,8 +295,8 @@ function addTd(table){
         var num= $('#khxx tr').length;
         $("#"+table).append("<tr>"+    
                                 "<td>"+num+"</td>"+
-                                "<td><input type='text'/></td>"+  
-                                "<td><input type='text' class='addinput'/></td>"+
+                                "<td><input type='text' id='openBank"+num+"'/></td>"+  
+                                "<td><input type='text' class='addinput' id='accuont"+num+"'/></td>"+
                             "</tr>");      
     }
     if(table=="dhd"){//点货单
@@ -366,35 +366,37 @@ function addTd(table){
 	if(table=="fcxx"){//房产信息
         var num= $('#fcxx tr').length;
         $("#"+table).append("<tr>"+    
-                                "<td>"+num+"</td>"+
-                                "<td><input type='text' class='addinput'/></td>"+
-								"<td><input type='text' class='addinput'/></td>"+
-								"<td><input type='date' class='addinput'/></td>"+
-								"<td><input type='text' class='addinput'/></td>"+
-								"<td><input type='text' class='addinput'/></td>"+
-								"<td>" +
-                                    "<select>" +
-                                        "<option>现金</option>" +
-                                    "</select>" +
-                                "</td>"+
-								"<td><input type='text' class='addinput'/></td>"+
-                            "</tr>");      
+                "<td>"+num+"</td>"+
+				"<td><input type='text' class='addinput' id='houseAddress"+num+"'/></td>"+
+				"<td><input type='text' class='addinput' id='houseArea"+num+"'/></td>"+
+				"<td><input type='date' class='addinput' id='monetaryDate"+num+"'/></td>"+
+				"<td><input type='text' class='addinput' id='monetaryAmount"+num+"'/></td>"+
+				"<td><input type='text' class='addinput' id='currentAmount"+num+"'/></td>"+
+				"<td>" +
+                    "<select　id='getWay"+num+"'>" +
+                        "<option>全款</option>"+
+                        "<option>按揭</option>"+
+                    "</select>" +
+                "</td>"+
+				"<td><input type='text' class='addinput' id='otherInfo"+num+"'/></td>"+
+            "</tr>");      
     }
 	if(table=="ccxx"){//车产信息
         var num= $('#ccxx tr').length;
         $("#"+table).append("<tr>"+    
                                 "<td>"+num+"</td>"+
-                                "<td><input type='text' class='addinput'/></td>"+
-								"<td><input type='text' class='addinput'/></td>"+
-								"<td><input type='date' class='addinput'/></td>"+
-								"<td><input type='text' class='addinput'/></td>"+
-								"<td><input type='text' class='addinput'/></td>"+
-								"<td>" +
-                                    "<select>" +
-                                        "<option>现金</option>" +
+                                "<td><input type='text' class='addinput' id='carVersion"+num+"'/></td>"+
+                				"<td><input type='text' class='addinput' id='carNumber"+num+"'/></td>"+
+                				"<td><input type='date' class='addinput' id='monetaryDate"+num+"'/></td>"+
+                				"<td><input type='text' class='addinput' id='monetaryAmount"+num+"'/></td>"+
+                				"<td><input type='text' class='addinput' id='currentAmount"+num+"'/></td>"+
+                				"<td>" +
+                                    "<select　id='getWay"+num+"'>"+
+                                        "<option>全款</option>"+
+                                        "<option>按揭</option>"+
                                     "</select>" +
                                 "</td>"+
-								"<td><input type='text' class='addinput'/></td>"+
+                				"<td><input type='text' class='addinput' id='otherInfo"+num+"'/></td>"+
                             "</tr>");      
     }
     if(table=="fcz"){//房产证
