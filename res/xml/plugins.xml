@@ -21,4 +21,9 @@
     <plugin name="ImagePlugin" value="com.cardpay.banksaler_rocket.ImagePlugin"/>
     <plugin name="DBPlugin" value="com.cardpay.banksaler_rocket.DBPlugin"/>
     <plugin name="ViewExeclPlugin" value="com.cardpay.banksaler_rocket.ViewExeclPlugin"/>
+    <plugin name="TakePhotoPlugin" value="com.cardpay.banksaler_rocket.TakePhotoPlugin"/>
+    <plugin name="CapturePhotosPlugin" value="com.cardpay.banksaler_rocket.CapturePhotosPlugin"/>
+    <plugin name="CoordinateTranslatePlugin" value="com.cardpay.banksaler_rocket.CoordinateTranslatePlugin"/>
+    <plugin name="GetLocationOffline" value="com.cardpay.banksaler_rocket.GetLocationOffline"/>
+    <plugin name="GpsToBd09llPlugin" value="com.cardpay.banksaler_rocket.GpsToBd09llPlugin"/>
 </plugins>

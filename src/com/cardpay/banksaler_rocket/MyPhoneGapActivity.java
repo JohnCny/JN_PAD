@@ -13,6 +13,7 @@ public class MyPhoneGapActivity extends DroidGap {
 	public void onCreate(Bundle savedInstanceState) {
 		//加载程序
 		super.onCreate(savedInstanceState);
+		super.setIntegerProperty("loadUrlTimeoutValue", 20000);
 		super.loadUrl("file:///android_asset/www/index.html");
 		
 		//启动后台upload服务

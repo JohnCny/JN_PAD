@@ -13,13 +13,13 @@ function mycpgl(){
 		var contsnt="";
 		var title = "<div class='title'>" +
 		 			"<img src='images/back.png' onclick='mywdsy()'/>产品查询" +
-		 			"<input type='text' style='margin:13px 40px;' placeholder='搜索' onkeyup='search(this)'/>" +
+//		 			"<input type='text' style='margin:13px 40px;' placeholder='搜索' onkeyup='search(this)'/>" +
 		 			"</div>"+  
 		 			"<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+"";
 		for(var i = 0;i<objs.totalCount;i++){
-			contsnt = "<div class='cplb' onclick='mycpxx1()'>" +
-					            "<img src='images/cp/jqt.png' title='集群通'/>" +
-					            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
+			contsnt = "<div class='cplb' >" +
+					          "<img src='images/cp/jqt.png' title='抵押贷'/>" +
+				            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
 					            "<span class='cpqx'>产品期限："+objs.result[i].prodLiTime+"</span>"+
 					            "<span class='cpll'>产品利率(%)："+objs.result[i].rateRange+"</span>"+
 					            "<img src='images/new.png' class='new'/>" +
@@ -27,6 +27,8 @@ function mycpgl(){
 			content = content+contsnt;
 		}
 		 $("#mainPage").html(title + content+"</div>");
+		 var oDiv=document.getElementsByClassName("cplb");
+		 xxxx(objs);
 		 window.parent.resizeFrame();
 	}
 /*$("#mainPage").html("<div class='title'>" +
@@ -116,143 +118,281 @@ function mycpgl(){
                     "</div>");*/
     $(".right").hide();
     $("#mainPage").show();
+    
+}
+//双闭包为div添加onclick事件
+function xxxx(objs){
+	 var oDiv=document.getElementsByClassName("cplb");
+	 for(var i=0;i<oDiv.length;i++){
+		 oDiv[i].onclick=(function(i){
+			 return function(){
+				 mycpxx1(objs.result[i].productName)
+			 }
+		 })(i)
+	 }
+	
 }
 //产品信息
-function mycpxx1(){
+function mycpxx1(productName){
 window.scrollTo(0,0);//滚动条回到顶端
+var showinfor;
+var lock=false;
+var diyidaiA="<td style='width:50%;padding:1% 2%;'>" +
+"<div class='cpTitle'>产品类别:</div>"+
+"<div class='cpMessage'>抵押类贷款</div>"+
+"<div class='cpTitle'>产品名称:</div>"+
+"<div class='cpMessage'>抵易贷A款</div>"+
+"<div class='cpTitle'>贷款金额:</div>"+
+"<div class='cpMessage'>最高500万（不超过抵押物的70%）</div>"+
+"<div class='cpTitle'>还款方式:</div>"+
+"<div class='cpMessage'>按月付息，到期还本或按月等额本息</div>"+
+"<div class='cpTitle'>适用利率:</div>"+
+"<div class='cpMessage'>按约定利率执行</div>"+
+"<div class='cpTitle'>授信期限:</div>"+
+"<div class='cpMessage'>1-3年</div>"+
+"<div class='cpTitle'>担保方式:</div>"+
+"<div class='cpMessage'>房产抵押</div>";
+
+var diyidaiB="<td style='width:50%;padding:1% 2%;'>" +
+"<div class='cpTitle'>产品类别:</div>"+
+"<div class='cpMessage'>抵押类贷款</div>"+
+"<div class='cpTitle'>产品名称:</div>"+
+"<div class='cpMessage'>抵易贷B款</div>"+
+"<div class='cpTitle'>贷款金额:</div>"+
+"<div class='cpMessage'>最高500万（不超过抵押物的100%）</div>"+
+"<div class='cpTitle'>还款方式:</div>"+
+"<div class='cpMessage'>按月付息，到期还本或按月等额本息</div>"+
+"<div class='cpTitle'>适用利率:</div>"+
+"<div class='cpMessage'>按约定利率执行</div>"+
+"<div class='cpTitle'>授信期限:</div>"+
+"<div class='cpMessage'>1-3年</div>"+
+"<div class='cpTitle'>担保方式:</div>"+
+"<div class='cpMessage'>房产抵押+保证人担保</div>";
+
+var baoyidai="<td style='width:50%;padding:1% 2%;'>" +
+"<div class='cpTitle'>产品类别:</div>"+
+"<div class='cpMessage'>保证类贷款</div>"+
+"<div class='cpTitle'>产品名称:</div>"+
+"<div class='cpMessage'>保易贷</div>"+
+"<div class='cpTitle'>贷款金额:</div>"+
+"<div class='cpMessage'>最高100万</div>"+
+"<div class='cpTitle'>还款方式:</div>"+
+"<div class='cpMessage'>按月付息，到期还本或按月等额本息</div>"+
+"<div class='cpTitle'>适用利率:</div>"+
+"<div class='cpMessage'>按约定利率执行</div>"+
+"<div class='cpTitle'>授信期限:</div>"+
+"<div class='cpMessage'>1-2年</div>"+
+"<div class='cpTitle'>担保方式:</div>"+
+"<div class='cpMessage'>保证人担保</div>";
+
+var chengyidaiA="<td style='width:50%;padding:1% 2%;'>" +
+"<div class='cpTitle'>产品类别:</div>"+
+"<div class='cpMessage'>信用类贷款</div>"+
+"<div class='cpTitle'>产品名称:</div>"+
+"<div class='cpMessage'>诚易贷A款</div>"+
+"<div class='cpTitle'>贷款金额:</div>"+
+"<div class='cpMessage'>最高50</div>"+
+"<div class='cpTitle'>还款方式:</div>"+
+"<div class='cpMessage'>按月等额本息</div>"+
+"<div class='cpTitle'>适用利率:</div>"+
+"<div class='cpMessage'>按约定利率执行</div>"+
+"<div class='cpTitle'>授信期限:</div>"+
+"<div class='cpMessage'>1年</div>"+
+"<div class='cpTitle'>担保方式:</div>"+
+"<div class='cpMessage'>信用免担保</div>";
+
+var chengyidaiB="<td style='width:50%;padding:1% 2%;'>" +
+"<div class='cpTitle'>产品类别:</div>"+
+"<div class='cpMessage'>信用类贷款</div>"+
+"<div class='cpTitle'>产品名称:</div>"+
+"<div class='cpMessage'>诚易贷B款</div>"+
+"<div class='cpTitle'>贷款金额:</div>"+
+"<div class='cpMessage'>最高50万</div>"+
+"<div class='cpTitle'>还款方式:</div>"+
+"<div class='cpMessage'>随借随还按日计息</div>"+
+"<div class='cpTitle'>适用利率:</div>"+
+"<div class='cpMessage'>按约定利率执行</div>"+
+"<div class='cpTitle'>授信期限:</div>"+
+"<div class='cpMessage'>1年</div>"+
+"<div class='cpTitle'>担保方式:</div>"+
+"<div class='cpMessage'>信用免担保</div>";
+
+var posliushuidai="<td style='width:50%;padding:1% 2%;'>" +
+"<div class='cpTitle'>产品类别:</div>"+
+"<div class='cpMessage'>信用类贷款</div>"+
+"<div class='cpTitle'>产品名称:</div>"+
+"<div class='cpMessage'>POS流水贷</div>"+
+"<div class='cpTitle'>适用人群:</div>"+
+"<div class='cpMessage'>已安装本行POS机具的个体工商户或小微企业主</div>"+
+"<div class='cpTitle'>贷款金额:</div>"+
+"<div class='cpMessage'>最高50万</div>"+
+"<div class='cpTitle'>还款方式:</div>"+
+"<div class='cpMessage'>按月付息，到期还本或按月等额本息</div>"+
+"<div class='cpTitle'>适用利率:</div>"+
+"<div class='cpMessage'>按约定利率执行</div>"+
+"<div class='cpTitle'>授信期限:</div>"+
+"<div class='cpMessage'>1年</div>"+
+"<div class='cpTitle'>担保方式:</div>"+
+"<div class='cpMessage'>信用免担保</div>";
+if(productName=="POS流水贷"){
+	 showinfor=posliushuidai;
+	 lock=true;
+}else if(productName=="抵易贷A款"){
+	 showinfor=diyidaiA;
+	 lock=true;
+}else if(productName=="抵易贷B款"){
+	 showinfor=diyidaiB;
+	 lock=true;
+}else if(productName=="保易贷"){
+	 showinfor=baoyidai;
+	 lock=true;
+}else if(productName=="诚易贷B款"){
+	 showinfor=chengyidaiB;
+	 lock=true;
+}else if(productName=="诚易贷A款"){
+	 showinfor=chengyidaiA;
+	 lock=true;
+}else{
+	mycpgl();
+	window.wxc.xcConfirm("无详细产品信息", "info"); 
+}
+if(lock){	
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mycpgl()'/>集群通</div>"+  
-                    "<div class='content' style='padding-bottom:1em'>"+
-                        "<table>" +
-                            "<tr>" +
-                                "<td style='width:50%;padding:1% 2%;'>" +
-                                    "<div class='cpTitle'>产品类别:</div>"+
-                                    "<div class='cpMessage'>经营性贷款</div>"+
-                                    "<div class='cpTitle'>产品介绍:</div>"+
-                                    "<div class='cpMessage'>“集群通”是太原市城区农村信用合作联社小微金融事业部为适应太原市小微市场的需要，为满足太原市小微企业主的融资需求，基于小微企业主的经营情况，向在辖区专业市场内的、从事正当生意的小微企业主发放的用于满足其生产经营资金需求的贷款!</div>"+
-                                    "<div class='cpTitle'>适用对象:</div>"+
-                                    "<div class='cpMessage'>“集群通”的适用对象为辖区专业市场内有稳定收入的商户，包括但不限于商会、协会、市场、商场内的商户。</div>"+ 
-                                    "<div class='cpTip'>额度更高</div>"+
-                                    "<div class='cpMessage cpTd'>最低5000元，最高500万！</div>"+
-                                    "<div class='cpTip'>效率更高</div>"+
-                                    "<div class='cpMessage cpTd'>按照标准化流程，3-5个工作日内给客户一个满意答复。</div>"+
-                                    "<div class='cpTip'>门槛更低</div>"+
-                                    "<div class='cpMessage cpTd'>长期（1年）居住本地，且从事生产经营6个月以上，均可申请办理贷款。</div>"+
-                                    "<div class='cpTip'>担保更灵活</div>"+
-                                    "<div class='cpMessage cpTd'>注重第一还来源，并不过分关注担保人，只要求担保人长期居住本地且每月有稳定收入。</div>"+
-                                "</td>" +
-                                "<td style='vertical-align:top;padding:1% 2%;'>" +
-                                    "<div class='cpTitle'>办理流程:</div>"+
-                                    "<img src='images/lc.png'/>"+
-                                "</td>" +
-                            "</tr>" +
-                        "</table>"+
-                        "<table class='cpTable llTable1'>"+
-                            "<tr>"+                             
-                                "<th colspan='5'>经营性利率</th>"+  
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<th>期数</th>"+               
-                                "<th>每月还款</th>"+               
-                                "<th>利息</th>"+               
-                                "<th>本金</th>"+               
-                                "<th>剩余贷款金额</th>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>1</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>129.17</td>"+ 
-                                "<td>773.41</td>"+ 
-                                "<td>9226.59</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>2</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>119.18</td>"+ 
-                                "<td>783.40</td>"+ 
-                                "<td>8443.19</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>3</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>105.54</td>"+ 
-                                "<td>797.04</td>"+ 
-                                "<td>7646.15</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>4</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>89.76</td>"+ 
-                                "<td>803.82</td>"+ 
-                                "<td>6842.33</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>5</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>85.53</td>"+ 
-                                "<td>817.05</td>"+ 
-                                "<td>6025.28</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>6</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>77.83</td>"+ 
-                                "<td>824.75</td>"+ 
-                                "<td>5200.53</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>7</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>67.17</td>"+ 
-                                "<td>835.41</td>"+ 
-                                "<td>4365.12</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>8</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>50.93</td>"+ 
-                                "<td>851.65</td>"+ 
-                                "<td>3513.47</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>9</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>45.38</td>"+ 
-                                "<td>857.20</td>"+ 
-                                "<td>2656.27</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>10</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>33.20</td>"+ 
-                                "<td>869.38</td>"+ 
-                                "<td>1786.89</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>11</td>"+         
-                                "<td>902.58</td>"+   
-                                "<td>23.08</td>"+ 
-                                "<td>879.50</td>"+ 
-                                "<td>907.29</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<td>12</td>"+         
-                                "<td>918.35</td>"+   
-                                "<td>10.96</td>"+ 
-                                "<td>907.39</td>"+ 
-                                "<td>0.00</td>"+
-                            "</tr>"+
-                            "<tr>"+                             
-                                "<th>总计</th>"+               
-                                "<th>10846.73</th>"+               
-                                "<th>846.73</th>"+               
-                                "<th>10000</th>"+               
-                                "<th></th>"+
-                            "</tr>"+
-                        "</table>"+
-                    "</div>");
-    $(".right").hide();
-    $("#mainPage").show();
-}//产品信息
+                   "<div class='content' style='padding-bottom:1em'>"+
+                       "<table>" +
+                           "<tr>" +showinfor+
+//                               "<td style='width:50%;padding:1% 2%;'>" +
+//                                   "<div class='cpTitle'>产品类别:</div>"+
+//                                   "<div class='cpMessage'>经营性贷款</div>"+
+//                                   "<div class='cpTitle'>产品介绍:</div>"+
+//                                   "<div class='cpMessage'>“集群通”是太原市城区农村信用合作联社小微金融事业部为适应太原市小微市场的需要，为满足太原市小微企业主的融资需求，基于小微企业主的经营情况，向在辖区专业市场内的、从事正当生意的小微企业主发放的用于满足其生产经营资金需求的贷款!</div>"+
+//                                   "<div class='cpTitle'>适用对象:</div>"+
+//                                   "<div class='cpMessage'>“集群通”的适用对象为辖区专业市场内有稳定收入的商户，包括但不限于商会、协会、市场、商场内的商户。</div>"+ 
+//                                   "<div class='cpTip'>额度更高</div>"+
+//                                   "<div class='cpMessage cpTd'>最低5000元，最高500万！</div>"+
+//                                   "<div class='cpTip'>效率更高</div>"+
+//                                   "<div class='cpMessage cpTd'>按照标准化流程，3-5个工作日内给客户一个满意答复。</div>"+
+//                                   "<div class='cpTip'>门槛更低</div>"+
+//                                   "<div class='cpMessage cpTd'>长期（1年）居住本地，且从事生产经营6个月以上，均可申请办理贷款。</div>"+
+//                                   "<div class='cpTip'>担保更灵活</div>"+
+//                                   "<div class='cpMessage cpTd'>注重第一还来源，并不过分关注担保人，只要求担保人长期居住本地且每月有稳定收入。</div>"+
+//                               "</td>" +
+                               "<td style='vertical-align:top;padding:1% 2%;'>" +
+                                   "<div class='cpTitle'>办理流程:</div>"+
+                                   "<img src='images/lc.png'/>"+
+                               "</td>" +
+                           "</tr>" +
+                       "</table>"+
+//                       "<table class='cpTable llTable1'>"+
+//                           "<tr>"+                             
+//                               "<th colspan='5'>经营性利率</th>"+  
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<th>期数</th>"+               
+//                               "<th>每月还款</th>"+               
+//                               "<th>利息</th>"+               
+//                               "<th>本金</th>"+               
+//                               "<th>剩余贷款金额</th>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>1</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>129.17</td>"+ 
+//                               "<td>773.41</td>"+ 
+//                               "<td>9226.59</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>2</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>119.18</td>"+ 
+//                               "<td>783.40</td>"+ 
+//                               "<td>8443.19</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>3</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>105.54</td>"+ 
+//                               "<td>797.04</td>"+ 
+//                               "<td>7646.15</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>4</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>89.76</td>"+ 
+//                               "<td>803.82</td>"+ 
+//                               "<td>6842.33</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>5</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>85.53</td>"+ 
+//                               "<td>817.05</td>"+ 
+//                               "<td>6025.28</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>6</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>77.83</td>"+ 
+//                               "<td>824.75</td>"+ 
+//                               "<td>5200.53</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>7</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>67.17</td>"+ 
+//                               "<td>835.41</td>"+ 
+//                               "<td>4365.12</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>8</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>50.93</td>"+ 
+//                               "<td>851.65</td>"+ 
+//                               "<td>3513.47</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>9</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>45.38</td>"+ 
+//                               "<td>857.20</td>"+ 
+//                               "<td>2656.27</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>10</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>33.20</td>"+ 
+//                               "<td>869.38</td>"+ 
+//                               "<td>1786.89</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>11</td>"+         
+//                               "<td>902.58</td>"+   
+//                               "<td>23.08</td>"+ 
+//                               "<td>879.50</td>"+ 
+//                               "<td>907.29</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<td>12</td>"+         
+//                               "<td>918.35</td>"+   
+//                               "<td>10.96</td>"+ 
+//                               "<td>907.39</td>"+ 
+//                               "<td>0.00</td>"+
+//                           "</tr>"+
+//                           "<tr>"+                             
+//                               "<th>总计</th>"+               
+//                               "<th>10846.73</th>"+               
+//                               "<th>846.73</th>"+               
+//                               "<th>10000</th>"+               
+//                               "<th></th>"+
+//                           "</tr>"+
+//                       "</table>"+
+                   "</div>");
+   $(".right").hide();
+   $("#mainPage").show();
+}
+}
+
+//产品信息
 function mycpxx2(){
 window.scrollTo(0,0);//滚动条回到顶端
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mycpgl()'/>繁星通</div>"+  

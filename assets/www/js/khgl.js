@@ -5,6 +5,7 @@ $("#mainPage").html("<div class='title'>客户管理</div>"+
                     "<div class='content'>" +
                         "<div class='box khgl' onclick='newUser()'><img src='images/xjkh.jpg'/><span>新建客户</span></div>"+
                         "<div class='box khgl' onclick='editUser()'><img src='images/khwh.jpg'/><span>客户维护</span></div>"+
+                        "<div class='box khgl' onclick='myzbgl()'><img src='images/wdzb.png'/><span>众包管理</span></div>"+
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
@@ -27,7 +28,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykh
                         "<p>手机号码:<input type='text' id = 'phone'/></p>"+
                         "<p>" +
                             "<input type='button' id ='sure' class='btn btn-large btn-primary' value='确定'/>"+  
-                        "</p>" +
+                            "<input type='button' class='btn btn-large' value='返回' onclick='mykhgl()'/>"+
+                            "</p>" +
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();    
@@ -39,7 +41,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykh
 		var tel = $("#phone").val();
 		var userId = window.sessionStorage.getItem("userId");
 		if(cardId==""||cardId==null||chineseName==""||chineseName==null){
-			alert("证件号码或姓名不能为空");
+//			alert("证件号码或姓名不能为空");
+			window.wxc.xcConfirm("证件号码或姓名不能为空", "warning");
 		}else{
 			var wsLoginUrl = "/ipad/product/customerInsert.json"+"?cardId="+cardId+"&chineseName="+chineseName+"&cardType="+cardType+"&userId="+userId+"&phoneNumber="+tel;
 			
@@ -49,7 +52,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykh
 		        dataType:'json',
 		        success: function (json) {
 		        	var objs = $.evalJSON(json);
-		        	alert(objs.message);
+//		        	alert(objs.message);
+		        	window.wxc.xcConfirm(objs.message, "success");
 		        	document.getElementById("khname").value = ""
 		        	document.getElementById("cardId").value = ""
 		        	document.getElementById("phone").value = ""

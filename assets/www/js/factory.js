@@ -3,7 +3,8 @@
  */
 var crud = crud || {};
 crud.dom = crud.dom || {};
-var wsHost = "http://172.23.253.1:8080/PCCredit";
+var wsHost = "http://192.168.3.252:8080/PCCredit";
+//var wsHost = "http://61.98.0.32:9080/pccredit_jn";
 //带auth的GET
 crud.dom.GETAuth = function() {
     this.doGetAuth = function(url,auth,callback,errorMsg) {
@@ -22,7 +23,8 @@ crud.dom.GETAuth = function() {
             error : function(e,xhr,opt) {
                 // 请求出错处理
                 //alert("请求出错(请检查网络连接.)");
-                alert(errorMsg);
+//                alert(errorMsg);
+                window.wxc.xcConfirm(errorMsg, "error"); 
             }
         });
     };
@@ -43,10 +45,33 @@ crud.dom.GET = function() {
             error : function(e,xhr,opt) {
                 // 请求出错处理
                 //alert("请求出错(请检查网络连接.)");
-                alert(errorMsg);
+//                alert(errorMsg);
+            	window.wxc.xcConfirm(errorMsg, "error"); 
             }
         });
     };
+};
+// 子函数1：GET--获取 同步
+crud.dom.GETT = function() {
+	this.doGet = function(url, callback,errorMsg) {
+		$.ajax({
+			url : wsHost + url,
+			type : "GET",
+			timeout : 10000,
+			dataType : 'json',
+			async:false,
+			success : function(json) {
+				//回调
+				callback(json);
+			},
+			error : function(e,xhr,opt) {
+				// 请求出错处理
+				//alert("请求出错(请检查网络连接.)");
+//				alert(errorMsg);
+				window.wxc.xcConfirm(errorMsg, "error"); 
+			}
+		});
+	};
 };
 
 // 子函数2：POST--添加
@@ -65,7 +90,8 @@ crud.dom.POST = function() {
             error : function(xhr) {
                 // 请求出错处理
                 //alert("请求出错(请检查网络连接.)");
-                alert(errorMsg);
+//                alert(errorMsg);
+                window.wxc.xcConfirm(errorMsg, "error"); 
             }
         });
     };
@@ -87,7 +113,8 @@ crud.dom.PUT = function() {
             error : function(xhr) {
                 // 请求出错处理
                 //alert("请求出错(请检查网络连接.)");
-                alert(errorMsg);
+//                alert(errorMsg);
+                window.wxc.xcConfirm(errorMsg, "error"); 
             }
         });
     };
@@ -109,7 +136,8 @@ crud.dom.DELETE = function() {
             error : function(xhr) {
                 // 请求出错处理
                 //alert("请求出错(请检查网络连接.)");
-                alert(errorMsg);
+//                alert(errorMsg);
+            	window.wxc.xcConfirm(errorMsg, "error"); 
             }
         });
     };
@@ -147,7 +175,8 @@ crud.dom.MEDIA = function() {
         
         function fail(error) {
             //alert("An error has occurred: Code = " + error.code);
-            alert(errorMsg);
+//            alert(errorMsg);
+        	window.wxc.xcConfirm(errorMsg, "error"); 
         }
     };
 };
@@ -173,7 +202,8 @@ crud.dom.MEDIAFILE = function() {
         
         function fail(error) {
             //alert("An error has occurred: Code = " + error.code);
-            alert(errorMsg);
+//            alert(errorMsg);
+        	window.wxc.xcConfirm(errorMsg, "error"); 
         }
     };
 };

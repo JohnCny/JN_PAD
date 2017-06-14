@@ -10,3 +10,4 @@ PhoneGap.addConstructor(function() {
     // 如果不支持window.plugins,则创建并设置
     PhoneGap.addPlugin('cardPluginAPI', new cardPluginAPI());
 });
+

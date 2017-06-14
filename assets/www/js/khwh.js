@@ -10,32 +10,43 @@ function khzlcx(){
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
-
 	$("#select").click(function() {
 		var customerName = $("#customerName").val();
 		var cardId = $("#cardId").val();
-		if(cardId!=""||customerName!=""){
-			var objs={};
-			objs.chineseName=customerName;
-			objs.cardId=cardId;
-			khcx(objs);
-		}else{
-			alert("请输入证件号码或姓名");
-		}
+//		if(cardId!=""||customerName!=""){
+		var objs={};
+		objs.chineseName=customerName;
+		objs.cardId=cardId;
+		khcx(objs);
+//		}else{
+//		alert("请输入证件号码或姓名");
+//		}
 	})
 }
 //客户维护-客户资料查询-查询
 function khcx(objs){
 	var userId = window.sessionStorage.getItem("userId");
+	var userType = window.sessionStorage.getItem("userType");
 	var obj = null;
-	var wsLoginUrl = "/ipad/product/selectCustomerInfoByCardId.json"+"?cardId="+objs.cardId+"&chineseName="+objs.chineseName+"&userId="+userId;
+	var tmp ="";
+	var result=[];
+	var page=1;
+	var j = 1;
+	var head="<tr>"+  
+	"<th></th>"+
+	"<th>客户姓名</th>"+
+	"<th>证件类型</th>"+
+	"<th>证件号码</th>"+
+	"<th>手机</th>"+
+	"</tr>";
+	var wsLoginUrl = "/ipad/product/selectCustomerInfoByCardId.json"+"?cardId="+objs.cardId+"&chineseName="+objs.chineseName+"&userId="+userId+"&userType="+userType;
 	$.ajax({
 		url:wsHost + wsLoginUrl,
 		type: "GET",
 		dataType:'json',
 		success: function (json) {
 			obj = $.evalJSON(json);
-			if(obj.custInfo!=null){
+			if(obj.custInfo.length!=0){
 				window.scrollTo(0,0);//滚动条回到顶端
 //				$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khzlcx()'/>客户管理-客户资料查询</div>"+  
 //				"<div class='content'>" +
@@ -54,42 +65,498 @@ function khcx(objs){
 //				"</table>"+
 //				"<p><input type='button' class='btn btn-large btn-primary' value='客户资料查询' id = 'khzlcx'/></p>" +
 //				"</div>");
-				$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khzlcx()'/>客户管理-客户资料查询-客户原始信息</div>"+  
+				for(var i = 0;i<obj.custInfo.length;i++){
+
+					if(obj.custInfo[i].cardType=="0"){
+						obj.custInfo[i].cardType="身份证";
+					}else if(obj.custInfo[i].cardType=="1"){
+						obj.custInfo[i].cardType="军官证";
+					}else if(obj.custInfo[i].cardType=="2"){
+						obj.custInfo[i].cardType="护照";
+					}else if(obj.custInfo[i].cardType=="3"){
+						obj.custInfo[i].cardType="香港身份证";
+					}else if(obj.custInfo[i].cardType=="4"){
+						obj.custInfo[i].cardType="澳门身份证";
+					}else if(obj.custInfo[i].cardType=="5"){
+						obj.custInfo[i].cardType="台湾身份证";
+					}
+					tmp=tmp+"<tr onclick='check(this)'>"+
+					"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.custInfo[i].id+"@"+
+					obj.custInfo[i].tyCustomerId+"'"+"/>"+"</span></td>"+
+					"<td>"+obj.custInfo[i].chineseName+"</td>"+
+					"<td>"+obj.custInfo[i].cardType+"</td>"+
+					"<td>"+obj.custInfo[i].cardId+"</td>"+
+					"<td>"+obj.custInfo[i].telephone+"</td>"+
+					"</tr>";
+
+					if((i+1)%5==0){
+						result[j]=tmp;
+						j++;
+						tmp="";
+					}
+				}
+				result[j]=tmp;
+
+				$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khzlcx()'/>客户管理-客户资料查询-客户基本信息</div>"+  
 						"<div class='content'>"+
-						"<table class='cpTable' style='text-align:center;'>"+
-						"<tr>"+                             
-						"<th>客户姓名</th>"+
-						"<th>证件类型</th>"+
-						"<th>证件号码</th>"+
-						"<th>手机</th>"+
-						"</tr>"+
-						obj.custInfo +
+						"<table id = 'khxxlb' class='cpTable' style='text-align:center;'>"+
+						head+result[page]+
 						"</table>"+
-						"<p><input type='button' class='btn btn-large btn-primary' value='返回' onclick='khzlcx()'/></p>"+
+						"<p>" +
+						"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
+						"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
+						"<input type='button' class='btn btn-large btn-primary' value='查看原始信息' id = 'ckysxx'/>"+
+						"<input type='button' class='btn btn-large btn-primary' value='查看客户详细信息' id = 'ckqtxx'/>"+
+						"<input type='button' class='btn btn-large' value='返回' onclick='khzlcx()'/></p>"+
 				"</div>");
 				$(".right").hide();
 				$("#mainPage").show();
 
-				$("#khzlcx").click(function(){
+				$("#ckysxx").click(function(){
+					if ($("input[type='radio']").is(':checked')) {
+						var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+						objs.customerInforId = values[1];
+						if(objs.customerInforId!=""){
+							khysxxcx(objs);
+						}else{
+//							alert("无原始信息");
+							window.wxc.xcConfirm("无原始信息", "info");
+						}
 
-					khysxx(obj);
-
+					}else{
+//						alert("请选择一行");
+						window.wxc.xcConfirm("请选择一行", "warning");
+					}
+				})
+				$("#ckqtxx").click(function(){
+					if ($("input[type='radio']").is(':checked')) {
+						var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+						objs.customerId=values[0];
+						ckkhqtxx(objs);
+					}else{
+//						alert("请选择一行");
+						window.wxc.xcConfirm("请选择一行", "warning");
+					}
+				})
+				$("#xyy").click(function(){
+					page=page+1;
+					if(result[page]){
+						$("#khxxlb").html(head+result[page]);
+					}else{
+//						alert("当前已经是最后一页");
+						window.wxc.xcConfirm("当前已经是最后一页", "info");
+						page=page-1;
+					}
+				})
+				$("#syy").click(function(){
+					page=page-1;
+					if(result[page]){
+						$("#khxxlb").html(head+result[page]);
+					}else{
+//						alert("当前已经是第一页");
+						window.wxc.xcConfirm("当前已经是第一页", "info");
+						page = page+1;
+					}
 				})
 			}else{ 
-				alert("查询失败，无此人信息或不是您的客户");
+//				alert("查询失败，无此人信息或不是您的客户");
+				window.wxc.xcConfirm("查询失败，无此人信息或不是您的客户", "error");
 			}
 
 		}
 	})
-
 }
+//客户其他信息查看
+function ckkhqtxx(objs){
+	var selectall="/ipad/customerIntopiece/selectAll.json";
+	$.get(wsHost+selectall,{customerId:objs.customerId},callbackresult);
+	function callbackresult(json){
+		var obj = $.evalJSON(json);
+		window.scrollTo(0,0);//滚动条回到顶端
+		$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khcx("+ JSON.stringify(objs).replace(/"/g, '&quot;') +")'/>客户管理-客户资料查询-客户基本信息-客户详细信息</div>"+  
+				"<div class='content'>" +
+				"<div class='tabplace'>"+
+				"<ul class='tab' >"+
+				"<li name='tab2' id ='grxx' style='background:#22a5d9;'>个人信息</li>"+
+				"<li name='tab2' id ='fcxx'>房产信息</li>"+
+				"<li name='tab2' id = 'jtxx'>家庭信息</li>"+
+				"<li name='tab2' id = 'ccxx'>车产信息</li>"+
+				"<li name='tab2' id = 'lxrxx'>联系人信息</li>"+
+				"<li name='tab2' id = 'jzxx'>居住信息</li>"+
+				"<li name='tab2' id = 'qyjbxx'>企业基本信息</li>"+
+				"<li name='tab2' id = 'qyywxx'>企业业务信息</li>"+
+				"<li name='tab2' id = 'qydpxx'>企业店铺信息</li>"+
+				"<li name='tab2' id = 'qykhxx'>企业开户信息</li>"+
+				"<li name='tab2' id = 'qtxx'>其他信息</li>"+
+				"</ul></div>"+
+				"<div id = 'resultshow'>"+
+				"<table class='cpTable'>"+
+				"<tr>"+                             
+				"<td style='width:110px;'>申请人性别</td>"+         
+				"<td>" +obj.geren3.sex+
+				"</td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<td>婚姻状况</td>"+         
+				"<td>" +obj.geren3.marriage+
+				"</td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<td>户籍所在地</td>"+          
+				"<td><input type='text' value='"+obj.geren3.domicileplace+"'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<td>户籍详细地址</td>"+  
+				"<td><input type='text' class='long' value='"+obj.geren3.domicileinfo+"'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<td>家庭住址</td>"+    
+				"<td><input type='text' class='long' value='"+obj.geren3.fmallyliveplace+"'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<td>最高学位学历</td>"+           
+				"<td>" +obj.geren3.education+
+				"</td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<td>固定电话</td>"+    
+				"<td><input type='text' value='"+obj.geren3.telephone+"'/></td>"+
+				"</tr>"+
+				"<tr>"+                             
+				"<td>移动电话</td>"+    
+				"<td><input type='text' value='"+obj.geren3.mobilephone+"'/></td>"+
+				"</tr>"+
+				"</table>"+
+				"</div>"+
+				"<p><input type='button' class='btn btn-large' value='返回' onclick='khcx("+ JSON.stringify(objs).replace(/"/g, '&quot;') +")'/></p>"+
+		"</div>");
+		$(".right").hide();
+		$("#mainPage").show();
+		
+		var grxx="<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:110px;'>申请人性别</td>"+         
+		"<td>" +obj.geren3.sex+
+		"</td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>婚姻状况</td>"+         
+		"<td>" +obj.geren3.marriage+
+		"</td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>户籍所在地</td>"+          
+		"<td><input type='text' value='"+obj.geren3.domicileplace+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>户籍详细地址</td>"+  
+		"<td><input type='text' class='long' value='"+obj.geren3.domicileinfo+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>家庭住址</td>"+    
+		"<td><input type='text' class='long' value='"+obj.geren3.fmallyliveplace+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>最高学位学历</td>"+           
+		"<td>" +obj.geren3.education+
+		"</td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>固定电话</td>"+    
+		"<td><input type='text' value='"+obj.geren3.telephone+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>移动电话</td>"+    
+		"<td><input type='text' value='"+obj.geren3.mobilephone+"'/></td>"+
+		"</tr>"+
+		"</table>";
+		
+		var jtxx= "<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:145px'>家庭成员</td>"+         
+		"<td><input type='text' value='"+obj.jiating3.familyNum+"'/></td>"+
+		"<td>家庭和睦</td>"+          
+		"<td>"+obj.jiating3.familyHarmony+"</td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>经济依赖人数</td>"+  
+		"<td><input type='text' value='"+obj.jiating3.economicNum+"'/></td>"+
+		"<td>配偶姓名</td>"+    
+		"<td><input type='text' value='"+obj.jiating3.mateName+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>配偶证件号码</td>"+    
+		"<td><input type='text' value='"+obj.jiating3.mateCardId+"'/></td>"+
+		"<td>配偶工作单位</td>"+    
+		"<td><input type='text' value='"+obj.jiating3.mateJobAdress+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>配偶年收入</td>"+    
+		"<td><input type='text' value='"+obj.jiating3.mateIncome+"'/></td>"+
+		"<td>配偶电话</td>"+    
+		"<td><input type='text' value='"+obj.jiating3.mateTel+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>配偶其他状况说明</td>"+    
+		"<td><input type='text' value='"+obj.jiating3.mateOtherInfo+"'/></td>"+
+		"<td>子女工作状态</td>"+    
+		"<td><input type='text' value='"+obj.jiating3.childJob+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>子女教育状态</td>"+    
+		"<td colspan='3'><input type='text' value='"+obj.jiating3.childEducation+"'/></td>"+
+		"</tr>"+
+		"</table>";
+		var jzxx="<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:145px;'>居住类型</td>"+         
+		"<td><input type='text' value='"+obj.juzhu3.houseClasses+"'/></td>"+              
+		"<td>住房装修情况</td>"+          
+		"<td><input type='text' value='"+obj.juzhu3.decorateSituation+"'/></td>"+ 
+		"</tr>"+
+		"<tr>"+                             
+		"<td>住房面积</td>"+  
+		"<td><input type='text' value='"+obj.juzhu3.houseAera+"'/></td>"+
+		"<td>住房格局</td>"+    
+		"<td><input type='text' value='"+obj.juzhu3.houseSturcture+"'/></td>"+ 
+		"</tr>"+
+		"<tr>"+                             
+		"<td>居住起始年月</td>"+    
+		"<td><input type='text' value='"+obj.juzhu3.beginDate+"'/></td>"+ 
+		"<td>是否按揭</td>"+    
+		"<td><input type='text' value='"+obj.juzhu3.wetherMortgage+"'/></td>"+ 
+		"</tr>"+
+		"<tr>"+                             
+		"<td>居住场所调查方式</td>"+    
+		"<td><input type='text' value='"+obj.juzhu3.surveyWay+"'/></td>"+ 
+		"</tr>"+
+		"</table>";
+		var qyjbxx= "<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:110px;'>企业名称</td>"+          
+		"<td><input type='text' value='"+obj.qyxx3.companyName+"'/></td>"+
+		"<td>组织类型</td>"+  
+		"<td><input type='text' value='"+obj.qyxx3.organizationPattern+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>法人代表</td>"+    
+		"<td><input type='text' value='"+obj.qyxx3.representative+"'/></td>"+
+		"<td>实际控制人</td>"+    
+		"<td><input type='text' value='"+obj.qyxx3.realControl+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>股东股份情况</td>"+    
+		"<td><input type='text' value='"+obj.qyxx3.stockSituation+"'/></td>"+
+		"<td>营业执照</td>"+           
+		"<td><input type='text' value='"+obj.qyxx3.businessLicense+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>经营起始时间</td>"+    
+		"<td><input type='date' value='"+obj.qyxx3.beginDate+"'/></td>"+
+		"<td>经营年限</td>"+    
+		"<td><input type='text' value='"+obj.qyxx3.plantingYear+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>地址</td>"+    
+		"<td><input type='text' class='long' value='"+obj.qyxx3.adress+"'/></td>"+
+		"<td>电话</td>"+    
+		"<td><input type='text' value='"+obj.qyxx3.telephone+"'/></td>"+
+		"</tr>"+
+		"</table>";
+		var qyywxx="<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:110px;'>主要业务范围</td>"+          
+		"<td><input type='text' value='"+obj.qyyw3.businessLine+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>主要经营模式</td>"+  
+		"<td><input type='text' value='"+obj.qyyw3.businessModel+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>组织架构</td>"+    
+		"<td><input type='text' value='"+obj.qyyw3.orgainizationalStructrue+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>业务流程</td>"+    
+		"<td><input type='text' value='"+obj.qyyw3.businessProcess+"'/></td>"+
+		"</tr>"+
+		"</table>";
+		var qydpxx="<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:150px;'>营业场所类型</td>"+          
+		"<td><input type='text' value='"+obj.qydp3.operationType+"'/></td>"+
+		"</tr>"+  
+		"<tr>"+                                                    
+		"<td>装修情况</td>"+          
+		"<td><input type='text' value='"+obj.qydp3.decorateSituation+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>住房面积</td>"+  
+		"<td><input type='text' value='"+obj.qydp3.houseArea+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>住房格局</td>"+    
+		"<td><input type='text' value='"+obj.qydp3.housePattern+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>启用起始年月</td>"+    
+		"<td><input type='text' value='"+obj.qydp3.beginDate+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>居住场所调查方式</td>"+    
+		"<td><input type='text' value='"+obj.qydp3.methods+"'/></td>"+
+		"</tr>"+
+		"</table>";
+		var qtxx="<textarea placeholder='请在文本框内记录相关情况' style='width:95%;margin-left:2.5%;margin-top:20px;height:250px;'>"+obj.qydp3.otherInfo+"</textarea>";
+		$("#grxx").click(function(){
+			change(this);
+			$("#resultshow").html(grxx);
+		})
+		$("#jtxx").click(function(){
+			change(this);
+			$("#resultshow").html(jtxx);
+		})
+		$("#fcxx").click(function(){
+		change(this);
+		var fcinfo=""
+			for(var i=0;i<obj.fangchan3.length;i++){
+				fcinfo=fcinfo+"<tr>"+    
+				"<td>"+(i+1)+"</td>"+
+				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].houseAddress+"'/></td>"+
+				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].houseArea+"'/></td>"+
+				"<td><input type='date' class='addinput' value='"+obj.fangchan3[i].monetaryDate+"'/></td>"+
+				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].monetaryAmount+"'/></td>"+
+				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].currentAmount+"'/></td>"+
+				"<td>" +
+				obj.fangchan3[i].getWay+
+				"</td>"+
+				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].otherInfo+"'/></td>"+
+				"</tr>";
+			}
+		$("#resultshow").html("<table  class='cpTable' style='text-align:center;'>"+
+				"<tr>"+                             
+				"<th style='width:40px;'>序号</th>"+  
+				"<th>房产地址</th>"+
+				"<th>面积</th>"+
+				"<th>购买日期</th>"+
+				"<th>购买价格</th>"+
+				"<th>现值（公允值）</th>"+
+				"<th>购置方式</th>"+
+				"<th>备注</th>"+
+				"</tr>"+
+				fcinfo+
+				"</table>");
+	})
+	$("#ccxx").click(function(){
+		change(this);
+		var ccinfo="";
+		for(var i=0;i<obj.chechan3.length;i++){
+			ccinfo=ccinfo+"<tr>"+    
+			"<td>"+(i+1)+"</td>"+
+			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].carVersion+"'/></td>"+
+			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].carNumber+"'/></td>"+
+			"<td><input type='date' class='addinput' value='"+obj.chechan3[i].monetaryDate+"'/></td>"+
+			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].monetaryAmount+"'/></td>"+
+			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].currentAmount+"'/></td>"+
+			"<td>" +
+			obj.chechan3[i].getWay+
+			"</td>"+
+			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].otherInfo+"'/></td>"+
+			"</tr>";
+		}
+		$("#resultshow").html("<table  class='cpTable' style='text-align:center;'>"+
+				"<tr>"+                             
+				"<th style='width:40px;'>序号</th>"+  
+				"<th>汽车车型</th>"+
+				"<th>汽车车牌号</th>"+
+				"<th>购买日期</th>"+
+				"<th>购买价格</th>"+
+				"<th>现值（公允值）</th>"+
+				"<th>购置方式</th>"+
+				"<th>备注</th>"+
+				"</tr>"+
+				ccinfo+
+				"</table>");
+	})
+	$("#lxrxx").click(function(){
+		change(this);
+		var lxrinfo="";
+		for(var i=0;i<obj.lianxiren3.length;i++){
+			lxrinfo=lxrinfo+"<tr>"+    
+			"<td>"+(i+1)+"</td>"+
+			"<td><input type='text' class='addinput' value='"+obj.lianxiren3[i].contactName+"'/></td>"+
+			"<td><input type='text' class='addinput' value='"+obj.lianxiren3[i].contactTel+"'/></td>"+
+			"<td><input type='text' class='addinput' value='"+obj.lianxiren3[i].relation+"'/></td>";
+		}
+		$("#resultshow").html("<table class='cpTable'  style='text-align:center;'>"+
+				"<tr>"+                             
+				"<th style='width:40px;'>序号</th>"+                 
+				"<th>联系人姓名</th>"+                   
+				"<th>与客户关系</th>"+   
+				"<th>联系人电话</th>"+  
+				"</tr>"+  
+				"<tr>"+  
+				lxrinfo+
+				"</tr>"+
+				"</table>");
+	})
+	
+	$("#jzxx").click(function(){
+		change(this);
+		$("#resultshow").html(jzxx);
+	})
+	
+	$("#qyjbxx").click(function(){
+		change(this);
+		$("#resultshow").html(qyjbxx);
+	})
+	$("#qyywxx").click(function(){
+		change(this);
+		$("#resultshow").html(qyywxx);
+	})
+	$("#qydpxx").click(function(){
+		change(this);
+		$("#resultshow").html(qydpxx);
+	})
+	$("#qykhxx").click(function(){
+		change(this);
+		var qykhxx1="";
+		for(var i=0;i<obj.kaihu3.length;i++){
+			qykhxx1=qykhxx1+"<tr>"+    
+			"<td>"+(i+1)+"</td>"+
+			"<td><input type='text' class='addinput' value='"+obj.kaihu3[i].openBank+"'/></td>"+
+			"<td><input type='text' class='addinput' value='"+obj.kaihu3[i].accuont+"'/></td>";
+		}
+		$("#resultshow").html("<table id='khxx' class='cpTable' style='text-align:center;'>"+
+				"<tr>"+      
+				"<th style='width:40px;'>序号</th>"+  
+				"<th>开户行</th>"+          
+				"<th>账号</th>"+
+				"</tr>"+
+				qykhxx1+
+				"</table>");
+	})
+	$("#qtxx").click(function(){
+		change(this);
+		$("#resultshow").html(qtxx);
+	})
+	}
+	
+	function change(own){
+		$("li[name='tab2']").css("background","#bfbfbf");
+		own.style.background="#22a5d9";
+	}
+}
+
 //客户维护-客户维护列表---
 function khwhlb(){
 	window.scrollTo(0,0);//滚动条回到顶端	
 	var userId = window.sessionStorage.getItem("userId");
-//	var userType = window.sessionStorage.getItem("userType");
-	var userType = 1;
-	var page = 1;
+	var userType = window.sessionStorage.getItem("userType");
+	var tmp ="";
+	var result={};
+	var page=1;
+	var j = 1;
 	var obj;
 	var head ="<tr>"+   
 	"<th></th>"+ 
@@ -106,36 +573,55 @@ function khwhlb(){
 		dataType:'json',
 		success: function (json) {
 			obj = $.evalJSON(json);
-			alert(obj);
+			for(var i = 0;i<obj.size;i++){
+				tmp=tmp+"<tr onclick='check(this)'>"+
+				"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.result[i].chineseName+"@"+
+				obj.result[i].productName+"@"+obj.result[i].cardId+
+				"@"+obj.result[i].customerId+"@"+obj.result[i].appId+"'"+"/>"+"</span></td>"+
+				"<td>"+i+"</td>"+
+				"<td>"+obj.result[i].chineseName+"</td>"+
+				"<td>"+obj.result[i].cardId+"</td>"+
+				"<td>"+obj.result[i].productName+"</td>"+
+				"<td>"+obj.result[i].userName+"</td>"+
+				"</tr>";
+
+				if((i+1)%5==0){
+					result[j]=tmp;
+					j++;
+					tmp="";
+				}
+			}
+			result[j]=tmp;
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='editUser()'/>客户维护-客户维护列表</div>"+  
 					"<div class='content'>"+
 					"<table id = 'whlb' class='cpTable' style='text-align:center;'>"+
-					head+obj[page]+
+					head+result[page]+
 					"</table>"+
-
 					"<p>"+
 					"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
 					"<input type='button' class='btn btn-large btn-primary' value='添加维护计划' id = 'tjwhjh'/>"+
-					"<input type='button' class='btn btn-large btn-primary' value='返回' onclick='editUser()'/></p>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='editUser()'/></p>"+
 			"</div>");
 			$(".right").hide();
 			$("#mainPage").show();
 			$("#xyy").click(function(){
 				page=page+1;
-				if(obj[page]){
-					$("#whlb").html(head+obj[page]);
+				if(result[page]){
+					$("#whlb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
 			$("#syy").click(function(){
 				page=page-1;
-				if(obj[page]){
-					$("#whlb").html(head+obj[page]);
+				if(result[page]){
+					$("#whlb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -148,9 +634,11 @@ function khwhlb(){
 					objs.getCardId = values[2];
 					objs.customerId = values[3];
 					objs.appId = values[4];
+					objs.currentlo="khwhlb()";
 					tjkhwhjh(objs);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 		}
@@ -162,7 +650,7 @@ function khwhlb(){
 function tjkhwhjh(objs){
 	var khwejhxzurl = "/ipad/custAppInfo/insertMaintenance.json";
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khwhlb()'/>客户维护-客户维护列表-添加客户维护计划</div>"+  
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick = '"+objs.currentlo+"'/>客户维护-客户维护列表-添加客户维护计划</div>"+  
 			"<div class='content'>"+
 			"<table class='cpTable' style='text-align:center;'>"+
 			"<tr>"+                             
@@ -199,7 +687,7 @@ function tjkhwhjh(objs){
 			"</tr>"+
 			"</table>"+
 			"<p><input type='button' class='btn btn-large btn-primary' value='保存并继续' id = 'save'/>" +
-			"<input type='button' class='btn btn-large btn-primary' value='返回' onclick = 'khwhlb()'/></p>"+
+			"<input type='button' class='btn btn-large' value='返回' onclick = '"+objs.currentlo+"'/></p>"+
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
@@ -222,12 +710,14 @@ function tjkhwhjh(objs){
 				},
 				success: function (json) {
 					obj = $.evalJSON(json);
-					alert(obj.result);
+//					alert(obj.result);
+					window.wxc.xcConfirm(obj.result, "success");
 					khwhlb();
 				}
 			})
 		}else{
-			alert("维护天数格式不正确或为空");
+//			alert("维护天数格式不正确或为空");
+			window.wxc.xcConfirm("维护天数格式不正确或为空", "warning");
 		}
 	})
 }   
@@ -236,8 +726,7 @@ function khwhrz(){
 
 	var khwhrz ="/ipad/product/getMaintenance.json";
 	var userId = window.sessionStorage.getItem("userId");
-//	var userType = window.sessionStorage.getItem("userType");
-	var userType = 1; 
+	var userType = window.sessionStorage.getItem("userType");
 	var tmp ="";
 	var result={};
 	var page=1;
@@ -259,7 +748,7 @@ function khwhrz(){
 			userType:userType,
 		},
 		success: function (json) {
-			obj = $.evalJSON(json);
+			var obj = $.evalJSON(json);
 			for(var i = 0;i<obj.totalCount;i++){
 				tmp=tmp+"<tr onclick='check(this)'>"+"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].chineseName+"@"+
 				obj.items[i].cardId+"@"+obj.items[i].productName+"@"+obj.items[i].productId+
@@ -276,7 +765,7 @@ function khwhrz(){
 				}
 			}
 			result[j]=tmp;
-			
+
 			/*	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='editUser()'/>客户维护日志</div>"+  
 			"<div class='content'>"+
 			"<table class='cpTable' style='text-align:center;'>"+
@@ -313,7 +802,7 @@ function khwhrz(){
 					"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
 					"<input type='button' class='btn btn-large btn-primary' value='维护计划列表' id = 'whrzlb'/>"+
-					"<input type='button' class='btn btn-large btn-primary' value='返回' onclick='editUser()'/></p>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='editUser()'/></p>"+
 			"</div>");
 			$(".right").hide();
 			$("#mainPage").show();
@@ -322,7 +811,8 @@ function khwhrz(){
 				if(result[page]){
 					$("#rzlb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
@@ -331,7 +821,8 @@ function khwhrz(){
 				if(result[page]){
 					$("#rzlb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
@@ -344,7 +835,8 @@ function khwhrz(){
 
 					whrzlb(objs);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -394,7 +886,7 @@ function whrzlb(objs){
 					body+
 					"</table>"+
 					"<p><input type='button' class='btn btn-large btn-primary' value='显示' id='rzxs'/>" +
-					"<input type='button' class='btn btn-large btn-primary' value='返回' onclick='khwhrz()'/></p>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick='khwhrz()'/></p>"+
 			"</div>");
 			$(".right").hide();
 			$("#mainPage").show();
@@ -409,7 +901,8 @@ function whrzlb(objs){
 					obj.customerId=objs.customerId
 					whrzxs(obj);
 				}else{
-					alert("请选择一行");
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
 				}
 			})
 
@@ -467,7 +960,7 @@ function whrzxs(objs){
 					"</table>"+
 //					"<textarea placeholder='客户维护实施描述' style='height:15em;'></textarea>"+
 					"<p><input type='button' class='btn btn-large btn-primary' value='返回主页面' onclick='editUser()'/>" +
-					"<input type='button' class='btn btn-large btn-primary' value='返回上一步' id='whrzlbb'/></p>"+
+					"<input type='button' class='btn btn-large' value='返回上一步' id='whrzlbb'/></p>"+
 			"</div>");
 			$(".right").hide();
 			$("#mainPage").show();
@@ -525,7 +1018,7 @@ function gxkhwhjh(objs){
 			"</tr>"+
 			"</table>"+
 			"<p><input type='button' class='btn btn-large btn-primary' value='保存并继续' id = 'save'/>" +
-			"<input type='button' class='btn btn-large btn-primary' value='返回' id = 'whrzxs'/></p>"+
+			"<input type='button' class='btn btn-large' value='返回' id = 'whrzxs'/></p>"+
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
@@ -564,12 +1057,14 @@ function gxkhwhjh(objs){
 				},
 				success: function (json) {
 					obj = $.evalJSON(json);
-					alert(obj.messages.globalMessages[0].message);
+//					alert(obj.messages.globalMessages[0].message);
+					window.wxc.xcConfirm(obj.messages.globalMessages[0].message, "success");
 					whrzxs(obb);
 				}
 			})
 		}else{
-			alert("维护天数格式不正确或为空");
+//			alert("维护天数格式不正确或为空");
+			window.wxc.xcConfirm("维护天数格式不正确或为空", "warning");
 		}
 	})
 }   
@@ -581,12 +1076,21 @@ function khcsrz(){
 	var result={};
 	var page=1;
 	var j = 1;
+	var head ="<tr>"+  
+	"<th></th>"+  
+	"<th>客户姓名</th>"+
+	"<th>产品名称</th>"+
+	"<th>催收方式</th>"+
+	"<th>催收目标</th>"+
+	"<th>催收天数</th>"+
+	"<th>催收结果</th>"+
+	"<th>实施记录数目</th></tr>"
 	$.ajax({
 		url:wsHost + wsLoginUrl,
 		type: "GET",
 		dataType:'json',
 		success: function (json){
-			obj = $.evalJSON(json);
+			var obj = $.evalJSON(json);
 
 			for(var i = 0;i<obj.totalCount;i++){
 				if(obj.items[i].collectionMethod=="01"){
@@ -612,7 +1116,7 @@ function khcsrz(){
 				}else if(obj.items[i].endResult=="complete"){
 					obj.items[i].endResult="催收完成";
 				}
-				tmp=tmp+"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].id+"@"+obj.items[i].chineseName+"@"+
+				tmp=tmp+"<tr id = 'cslb' onclick='check(this)'>"+ "<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].id+"@"+obj.items[i].chineseName+"@"+
 				obj.items[i].productName+"@"+obj.items[i].collectionMethod+"@"+obj.items[i].implementationObjective+"@"+obj.items[i].collectionTime+"@"+obj.items[i].endResult+
 				"@"+obj.items[i].size+"'/>"+"</span></td>"+
 				"<td>"+obj.items[i].chineseName+"</td>"+
@@ -621,7 +1125,7 @@ function khcsrz(){
 				"<td>"+obj.items[i].implementationObjective+"</td>"+
 				"<td>"+obj.items[i].collectionTime+"</td>"+
 				"<td>"+obj.items[i].endResult+"</td>"+
-				"<td>"+obj.items[i].size+"</td>"
+				"<td>"+obj.items[i].size+"</td></tr>"
 				if((i+1)%5==0){
 					result[j]=tmp;
 					j++;
@@ -633,16 +1137,8 @@ function khcsrz(){
 			window.scrollTo(0,0);//滚动条回到顶端
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='editUser()'/>客户维护-客户催收日志</div>"+  
 					"<div class='content'>"+
-					"<table class='cpTable' style='text-align:center;'>"+
-					"<tr>"+  
-					"<th>序号</th>"+  
-					"<th>客户姓名</th>"+
-					"<th>产品名称</th>"+
-					"<th>催收方式</th>"+
-					"<th>催收目标</th>"+
-					"<th>催收天数</th>"+
-					"<th>催收结果</th>"+
-					"<th>实施记录数目</th>"+
+					"<table class='cpTable' id='cslb' style='text-align:center;'>"+
+//					"<tr>"
 //					"<th>序号</th>"+  
 //					"<th>客户姓名</th>"+
 //					"<th>客户身份标识</th>"+
@@ -652,9 +1148,9 @@ function khcsrz(){
 //					"<th>承诺还款金额</th>"+
 //					"<th>承诺还款时间</th>"+
 //					"<th>是否变更催收计划</th>"+
-					"</tr>"+
-					"<tr id = 'cslb' onclick='check(this)'>"+   
-					result[page]+
+//					"</tr>"+
+
+					head+result[page]+
 //					"<td></td>"+
 //					"<td>郝俊芝</td>"+
 //					"<td></td>"+
@@ -664,14 +1160,16 @@ function khcsrz(){
 //					"<td>3000</td>"+
 //					"<td>2015-12-12</td>"+
 //					"<td><input type='button' onclick='bgcsjh()' class='btn btn-warning' value='是'/></td>"+
-					"</tr>"+
+
 					"</table>"+
 //					"<textarea placeholder='客户催收实施描述' style='height:15em;'></textarea>"+
 					"<p>"+
+//					"<input type='button' class='btn btn-large btn-primary' value='创建' onclick= 'cjcsjh()'  id = 'cjcsjh'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='修改'  id = 'xgcsjh'/>"+
 					"<input type='button' class='btn btn-large btn-primary' value='显示' id = 'csxs'/>"+
 					"<input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
-					"<input type='button' class='btn btn-large btn-primary' value='返回' onclick = 'editUser()' id = 'fh'/>"+
+					"<input type='button' class='btn btn-large' value='返回' onclick = 'editUser()' id = 'fh'/>"+
 //					"<input type='button' class='btn btn-large btn-primary' value='保存并继续' onclick='editUser()'/>" +
 					"</p>"+
 			"</div>");
@@ -680,36 +1178,289 @@ function khcsrz(){
 			$("#xyy").click(function(){
 				page=page+1;
 				if(result[page]){
-					$("#cslb").html(result[page]);
+					$("#cslb").html(head+result[page]);
 				}else{
-					alert("当前已经是最后一页");
+//					alert("当前已经是最后一页");
+					window.wxc.xcConfirm("当前已经是最后一页", "info");
 					page=page-1;
 				}
 			})
 			$("#syy").click(function(){
 				page=page-1; 
 				if(result[page]){
-					$("#cslb").html(result[page]);
+					$("#cslb").html(head+result[page]);
 				}else{
-					alert("当前已经是第一页");
+//					alert("当前已经是第一页");
+					window.wxc.xcConfirm("当前已经是第一页", "info");
 					page = page+1;
 				}
 			})
 			$("#csxs").click(function(){
-			if ($("input[type='radio']").is(':checked')) {
-				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
-				var id = values[0];
-				xscsjh(id);
-			}else{
-				alert("请选择一行");
-			}
+				if ($("input[type='radio']").is(':checked')) {
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var id = values[0];
+					xscsjh(id);
+				}else{
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
+				}
+			})
+			$("#xgcsjh").click(function(){
+				if ($("input[type='radio']").is(':checked')) {
+					var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+					var res = {};
+					res.id = values[0];
+					res.chineseName = values[1];
+					res.productName = values[2];
+					res.implementationObjective = values[4];
+					res.collectionTime = values[5];
+					xgcsjh(res);
+				}else{
+//					alert("请选择一行");
+					window.wxc.xcConfirm("请选择一行", "warning");
+				}
 			})
 		}
 	})
 } 
 
+function xgcsjh(res){
+
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khcsrz()'/>客户催收日志-修改</div>"+ 
+			"<div class='content'>"+
+			"<table class='cpTable' style='text-align:center;'>"+
+			"<tr>"+                             
+			"<th>客户名称</th>"+  
+			"<td><select id ='customers' disabled='disabled' style ='width:83%;margin:0;padding:5px;' name = 'customerId'><option value = '"+res.chineseName+"'>"+res.chineseName+"</option>" +
+			"</select></td>"+
+			"<th>产品名称</th>"+  
+			"<td><select id ='product' disabled='disabled' style ='width:83%;margin:0;padding:5px;' name = 'productId'><option value = '"+res.productName+"'>"+res.productName+"</option>" +
+			"</select></td>"+
+			"</tr>"+
+			"<tr>"+                             
+			"<th>催收目标</th>"+  
+			"<td><input type='text' id='implementationObjective' name='implementationObjective' value='"+res.implementationObjective+"' class='addinput'/></td>"+
+			"<th>催收天数</th>"+  
+			"<td><input type='text' id='csts' name='collectionTime' class='addinput' value='"+res.collectionTime+"'/></td>"+
+			"</tr>"+
+			"<tr>"+                             
+			"<th>催收方式</th>"+  
+			"<td><select id ='riskway' style ='width:83%;margin:0;padding:5px;' name='collectionMethod' name = 'collectionMethod'>" +
+			"<option value ='01'>电话</option>" +
+			"<option value ='02'>短信</option>" +
+			"<option value ='03'>上门</option>"+
+			"</select></td>"+
+			"</tr>"+
+			"</table>"+
+			"<p>" +
+			"<input type='button' class='btn btn-large btn-primary' value='保存并继续' id='savecountine'/>"+
+			"<input type='button' class='btn btn-large' value='返回' onclick='khcsrz()'/></p>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+
+	$("#savecountine").click(function(){
+		var number =/^\d+$/;
+		var cjcslb="/ipad/risk/update.json";
+		if($("#csts").val()!=""&&number.test( $("#csts").val())){
+
+			$.ajax({
+				url:wsHost + cjcslb,
+				type: "GET",
+				dataType:'json',
+				data:{
+					id:res.id,
+					implementationObjective:$("#implementationObjective").val(),
+					collectionTime:$("#csts").val(),
+					collectionMethod:$("#riskway").val(),
+					userId:window.sessionStorage.getItem("userId"),
+				},
+				success: function (json) {
+					obj = $.evalJSON(json);
+//					alert(obj.mess);
+					window.wxc.xcConfirm(obj.mess, "success");
+					khcsrz();
+				}
+			})
+
+		}else{
+//			alert("请输入正确的催收天数");
+			window.wxc.xcConfirm("请输入正确的催收天数", "warning");
+		}
+
+	})
+
+}
+function cjcsjh(loc){
+	var requestUrl ="/ipad/risk/getManager.json";
+	$.ajax({
+		type:"GET",
+		url:wsHost+requestUrl,
+		dataType:"json",
+		data:{
+			userId:window.sessionStorage.getItem("userId"),
+		},
+		success:function(json){
+			var obj = $.evalJSON(json);
+			var tmp="<option value = '1'>请选择...</option>";
+			for(var i=0;i<obj.length;i++){
+				tmp=tmp+"<option value = '"+obj[i].userId+"'>"+obj[i].displayName+"</option>";
+			}
+			$("#manager").html(tmp);
+			getCustomer();
+		}
+	});
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' id='backtop'/>创建客户催收计划</div>"+ 
+			"<div class='content'>"+
+			"<table class='cpTable' style='text-align:center;'>"+
+			"<tr>"+                             
+			"<th>客户经理</th>"+  
+			"<td><select id ='manager' style ='width:83%;margin:0;padding:5px;' name = 'customerManagerId'><option value = '1'>请选择...</option>" +
+			"</select></td>"+
+			"<th>客户名称</th>"+  
+			"<td><select id ='customers' style ='width:83%;margin:0;padding:5px;' name = 'customerId'><option value = '1'>请选择...</option>" +
+			"</select></td>"+
+			"</tr>"+
+			"<tr>"+    
+			"<th>产品名称</th>"+  
+			"<td><select id ='product' style ='width:83%;margin:0;padding:5px;' name = 'productId'><option value = '1'>请选择...</option>" +
+			"</select></td>"+
+			"<th>放款金额</th>"+  
+			"<td><input type='text' id='fangkuan' name='fangkuan' class='addinput' readonly='ture'/></td>"+
+			"</tr>"+
+			"<tr>"+   
+			"<th>逾期金额</th>"+  
+			"<td><input type='text' id='yuqimoney' name='yuqimoney' class='addinput' readonly='ture'/></td>"+
+			"<th>本金逾期天数</th>"+  
+			"<td><input type='text' id='byuqidays' name='yuqidays' class='addinput' readonly='ture'/></td>"+
+			"</tr>"+
+			"<tr>"+   
+			"<th>利息逾期天数</th>"+  
+			"<td><input type='text' id='lyuqidays' name='yuqidays' class='addinput' readonly='ture'/></td>"+
+			"<th>催收目标</th>"+  
+			"<td><input type='text' id='implementationObjective' name='implementationObjective' class='addinput'/></td>"+
+			"</tr>"+
+			"<tr>"+     
+			"<th>催收天数</th>"+  
+			"<td><input type='text' id='csts' name='collectionTime' class='addinput'/></td>"+
+			"<th>催收方式</th>"+  
+			"<td><select id ='riskway' style ='width:83%;margin:0;padding:5px;' name='collectionMethod' name = 'collectionMethod'>" +
+			"<option value ='01'>电话</option>" +
+			"<option value ='02'>短信</option>" +
+			"<option value ='03'>上门</option>"+
+			"</select></td>"+
+			"</tr>"+
+			"</table>"+
+			"<p>" +
+			"<input type='button' class='btn btn-large btn-primary' value='保存并继续' id='savecountine'/>"+
+			"<input type='button' class='btn btn-large' value='返回' id='backdown'/></p>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+	$("#manager").change(function(){
+		getCustomer();
+	});
+
+	$("#customers").change(function(){
+		getProduct();
+	});
+	$("#backdown").click(function(){
+		if(loc==1){
+			cskhtz();
+		}else{
+			mywdjh();
+		}
+	});
+	$("#backtop").click(function(){
+		if(loc==1){
+			cskhtz();
+		}else{
+			mywdjh();
+		}
+	});
+	function getCustomer(){
+		var cusUrl ="/ipad/risk/getCustomer.json";
+		$.ajax({
+			type:"GET",
+			url:wsHost+cusUrl,
+			dataType:"json",
+			data:{
+				userId:$("#manager").val(),
+			},
+			success:function(json){
+				var obj = $.evalJSON(json);
+				var tmp="<option value = '1'>请选择...</option>";
+				for(var i=0;i<obj.length;i++){
+					tmp=tmp+"<option value = '"+obj[i].typeCode+"'>"+obj[i].typeName+"</option>";
+				}
+				$("#customers").html(tmp);
+			}
+		});
+	}
+	function getProduct(){
+		var pruUrl ="/ipad/risk/getProduct.json";
+		$.ajax({
+			type:"GET",
+			url:wsHost+pruUrl,
+			dataType:"json",
+			data:{
+				customerId:$("#customers").val(),
+			},
+			success:function(json){
+				var obj = $.evalJSON(json);
+				var tmp="<option value = '1'>请选择...</option>";
+				for(var i=0;i<obj.products.length;i++){
+					tmp=tmp+"<option value = '"+obj.products[i].typeCode+"'>"+obj.products[i].typeName+"</option>";
+				}
+				$("#product").html(tmp);
+				$("#yuqimoney").val(obj.delayInfoForm.dlaymat+"元");
+				$("#fangkuan").val(obj.delayInfoForm.money+"元");
+				$("#byuqidays").val(obj.delayInfoForm.delayamtdays+"天");
+				$("#lyuqidays").val(obj.delayInfoForm.delayinterestdays+"天");
+
+			}
+		});
+	}
+	$("#savecountine").click(function(){
+		var number =/^\d+$/;
+		var cjcslb="/ipad/risk/insertplan.json";
+		if($("#csts").val()!=""&&number.test( $("#csts").val())){
+			if($("#manager").val()!=1&& $("#customers").val()!=1){
+				$.ajax({
+					url:wsHost + cjcslb,
+					type: "GET",
+					dataType:'json',
+					data:{
+						customerManagerId:$("#manager").val(),
+						customerId:$("#customers").val(),
+						productId:$("#product").val(),
+						implementationObjective:$("#implementationObjective").val(),
+						collectionTime:$("#csts").val(),
+						collectionMethod:$("#riskway").val(),
+						userId:window.sessionStorage.getItem("userId"),
+					},
+					success: function (json) {
+						obj = $.evalJSON(json);
+						window.wxc.xcConfirm(obj.mess, "success");
+						mywdjh();
+					}
+				})
+			}else{
+//				alert("客户经理和客户不能为空");
+				window.wxc.xcConfirm("客户经理和客户不能为空", "warning");
+			}
+
+		}else{
+//			alert("请输入正确的催收天数");
+			window.wxc.xcConfirm("请输入正确的催收天数", "warning");
+		}
+
+	})
+}
 function xscsjh(id){
-	
+
 	var csjhxx = "/ipad/product/browerRiskcustomer.json";
 	$.ajax({
 		url:wsHost + csjhxx,
@@ -717,12 +1468,82 @@ function xscsjh(id){
 		dataType:'json',
 		data:{
 			collectionPlanId:id,
-			},
+		},
 		success: function (json){
+			obj = $.evalJSON(json);
+
+			if(obj.collectionPlan.collectionMethod=="01"){
+				obj.collectionPlan.collectionMethod="电话";
+			}else if(obj.collectionPlan.collectionMethod=="02"){
+				obj.collectionPlan.collectionMethod="短信";
+			}else if(obj.collectionPlan.collectionMethod=="03"){
+				obj.collectionPlan.collectionMethod="上门";
+			}
+
+			if(obj.collectionPlan.createWay=="myself"){
+				obj.collectionPlan.createWay="自己创建";
+			}else if(obj.collectionPlan.createWay=="manager"){
+				obj.collectionPlan.createWay="主管创建";
+			}else if(obj.collectionPlan.createWay=="system"){
+				obj.collectionPlan.createWay="系统创建";
+			}
+
+			if(obj.collectionPlan.endResult=="collection"){
+				obj.collectionPlan.endResult="催收中";
+			}else if(obj.collectionPlan.endResult=="repaymentcommitments"){
+				obj.collectionPlan.endResult="承诺还款";
+			}else if(obj.collectionPlan.endResult=="losecontact"){
+				obj.collectionPlan.endResult="失联";
+			}else if(obj.collectionPlan.endResult=="reject"){
+				obj.collectionPlan.endResult="拒绝";
+			}else if(obj.collectionPlan.endResult=="hang"){
+				obj.collectionPlan.endResult="挂起";
+			}else if(obj.collectionPlan.endResult=="continuecollection"){
+				obj.collectionPlan.endResult="继续催收";
+			}else if(obj.collectionPlan.endResult=="complete"){
+				obj.collectionPlan.endResult="催收完成";
+			}
+			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khcsrz()'/>客户催收日志-催收计划详情</div>"+ 
+					"<div class='content'>"+
+					"<table class='cpTable' style='text-align:center;'>"+
+					"<tr>"+                             
+					"<th>客户名称:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput' value='"+obj.collectionPlan.chineseName+"'/></td>"+
+					"<th>创建方式:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput' value='"+obj.collectionPlan.createWay+"'/></td>"+
+					"</tr>"+
+					"<tr>"+                             
+					"<th>产品名称:</th>"+  
+					"<td><input readonly='true'  type='text' class='addinput' value='"+obj.collectionPlan.productName+"'/></td>"+
+					"<th>催收目标:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput'value='"+obj.collectionPlan.implementationObjective+"'/></td>"+
+					"</tr>"+
+					"<tr>"+                             
+					"<th>催收天数:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput' value='"+obj.collectionPlan.collectionTime+"'/></td>"+
+					"<th>催收方式:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput'value='"+obj.collectionPlan.collectionMethod+"'/></td>"+
+					"</tr>"+
+					"<tr>"+                             
+					"<th>催收结果:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput' value='"+obj.collectionPlan.endResult+"'/></td>"+
+					"<th>催收结束时间:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput' value='"+obj.collectionPlan.collectionEndtime+"'/></td>"+
+					"</tr>"+
+					"<tr>"+                             
+					"<th>承诺还款时间:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput' value='"+obj.collectionPlan.collectionPromiseDate+"'/></td>"+
+					"<th>承诺还款金额:</th>"+  
+					"<td><input readonly='true' type='text'  class='addinput' value='"+obj.collectionPlan.collectionAmount+"'/></td>"+
+					"</tr>"+
+					"</table>"+
+					"<p>" +
+					"<input type='button' class='btn btn-large' value='返回' onclick='khcsrz()'/></p>"+
+			"</div>");
 		}
-	
+
 	})
-	
+
 }
 //变更催收计划
 function bgcsjh(){
@@ -760,3 +1581,110 @@ function bgcsjh(){
 	$(".right").hide();
 	$("#mainPage").show();
 }   
+
+function khysxxcx(objs){
+	var ysxxurl = "/ipad/product/selectAllCustomerInfoByCardId.json";
+	$.ajax({
+		url:wsHost + ysxxurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			customerInforId:objs.customerInforId,
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			$("#mainPage").html("<div class='title'><img src='images/back.png' id='edis'/>客户管理-客户资料查询-客户基本信息-客户原始信息</div>"+  
+					"<div class='content'>"+
+					"<table  class='llTable3' style='text-align:center;font-size:15px;'>"+
+					"<tr><th colspan='4'>客户原始信息</th></tr>"+
+					"<tr>" +
+					"<th>客户初始ID:</th>"+
+					"<td>"+obj.initid+"</td>"+
+					"<th>客户编号:</th>"+
+					"<td>"+obj.custid+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>客户类型:</th>"+
+					"<td>"+obj.custtype+"</td>"+
+					"<th>客户名称:</th>"+
+					"<td>"+obj.cname+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>证件类型:</th>"+
+					"<td>"+obj.cardtype+"</td>"+
+					"<th>证件号码:</th>"+
+					"<td>"+obj.cardnum+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>性别:</th>"+
+					"<td>"+obj.sex+"</td>"+
+					"<th>民族:</th>"+
+					"<td>"+obj.ethical+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>婚姻状况:</th>"+
+					"<td>"+obj.marrige+"</td>"+
+					"<th>出生日期:</th>"+
+					"<td>"+obj.birthday+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>住址:</th>"+
+					"<td>"+obj.syaddr+"</td>"+
+					"<th>有效期限:</th>"+
+					"<td>"+obj.usefullife+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>工作单位名称:</th>"+
+					"<td>"+obj.employer+"</td>"+
+					"<th>工作单位地址:</th>"+
+					"<td>"+obj.employeraddr+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>联系方式(手机):</th>"+
+					"<td>"+obj.contactmobiletel+"</td>"+
+					"<th>联系方式(固话):</th>"+
+					"<td>"+obj.contacttel+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>居住状况:</th>"+
+					"<td>"+obj.reside+"</td>"+
+					"<th>评级结果（对应评级的信用等级）:</th>"+
+					"<td>"+obj.levelcal+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>家庭总资产:</th>"+
+					"<td>"+obj.famasset+"</td>"+
+					"<th>家庭总负债:</th>"+
+					"<td>"+obj.famdebt+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>家庭年收入:</th>"+
+					"<td>"+obj.famannuincome+"</td>"+
+					"<th>家庭年支出:</th>"+
+					"<td>"+obj.famannupayout+"</td>"+
+					"</tr>"+
+					"<tr>" +
+					"<th>最高学位:</th>"+
+					"<td>"+obj.educationlevel+"</td>"+
+					"<th>最高学历:</th>"+
+					"<td>"+obj.degree+"</td>"+
+					"</tr>"+
+
+					"</table>"+
+					"<p>"+
+					"<input type='button' class='btn btn-large' value='返回' id='back'/></p>"+
+			"</div>");
+			$(".right").hide();
+			$("#mainPage").show();
+			$("#back").click(function(){
+				khcx(objs);					
+			});
+			$("#edis").click(function(){
+				khcx(objs);					
+			});
+
+
+		}
+
+	})
+}
