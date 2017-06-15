@@ -233,7 +233,9 @@ function myjjgl2(productInfo){
 	} 
 }
 //新建进件
+var addIntopieceAll;
 function newUser1(addIntopiece){
+	addIntopieceAll=addIntopiece;
 	var reporturl ="/ipad/addIntopieces/reportIsExist.json";
 	$.get(wsHost+reporturl,{customerId:addIntopiece.customerId,productId:addIntopiece.productId},callbackresult);
 	function callbackresult(json){
@@ -1025,7 +1027,7 @@ function uploadSuccess(r) {
 		$("#uploadInfo").html("导入成功！");
 		$("#diss").attr('disabled',false);
 		$("#sure").attr('disabled',false);
-		newUser1(addIntopiece);
+		newUser1(addIntopieceAll);
 	}
 	clearProcess();
 }  
