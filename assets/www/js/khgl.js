@@ -54,9 +54,11 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mykh
 		        	var objs = $.evalJSON(json);
 //		        	alert(objs.message);
 		        	window.wxc.xcConfirm(objs.message, "success");
+		        	if(objs.success){
 		        	document.getElementById("khname").value = ""
 		        	document.getElementById("cardId").value = ""
 		        	document.getElementById("phone").value = ""
+		        	}
 		        }
 			})
 		}

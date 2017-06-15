@@ -191,7 +191,7 @@ function pushposition(){
 				},
 				success:function (json){
 					var obj = $.evalJSON(json);
-					window.wxc.xcConfirm(obj.message, "info");
+					//window.wxc.xcConfirm(obj.message, "info");
 					pushlon="";
 					pushlat="";
 					window.plugins.GetLocationOffline.startActivity(null,null,"","stop");

@@ -59,10 +59,10 @@ function checkLoginCallback(json){
     //定时定位
     if(obj.LocationType=="H5"){
 //    	var location = window.setTimeout(getonlinepush,1000*60*5);	
-    	var location = window.setInterval(getonlinepush,1000*60*5);
+    	var location = window.setInterval(getonlinepush,1000*60*10);
     }else{
 //    	var location = window.setTimeout(pushposition,1000*60*5);
-    	var location = window.setInterval(pushposition,1000*60*5);
+    	var location = window.setInterval(pushposition,1000*60*10);
     }
 
     //alert("getItem:"+session.getItem("id"));
@@ -102,6 +102,7 @@ function dc(){
         success: function (json) {
         	window.clearInterval(location);
 //        	clearTimeout(location); 
+        	$("#password").val("");
         	    $("#login").show();
         	    $(".right").hide();
         	    $(".left .nav li").css("background","#009fe7");
