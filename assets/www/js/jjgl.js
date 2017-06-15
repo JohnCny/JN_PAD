@@ -293,6 +293,7 @@ function newUser1(addIntopiece){
 		window.wxc.xcConfirm("是否提交进件申请","confirm",{onOk:scks});
 		function scks(){
 			if(obj.excelId!=""&&obj.excelId!=null){
+				$("#tjjj").attr('disabled',"true");
 				var addintopiece = "/ipad/addIntopieces/addIntopieces.json";
 				var userId = window.sessionStorage.getItem("userId");
 				var displayName = window.sessionStorage.getItem("displayName");
@@ -300,6 +301,11 @@ function newUser1(addIntopiece){
 				function callbackresult(json){
 					var obj = $.evalJSON(json);
 					window.wxc.xcConfirm(obj.mess,"info");
+					if(obj.result=="success"){
+						myjjgl();
+					}else{
+						$("#tjjj").attr('disabled',"false");
+					}
 				}
 				
 			}else{
@@ -323,8 +329,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 "<div class='jjstep'>" +
 "<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
 "<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
-"<div class='step3' id='xxzlcj'>信息资料采集</div>"+
-"<div class='step3'>客户信息调查模板</div>"+
+"<div class='step3' id='xxzlcj'>选择资料类型</div>"+
+"<div class='step3'>客户详细信息</div>"+
 //"<div class='step2'>信息录入</div>"+
 "</div><div class='line'></div>"+
 "<div class='bottom-content'>"+
@@ -575,7 +581,7 @@ function dcmbadd(addIntopiece){
 			"<div class='jjstep'>" +
 			"<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
 			"<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
-			"<div class='step3' id='newUser1'>客户影像资料采集</div>"+
+			"<div class='step3' id='newUser1'>选择资料类型</div>"+
 			"<div class='step3'>信息录入</div>"+
 			"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
 			"</div><div class='line'></div>"+
@@ -650,7 +656,7 @@ function yxzladd(addIntopiece){
 			"<div class='jjstep'>" +
 			"<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
 			"<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
-			"<div class='step3' id='newUser1'>客户影像资料采集</div>"+
+			"<div class='step3' id='newUser1'>选择资料类型</div>"+
 			"<div class='step3'>信息录入</div>"+
 			"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
 			"</div><div class='line'></div>"+
@@ -1019,6 +1025,7 @@ function uploadSuccess(r) {
 		$("#uploadInfo").html("导入成功！");
 		$("#diss").attr('disabled',false);
 		$("#sure").attr('disabled',false);
+		newUser1(addIntopiece);
 	}
 	clearProcess();
 }  

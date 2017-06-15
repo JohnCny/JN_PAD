@@ -1101,17 +1101,19 @@ function cjshtz(){
 			"<table class='cpTable' id='pxll' style='text-align:center;'>"+
 			"<tr><th colspan='4'>创建上会通知</th></tr>"+
 			"<tr>"+
-			"<th>上会客户:</th>"+
-			"<td style='width:300px;'><input type='text' class='addinput' value='' id='trainingObjective' name='trainingObjective'/>"+
-			"</td>" +
-			"<th >指定上会日期</th>"+  
-			"<td style='width:300px;'><input class='addinput' type ='date' id='changeDate'/></td>"+
-			"</tr>"+
-			"<tr>"+ 
 			"<th >客户经理</th>"+  
 			"<td style='width:300px;'><select id ='manager_id_s' name='manager_id' >"+"<option value = '0'>请选择</option>"
 			+managerList+
 			"</select></td>"+
+			"<th>上会客户:</th>"+
+			"<td style='width:300px;'><select id='trainingObjective'>" + 
+			"<option value = ''></option>"+
+			"<select>"+
+			"</td>" +
+			"</tr>"+
+			"<tr>"+ 
+			"<th >指定上会日期</th>"+  
+			"<td style='width:300px;'><input class='addinput' type ='date' id='changeDate'  style='width:200px;'/></td>"+
 			"</tr>"+
 			"<tr>"+
 			"<th><label id ='reason' for=reason>通知内容:</label></th>"+
@@ -1125,7 +1127,37 @@ function cjshtz(){
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
+	$("#manager_id_s").change(function(){
+		if($("#manager_id_s").val()!=""){
+		var customerurl="/ipad/custAppInfo/cxshendaihuikh.json";
+		$.ajax({
+			url:wsHost+customerurl,
+			dateType:'json',
+			type:'GET',
+			data:{
+				managerId:$("#manager_id_s").val(),
+			},			
+			success:function (json){
+				var obj = $.evalJSON(json);
+				var customer="<option value = ''></option>";
+				for(var i=0;i<obj.customerList.length;i++){
+					customer+="<option value = '"+obj.customerList[i]+"'>"+obj.customerList[i]+"</option>" ;
+				}
+				$("#trainingObjective").html(customer);
+			}
+		})
+		}
+	})
 	$("#sure").click(function(){
+		if($("#trainingObjective").val()==""){
+			window.wxc.xcConfirm("客户不能为空", "warning")
+			return;
+		}
+		if($("#changeDate").val()==""){
+			window.wxc.xcConfirm("上会日期不能为空", "warning")
+			return;
+		}
+		$("#sure").attr('disabled',"true");
 		$.ajax({
 			url:wsHost+sdhtzurl,
 			type: "GET",
@@ -1141,7 +1173,12 @@ function cjshtz(){
 			},
 			success: function (json){
 				var objs = $.evalJSON(json);
-				window.wxc.xcConfirm(objs.mess, "info")
+				window.wxc.xcConfirm(objs.mess, "info");
+				if(objs.success){
+					sdhtzlb();
+				}else{
+					$("#sure").attr('disabled',"false");
+				}
 			}
 		})
 
