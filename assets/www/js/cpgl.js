@@ -18,7 +18,7 @@ function mycpgl(){
 		 			"<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+"";
 		for(var i = 0;i<objs.totalCount;i++){
 			contsnt = "<div class='cplb' >" +
-					          "<img src='images/cp/jqt.png' title='抵押贷'/>" +
+					          "<img src='images/cp/jqt.png' title='"+objs.result[i].productName+"'/>" +
 				            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
 					            "<span class='cpqx'>产品期限："+objs.result[i].prodLiTime+"</span>"+
 					            "<span class='cpll'>产品利率(%)："+objs.result[i].rateRange+"</span>"+
@@ -257,7 +257,7 @@ if(productName=="POS流水贷"){
 	window.wxc.xcConfirm("无详细产品信息", "info"); 
 }
 if(lock){	
-$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mycpgl()'/>集群通</div>"+  
+$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mycpgl()'/>产品详细信息</div>"+  
                    "<div class='content' style='padding-bottom:1em'>"+
                        "<table>" +
                            "<tr>" +showinfor+

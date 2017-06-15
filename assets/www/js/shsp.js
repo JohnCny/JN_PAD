@@ -795,9 +795,11 @@ function csresult(res){
 				var sxfw= $("#sxqj").val();
 				var sxed= $("#sxed").val();
 				var s = sxfw.split("-");
-
+				var decisionRate= $("#decisionRate").val();
+				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
+				var lilv2=/^[1-9][0-9]*$/;
 				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
-
+					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -826,6 +828,9 @@ function csresult(res){
 							cysdrw();
 						}
 					})
+					}else{
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+					}
 				}else{
 //					alert("请输入正确的授信金额");
 					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
@@ -1344,7 +1349,11 @@ function xssdjy(res){
 				var sxfw= $("#sxqj").val();
 				var sxed= $("#sxed").val();
 				var s = sxfw.split("-");
+				var decisionRate= $("#decisionRate").val();
+				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
+				var lilv2=/^[1-9][0-9]*$/;
 				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -1381,6 +1390,9 @@ function xssdjy(res){
 
 
 					})
+					}else{
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+					}
 				}else{
 //					alert("请输入正确的授信金额");
 					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
@@ -2115,7 +2127,11 @@ function bzspjl(res){
 				var sxfw= $("#sxqj").val();
 				var sxed= $("#sxed").val();
 				var s = sxfw.split("-");
+				var decisionRate= $("#decisionRate").val();
+				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
+				var lilv2=/^[1-9][0-9]*$/;
 				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -2146,6 +2162,9 @@ function bzspjl(res){
 
 
 					})
+					}else{
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+					}
 				}else{
 //					alert("请输入正确的授信金额");
 					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
@@ -2676,7 +2695,11 @@ function lsbywfzr(res){
 				var sxfw= $("#sxqj").val();
 				var sxed= $("#sxed").val();
 				var s = sxfw.split("-");
+				var decisionRate= $("#decisionRate").val();
+				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
+				var lilv2=/^[1-9][0-9]*$/;
 				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -2707,6 +2730,9 @@ function lsbywfzr(res){
 
 
 					})
+					}else{
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+					}
 				}else{
 //					alert("请输入正确的授信金额");
 					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
@@ -3254,7 +3280,11 @@ function hzspjl(res){
 				var sxfw= $("#sxqj").val();
 				var sxed= $("#sxed").val();
 				var s = sxfw.split("-");
+				var decisionRate= $("#decisionRate").val();
+				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
+				var lilv2=/^[1-9][0-9]*$/;
 				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
+					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -3285,6 +3315,9 @@ function hzspjl(res){
 
 
 					})
+					}else{
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+					}
 				}else{
 //					alert("请输入正确的授信金额");
 					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
