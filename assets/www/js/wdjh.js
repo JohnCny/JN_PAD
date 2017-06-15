@@ -569,6 +569,15 @@ function yjjdcx(){
 		$("#mainPage").show(); 
 
 		$("#sure").click(function(){
+		 // 添加 开始日期和结束日期 验证
+		 var time1 = $("#satrtDate").val();
+		 var time2 = $("#endDate").val();
+		 var time3 = new Date(time1.replace(/-/g,"/")); 
+		 var time4 = new Date(time2.replace(/-/g,"/"));
+		 if(Date.parse(time4) - Date.parse(time3) < 0){
+			window.wxc.xcConfirm("开始时间:"+time1+"大于结束时间:"+time2, "info");
+			return;
+		 }
 			$.ajax({
 				url:wsHost+jdcxurl,
 				type: "GET",
@@ -872,7 +881,7 @@ function pxjhlb(){
 function cjpxjh(){
 
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdjh()'/>计划管理-培训计划-创建</div>"+ 
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='pxjhlb()'/>计划管理-培训计划-创建</div>"+ 
 			"<div class='content'>"+
 			"<table class='cpTable' id='pxll' style='text-align:center;'>"+
 			"<tr><th colspan='4'>创建培训计划</th></tr>"+
@@ -1032,7 +1041,7 @@ function sdhtzlb(){
 	"</tr>";
 	
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='tz()'/>计划管理-审贷会通知</div>"+ 
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='pxjhlb()'/>计划管理-审贷会通知</div>"+ 
 			"<div class='content'>"+
 			"<table class='cpTable' id='pxll' style='text-align:center;'>"+
 			head+result[page]+

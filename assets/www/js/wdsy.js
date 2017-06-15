@@ -192,6 +192,8 @@ function jjxxlb(){
 		},
 		success: function (json) {
 			obj = $.evalJSON(json);
+			var fallBackReason = "";
+			var refuseReason = "";
 			for(var i = 0;i<obj.items.length;i++){
 				if(obj.items[i].status=="save"){
 					obj.items[i].status="未申请";
@@ -210,6 +212,14 @@ function jjxxlb(){
 				}else if(obj.items[i].status=="succeed"){
 					obj.items[i].status="申请成功";
 				}
+				
+				if(obj.items[i].fallBackReason.length > 8){
+					fallBackReason = obj.items[i].fallBackReason.substring(0,8)+"...";
+				}
+				if(obj.items[i].refusqlReason.length > 8){
+					refuseReason = obj.items[i].refusqlReason.substring(0,8)+"...";
+				}
+				
 				tmp=tmp+"<tr onclick='check(this)'>"+
 				"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].chineseName+"@"+
 				obj.items[i].productName+"@"+obj.items[i].id+"@"+obj.items[i].customerId+"@"+obj.items[i].productId+"@"+obj.items[i].status+"'"+"/>"+"</span></td>"+
@@ -221,8 +231,8 @@ function jjxxlb(){
 				"<td>"+obj.items[i].cardId+"</td>"+
 				"<td>"+obj.items[i].status+"</td>"+
 				"<td>"+obj.items[i].nodeName+"</td>"+
-				"<td>"+obj.items[i].fallBackReason+"</td>"+
-				"<td>"+obj.items[i].refusqlReason+"</td>"+
+				"<td>"+fallBackReason+"</td>"+
+				"<td>"+refuseReason+"</td>"+
 				"</tr>";
 
 				if((i+1)%5==0){
