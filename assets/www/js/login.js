@@ -1,20 +1,9 @@
 
 //登录
 function dl(){
-	//工厂模式
-    /*var data = JSON.stringify({
-        "user_name": $("#user_name").val(),
-        "pass_word": $("#user_name").val()
-    });
-    var post = crud.dom.factory("POST");
-    post.doPost("/ipad/user/JnLogin.json",data,checkLoginCallback,"登陆失败！");*/
-
-//  测试用
-//	var user_name = "wenjian123";  
-//    var pass_word = "111111";
-//  上线用
   var user_name = $("#name").val();
-  var pass_word = $("#password").val()
+  var pass_word = $("#password").val();
+  wsHost=$("#host").val();
 	var wsLoginUrl = "/ipad/user/JnLogin.json"+"?login="+user_name+"&password="+pass_word;
     $.ajax({
         url:wsHost + wsLoginUrl,
