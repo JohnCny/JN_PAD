@@ -119,9 +119,9 @@ public class CoordinateTranslatePlugin extends Plugin{
 	        option.setOpenGps(true);
 	        option.setCoorType("bd09ll");	
 	        option.setIgnoreKillProcess(true);	
-	        option.setLocationMode(LocationMode.Hight_Accuracy);
+	        option.setLocationMode(LocationMode.Device_Sensors);
 	        option.setProdName("BaiduLoc");							
-	        option.setScanSpan(2000);
+//	        option.setScanSpan(2000);
 	        option.setTimeOut(10000);
 	        option.setIsNeedAddress(true);
 	        option.setIsNeedLocationDescribe(true);
