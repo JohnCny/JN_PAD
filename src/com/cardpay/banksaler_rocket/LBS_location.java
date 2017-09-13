@@ -1,21 +1,38 @@
 package com.cardpay.banksaler_rocket;
 
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.HttpClient;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.params.BasicHttpParams;
+import org.apache.http.params.HttpParams;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.cardpay.banksaler_rocket.GetLocationOffline.MyLocationListener;
+import com.cardpay.banksaler_rocket.GetLocationOffline.RunnableLoc;
 import com.phonegap.api.Plugin;
 import com.phonegap.api.PluginResult;
 
+import android.app.Activity;
 import android.content.Context;
-import android.location.Criteria;
 import android.location.Location;
 import android.location.LocationListener;
 import android.location.LocationManager;
 import android.location.LocationProvider;
 import android.os.Bundle;
+import android.telephony.TelephonyManager;
+import android.telephony.gsm.GsmCellLocation;
 import android.util.Log;
-public class GetLocationOffline extends Plugin{
+
+public class LBS_location extends Plugin{
 	LocationManager mylocationManager=null;                                  //位置管理器。要想操作定位相关设备，必须先定义个LocationManager
 	private MyLocationListener myListener = new MyLocationListener();        //位置监听，监听位置变化，监听设备开关与状态。
 	private static final String TAG="GpsPlugin";
@@ -23,39 +40,111 @@ public class GetLocationOffline extends Plugin{
 	private PluginResult result = null;
 	private Plugin pl = this;
 	private String callbackids=null;
-//	//声明字符串变量
-//    String locationprovider;
+	private String LocationHost="http://192.168.0.126:8080/PCCredit";
 	@Override
-	public PluginResult execute(String action, JSONArray args, String callbackId) {
-		callbackids=callbackId;
-		System.out.println("进入GPS定位插件....");
-        if (action.equals("get")) {
-        	System.out.println("进入action....");
-        	ctx.runOnUiThread(new RunnableLoc());
-            
-        } else if(action.equals("stop")) {
+	public PluginResult execute(String arg0, JSONArray arg1, String arg2) {
+		callbackids=arg2;
+		if(arg0.equals("stop")) {
         	mylocationManager.removeUpdates(myListener);
-        	result = new PluginResult(PluginResult.Status.OK);
-        } else {	
-           result = new PluginResult(PluginResult.Status.INVALID_ACTION);
+        	return new PluginResult(PluginResult.Status.OK);
+        }else{
+		JSONObject jsonObj = new JSONObject();
+		try {
+			SItude situde =getItude(getCellInfo());
+			if(!situde.latitude.equals("0")&&!situde.longitude.equals("0")){
+			jsonObj.put("Longitude", situde.longitude+"");
+			jsonObj.put("Latitude",situde.latitude+"");
+			jsonObj.put("address", situde.address+"");
+			jsonObj.put("road", situde.road+"");
+			jsonObj.put("locationClass", "基站定位结果");
+			return new PluginResult(PluginResult.Status.OK,jsonObj);
+			}else{
+				ctx.runOnUiThread(new RunnableLoc());
+				result = new PluginResult(PluginResult.Status.ERROR,"启动GPS定位...");
+			    result.setKeepCallback(true);
+			 	return result;
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			Log.i("erro",e.getMessage());
+			return new PluginResult(PluginResult.Status.ERROR,e.getMessage());
+		}
         }
-        
-        
-     // waiting ui thread to finish
-// 		while (this.result == null) {
-// 			try {
-// 				Thread.sleep(100);
-// 			} catch (InterruptedException e) {
-// 				// ignoring exception, since we have to wait
-// 				// ui thread to finish
-// 			}
-// 		}
-        result = new PluginResult(PluginResult.Status.ERROR,"启动GPS定位...");
-        result.setKeepCallback(true);
- 		return result;
-        
 	}
+	private SCell getCellInfo() throws Exception {
+		SCell cell = new SCell();
 
+		TelephonyManager mTelNet = (TelephonyManager) ctx.getSystemService(Context.TELEPHONY_SERVICE);
+		GsmCellLocation location = (GsmCellLocation) mTelNet.getCellLocation();
+		if (location == null)
+			throw new Exception("未获得基站信息");
+
+		String operator = mTelNet.getNetworkOperator();
+		int mcc = Integer.parseInt(operator.substring(0, 3));
+		int mnc = Integer.parseInt(operator.substring(3));
+		int cid = location.getCid();
+		int lac = location.getLac();
+
+		cell.MCC = mcc;
+		cell.MNC = mnc;
+		cell.LAC = lac;
+		cell.CID = cid;
+		Log.i("mcc",mcc+"");
+		Log.i("mnc",mnc+"");
+		Log.i("lac",lac+"");
+		Log.i("cid",cid+"");
+		return cell;
+	}
+    public class SCell{
+    	public int MCC;
+    	public int MNC;
+    	public int LAC;
+    	public int CID;
+    }
+    
+    public class SItude{
+    	public String latitude;
+    	public String longitude;
+    	public String address;
+    	public String road;
+    	public String locationClass;
+    }
+
+	private SItude getItude(SCell cell) throws Exception {
+		SItude itude = new SItude();
+
+		HttpClient client = new DefaultHttpClient();
+		String str="?MCC="+cell.MCC+"&MNC="+cell.MNC+"&CID="+cell.CID+"&LAC="+cell.LAC;
+		HttpGet post = new HttpGet(LocationHost+"/ipad/location/getLocation.json"+str);
+		try {
+			HttpResponse response = client.execute(post);
+			HttpEntity entity = response.getEntity();
+			BufferedReader buffReader = new BufferedReader(new InputStreamReader(entity.getContent()));
+			StringBuffer strBuff = new StringBuffer();
+			String result = null;
+			while ((result = buffReader.readLine()) != null) {
+				strBuff.append(result);
+			}
+
+			JSONObject json = new JSONObject(strBuff.toString());
+			itude.latitude = json.getString("Latb");
+			itude.longitude = json.getString("Lngb");
+			itude.address = json.getString("address");
+			itude.road = json.getString("road");
+			
+			Log.i("Itude", itude.latitude + itude.longitude);
+			
+		} catch (Exception e) {
+			Log.e(e.getMessage(), e.toString());
+			throw new Exception(e.getMessage());
+		} finally{
+			post.abort();
+			client = null;
+		}
+		
+    	return itude;
+    }
+	/*----------------------------------------Gps定位---------------------------------------------*/
 	class RunnableLoc implements Runnable{
 		@Override
 		public void run() {
@@ -79,23 +168,13 @@ public class GetLocationOffline extends Plugin{
 			if(mylocationManager.isProviderEnabled(LocationManager.GPS_PROVIDER)){
 //				locationprovider 
 //	            =mylocationManager.getBestProvider(locationcriteria, true);
-				mylocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 0, 0, myListener);
+				mylocationManager.requestLocationUpdates(LocationManager.GPS_PROVIDER, 60000, 0, myListener);
 			}
 			else{
 				pl.success(new PluginResult(PluginResult.Status.ERROR,"请开启GPS"), callbackids);
 			}
 		}
 	}
-
-	@Override
-	public void onDestroy() {
-		// TODO Auto-generated method stub
-		mylocationManager.removeUpdates(myListener);
-		System.exit(0);
-		super.onDestroy();
-	}
-	
-	
 	public class MyLocationListener implements LocationListener{
 		/**
 	     *  位置信息变化时触发
@@ -103,6 +182,7 @@ public class GetLocationOffline extends Plugin{
 		@Override
 		public void onLocationChanged(Location location) {
 			// TODO Auto-generated method stub
+			HttpGet post=null;
 			try {
 				Log.i(TAG, "时间"+location.getTime());
 	            Log.i(TAG, "经度"+location.getLongitude());
@@ -111,12 +191,26 @@ public class GetLocationOffline extends Plugin{
 	            double[] position = wgs2bd(location.getLatitude(),location.getLongitude());
 				jsonObj.put("Longitude", position[1]);
 				jsonObj.put("Latitude",position[0]);
-				jsonObj.put("Time", location.getTime());
-				jsonObj.put("Altitude", location.getAltitude());
+//				jsonObj.put("Time", location.getTime());
+				jsonObj.put("address", "");
+//				jsonObj.put("Altitude", location.getAltitude());
+				jsonObj.put("locationClass", "GPS定位结果");
 				pl.success(new PluginResult(PluginResult.Status.OK,jsonObj), callbackids);
+				/*----------------------更新GPS获得的位置和基站信息到数据库-------------------------------*/
+				HttpClient client = new DefaultHttpClient();
+				SCell cell=getCellInfo();
+				String str="?MCC="+cell.MCC+"&MNC="+cell.MNC+"&CID="+cell.CID+"&LAC="+cell.LAC+"&Lngb="+position[1]+"&Latb="+position[0];
+				post = new HttpGet(LocationHost+"/ipad/location/insertLocation.json"+str);
+				client.execute(post);
 			} catch (JSONException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (Exception e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}finally{
+				post.abort();
+				
 			}
 		}
 		 /**
@@ -164,6 +258,7 @@ public class GetLocationOffline extends Plugin{
 		
 	}
 	
+/*--------------------------------------------------坐标转化--------------------------------------------------------------*/	
 	static double pi = 3.14159265358979324;
 	static double a = 6378245.0;
 	static double ee = 0.00669342162296594323;
@@ -223,4 +318,5 @@ public class GetLocationOffline extends Plugin{
 	       ret += (150.0 * Math.sin(lat / 12.0 * pi) + 300.0 * Math.sin(lat / 30.0 * pi)) * 2.0 / 3.0;
 	       return ret;
 	}
+	
 }

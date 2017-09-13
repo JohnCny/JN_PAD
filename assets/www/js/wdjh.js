@@ -52,7 +52,7 @@ function khwhjhlb(){
 				"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.result[i].chineseName+"@"+
 				obj.result[i].productName+"@"+obj.result[i].cardId+
 				"@"+obj.result[i].customerId+"@"+obj.result[i].appId+"'"+"/>"+"</span></td>"+
-				"<td>"+i+"</td>"+
+				"<td>"+(i+1)+"</td>"+
 				"<td>"+obj.result[i].chineseName+"</td>"+
 				"<td>"+obj.result[i].cardId+"</td>"+
 				"<td>"+obj.result[i].productName+"</td>"+
@@ -332,7 +332,7 @@ function pxjh(){
 						},
 						success:function(json){
 							var obj = $.evalJSON(json);
-							alert(obj.mess);
+//							alert(obj.mess);
 							window.wxc.xcConfirm(obj.mess, "success");
 							pxjh();
 						}
@@ -546,7 +546,7 @@ function yjjdcx(){
 		"<th>通过数:</th>"+
 		"<th>签约数:</th>"+
 		"<th>放款数:</th>"+
-		"<th>放款金额:</th>"+
+		"<th>授信金额:</th>"+
 		"</tr>";
 
 		window.scrollTo(0,0);//滚动条回到顶端
@@ -1148,7 +1148,7 @@ function cjshtz(){
 			},			
 			success:function (json){
 				var obj = $.evalJSON(json);
-				var customer="<option value = ''></option>";
+				var customer="<option value = '请选择'></option>";
 				for(var i=0;i<obj.customerList.length;i++){
 					customer+="<option value = '"+obj.customerList[i]+"'>"+obj.customerList[i]+"</option>" ;
 				}

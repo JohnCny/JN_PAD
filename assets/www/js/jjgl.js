@@ -233,7 +233,9 @@ function myjjgl2(productInfo){
 	} 
 }
 //新建进件
+var addIntopieceAll;
 function newUser1(addIntopiece){
+	addIntopieceAll=addIntopiece;
 	var reporturl ="/ipad/addIntopieces/reportIsExist.json";
 	$.get(wsHost+reporturl,{customerId:addIntopiece.customerId,productId:addIntopiece.productId},callbackresult);
 	function callbackresult(json){
@@ -250,7 +252,7 @@ function newUser1(addIntopiece){
 			"<div class='bottom-content'>"+
 			"<div class='box jjgl' id = 'diaocmb' style='margin-left:350px;display:inline-block;'>" +
 			"<img src='images/dcmb.png'/>" +
-			"<span>客户信息调查模板</span>"+
+			"<span>客户调查报告和录音资料</span>"+
 			"</div>"+
 			"<div class='box jjgl' id='yxzlxx' style='float:none;margin-left:50px;display:inline-block;'>" +
 			"<img src='images/zpcj.png' />" +
@@ -287,7 +289,7 @@ function newUser1(addIntopiece){
 
 	$("#yxzlxx").click(function(){
 
-		yxzladd(addIntopiece);
+		yxzzfl(addIntopiece);
 	})
 	$("#tjjj").click(function(){
 		window.wxc.xcConfirm("是否提交进件申请","confirm",{onOk:scks});
@@ -374,9 +376,10 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 "</table>"+
 "<table id='message2' class='cpTable'>"+
 "<tr>"+                             
-"<th colspan='5'>客户经营信息</th>"+ 
+"<th colspan='6'>客户经营信息</th>"+ 
 "</tr>"+
 "<tr>"+                             
+"<td>工薪类基本信息<span class='label label-"+obj.gxxx+"'>"+obj.gxxx2+"</span></td>"+             
 "<td>企业基本信息<span class='label label-"+obj.qyxx+"'>"+obj.qyxx2+"</span></td>"+             
 "<td>企业业务信息<span class='label label-"+obj.qyyw+"'>"+obj.qyyw2+"</span></td>"+            
 "<td>企业店铺信息<span class='label label-"+obj.qydp+"'>"+obj.qydp2+"</span></td>"+            
@@ -384,6 +387,10 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='newU
 "<td>其他信息<span class='label label-"+obj.qyqt+"'>"+obj.qyqt2+"</span></td>"+     
 "</tr>"+
 "<tr>"+                             
+"<td>" +
+"<input type='button' class='btn' value='添加' onclick='khgxxx_add("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>" +
+"<input type='button' class='btn' value='查看' onclick='khgxxx_edit("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>" +
+"</td>"+
 "<td>" +
 "<input type='button' class='btn' value='添加' onclick='qyjbxx_add("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>" +
 "<input type='button' class='btn' value='查看' onclick='qyjbxx_edit("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>" +
@@ -575,6 +582,8 @@ newUser1(addIntopiece);
 
 //调查模板 
 function dcmbadd(addIntopiece){
+	var loginId = window.sessionStorage.getItem("login");
+	var displayName= window.sessionStorage.getItem("displayName");
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png'/>调查模板采集</div>"+  
 			"<div class='content' style='text-align:center;'>" +  
@@ -583,16 +592,34 @@ function dcmbadd(addIntopiece){
 			"<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
 			"<div class='step3' id='newUser1'>选择资料类型</div>"+
 			"<div class='step3'>信息录入</div>"+
-			"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
+//			"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
 			"</div><div class='line'></div>"+
 			"<div class='bottom-content'>"+
 			"<table id='fcz' class='cpTable' style='text-align:center;margin-top:20px;'>"+
 			"<tr>"+                             
+			"<th>类别</th>"+
 			"<th>文件路径</th>"+
-//			"<th>操作</th>"+
+			"<th>操作</th>"+
 			"</tr>"+
-			"<tr>"+    
+			"<tr>"+  
+			"<td>调查报告</td>"+
 			"<td><input type='text' id='fcz_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' id='select' value='选择文件'/></td>"+
+			"<td><input type='button' class='btn btn-large btn-primary next' value='上传' id='sure'/></td>"+
+			"</tr>"+
+			"<tr>"+  
+			"<td>录音</td>"+
+			"<td><input type='text' id='fcz_sheet2' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' id='select2' value='选择文件'/></td>"+
+			"<td><input type='button' class='btn btn-large btn-primary next' value='上传' id='sure2'/></td>"+
+			"</tr>"+
+			"<tr>"+  
+			"<td>征信报告</td>"+
+			"<td><input type='text' id='fcz_sheet3' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' id='select3' value='选择文件'/></td>"+
+			"<td><input type='button' class='btn btn-large btn-primary next' value='上传' id='sure3'/></td>"+
+			"</tr>"+
+			"<tr>"+  
+			"<td>其他资料</td>"+
+			"<td><input type='text' id='fcz_sheet4' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' id='select4' value='选择文件'/></td>"+
+			"<td><input type='button' class='btn btn-large btn-primary next' value='上传' id='sure4'/></td>"+
 			"</tr>"+
 			"</table>"+
 			"</div>"+
@@ -609,8 +636,13 @@ function dcmbadd(addIntopiece){
 		});  
 	}, false); 
 	$("#sure").click(function(){
+		var sd=$("#fcz_sheet1").val().split(".");
+		if(sd[sd.length-1]!="xls"&&sd[sd.length-1]!="xlsx"){
+			window.wxc.xcConfirm("调查模板格式不对", "error");
+			return;
+		}
 		window.wxc.xcConfirm("是否开始上传调查模板", "confirm",{onOk:function(){
-			$("#sure").attr('disabled',"true");
+//			$("#sure").attr('disabled',"true");
 			var fileURI = document.getElementsByName("imageuri")[0].getAttribute("uri");
 			var fileName = $("#fcz_sheet1").val();
 			var options = new FileUploadOptions();  
@@ -624,11 +656,81 @@ function dcmbadd(addIntopiece){
 			ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 		}});
 	})
+	$("#sure2").click(function(){
+		var sd=$("#fcz_sheet2").val().split(".");
+		if(sd[sd.length-1]!="m4a"&&sd[sd.length-1]!="amr"){
+			window.wxc.xcConfirm("录音格式不对", "error");
+			return;
+		}
+		window.wxc.xcConfirm("是否开始上传录音", "confirm",{onOk:function(){
+//			$("#sure2").attr('disabled',"true");
+			var fileURI = document.getElementsByName("imageuri")[1].getAttribute("uri");
+			var fileName = $("#fcz_sheet2").val();
+			var options = new FileUploadOptions();  
+			options.fileKey = "file";  
+			options.fileName=fileURI.substr(fileURI.lastIndexOf('/') + 1); 
+			options.mimeType = "multipart/form-data";  
+			options.chunkedMode = false;  
+			ft = new FileTransfer();  
+			var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+null+"&loginId="+loginId+"&displayName="+displayName);  
+			show_uploadModel();
+			ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
+		}});
+	})
+	$("#sure3").click(function(){
+		var sd=$("#fcz_sheet3").val().split(".");
+		if(sd[sd.length-1]!="pdf"){
+			window.wxc.xcConfirm("征信报告格式不对", "error");
+			return;
+		}
+		window.wxc.xcConfirm("是否开始上传征信报告", "confirm",{onOk:function(){
+//			$("#sure3").attr('disabled',"true");
+			var fileURI = document.getElementsByName("imageuri")[2].getAttribute("uri");
+			var fileName = $("#fcz_sheet3").val();
+			var options = new FileUploadOptions();  
+			options.fileKey = "file";  
+			options.fileName=fileURI.substr(fileURI.lastIndexOf('/') + 1); 
+			options.mimeType = "multipart/form-data";  
+			options.chunkedMode = false;  
+			ft = new FileTransfer();  
+			var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+null+"&loginId="+loginId+"&displayName="+displayName);  
+			show_uploadModel();
+			ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
+		}});
+	})
+	$("#sure4").click(function(){
+		window.wxc.xcConfirm("是否开始上传资料", "confirm",{onOk:function(){
+//			$("#sure4").attr('disabled',"true");
+			var fileURI = document.getElementsByName("imageuri")[3].getAttribute("uri");
+			var fileName = $("#fcz_sheet4").val();
+			var options = new FileUploadOptions();  
+			options.fileKey = "file";  
+			options.fileName=fileURI.substr(fileURI.lastIndexOf('/') + 1); 
+			options.mimeType = "multipart/form-data";  
+			options.chunkedMode = false;  
+			ft = new FileTransfer();  
+			var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+null+"&loginId="+loginId+"&displayName="+displayName);  
+			show_uploadModel();
+			ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
+		}});
+	})
 
 
 	$("#select").click(function(){
 
-		openFileSelector("fcz_sheet1","imageuri");
+		openFileSelector("fcz_sheet1","imageuri",0);
+	})
+	$("#select2").click(function(){
+		
+		openFileSelector("fcz_sheet2","imageuri",1);
+	})
+	$("#select3").click(function(){
+		
+		openFileSelector("fcz_sheet3","imageuri",2);
+	})
+	$("#select4").click(function(){
+		
+		openFileSelector("fcz_sheet4","imageuri",3);
 	})
 	$("#khxxlb").click(function(){
 
@@ -648,15 +750,123 @@ function dcmbadd(addIntopiece){
 	})
 
 }
+//影像资料类型
+function yxzzfl(addIntopiece){
+	$("#mainPage").html("<div class='title' id='newUser1'><img src='images/back.png'/>影像资料采集</div>"+  
+			"<div class='content' style='text-align:center;'>" +  
+			"<div class='jjstep'>"+
+			"<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
+			"<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
+			"<div class='step3' id='newUsers1'>选择资料类型</div>"+
+			"<div class='step3' >选择图片类型</div>"+
+			"<div class='step2'>信息录入</div>"+
+			"</div><div class='line'></div>"+
+			 "<div class='bottom-content'>"+
+             "<div class='box zppx' id = 'gzzm' style='margin-left:120px;display:inline-block;'>" +
+             "<img src='images/pad.png' id='jycs'/>" +
+                 "<span>工资证明</span>"+
+             "</div>"+
+             "<div class='box zppx' id='jyqk' style='float:none;display:inline-block;margin-left:50px;'>" +
+                 "<img src='images/pad.png' />" +
+                 "<span>经营情况</span>"+
+             "</div>"+
+             "<div class='box zppx' id='hy' style='float:none;display:inline-block;margin-left:50px;'>" +
+             "<img src='images/pad.png' />" +
+             "<span>合影</span>"+
+             "</div>"+
+             "<div class='box zppx' id='jf' style='float:none;display:inline-block;margin-left:50px;'>" +
+             "<img src='images/pad.png'  />" +
+             "<span>家访</span>"+
+         "</div>"+
+         "<div class='box zppx' id='zj' style='float:none;display:inline-block;margin-left:50px;margin-right:120px;'>" +
+         "<img src='images/pad.png' />" +
+         "<span>身份材料</span>"+
+     "</div>"+
+     "</div>"+
+     "<div class='bottom-content'>"+
+     "<div class='box zppx' id = 'sdjl' style='margin-left:120px;display:inline-block;'>" +
+     "<img src='images/pad.png' />" +
+         "<span>审贷结论</span>"+
+     "</div>"+
+     "<div class='box zppx' id='yhls' style='float:none;display:inline-block;margin-left:50px;'>" +
+         "<img src='images/pad.png' />" +
+         "<span>银行流水</span>"+
+     "</div>"+
+     "<div class='box zppx' id='cc' style='float:none;display:inline-block;margin-left:50px;'>" +
+     "<img src='images/pad.png' />" +
+     "<span>资产情况</span>"+
+ "</div>"+
+ "<div class='box zppx' id='qt' style='float:none;display:inline-block;margin-left:50px;margin-right:320px'>" +
+ "<img src='images/pad.png' />" +
+ "<span>其他</span>"+
+"</div>"+
+	"</div>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+
+	$("#gzzm").click(function(){
+		addIntopiece.imageClasses="gzzm";
+		yxzladd(addIntopiece)
+	})
+	$("#zj").click(function(){
+		addIntopiece.imageClasses="zj";
+		yxzladd(addIntopiece)
+	})
+	$("#sdjl").click(function(){
+		addIntopiece.imageClasses="sdjl";
+		yxzladd(addIntopiece)
+	})
+	$("#yhls").click(function(){
+		addIntopiece.imageClasses="yhls";
+		yxzladd(addIntopiece)
+	})
+	$("#cc").click(function(){
+		addIntopiece.imageClasses="cc";
+		yxzladd(addIntopiece)
+	})
+	$("#qt").click(function(){
+		addIntopiece.imageClasses="qt";
+		yxzladd(addIntopiece)
+	})
+	$("#jyqk").click(function(){
+		addIntopiece.imageClasses="jyqk";
+		yxzladd(addIntopiece)
+	})
+	$("#hy").click(function(){
+		addIntopiece.imageClasses="hy";
+		yxzladd(addIntopiece)
+	})
+	$("#jf").click(function(){
+		addIntopiece.imageClasses="jf";
+		yxzladd(addIntopiece)
+	})
+	$("#khxxlb").click(function(){
+
+		myjjgl2(addIntopiece);
+	})
+	$("#newUser1").click(function(){
+
+		newUser1(addIntopiece);
+	})
+	$("#newUsers1").click(function(){
+		
+		newUser1(addIntopiece);
+	})
+}
 //影像资料
 function yxzladd(addIntopiece){
+	var loginId = window.sessionStorage.getItem("login");
+	var displayName= window.sessionStorage.getItem("displayName");
+	addIntopiece.appId=null;
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png'/>影像资料采集</div>"+  
 			"<div class='content' style='text-align:center;'>" +  
 			"<div class='jjstep'>" +
 			"<div class='step1' onclick='myjjgl()'>"+addIntopiece.productName+"</div>"+
 			"<div class='step3' id='khxxlb'>"+addIntopiece.chineseName+"</div>"+
-			"<div class='step3' id='newUser1'>选择资料类型</div>"+
+			"<div class='step3' id='newUser２'>选择资料类型</div>"+
+			"<div class='step3' id='newUser1'>选择图片类型</div>"+
 			"<div class='step3'>信息录入</div>"+
 			"<input type='button' class='btn btn-large btn-primary next' value='确定' id='sure'/>" +
 			"</div><div class='line'></div>"+
@@ -671,11 +881,12 @@ function yxzladd(addIntopiece){
 			"<td>1</td>"+
 			"<td><input type='text' id='qtyxzl_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");' value='选择文件'/></td>"+
 //			"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
-			"<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\",\""+addIntopiece.chineseName+ "\");'/></td>"+
+//			"<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\",\""+addIntopiece.chineseName+ "\");'/></td>"+
+			"<td><img src='images/ugc_icon_type_photo.png' onclick='captureAndUpload(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\","+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +");'/></td>"+
 			"</tr>"+
 			"</table>"+
 			"<p class='Left'>" +
-			"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
+			"<button class='add-button' onclick='addTds(\"qtyxzl\","+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'><img src='images/add.png'/></button>" +
 			"<button class='add-button' onclick='removeTd(\"qtyxzl\")'><img src='images/del.png'/></button>" +
 			"</p>"+
 			"<p>" +
@@ -693,13 +904,12 @@ function yxzladd(addIntopiece){
 			var num= $('#qtyxzl tr').length-1;
 			var i=0;
 			show_upload(0);
-			var timer =window.setInterval(startUpload,2000);
+			var timer =window.setInterval(startUpload,1000);
 			function startUpload(){
 				if(i>=num){
 					window.clearInterval(timer);
 					return;
 				}
-				show_upload(0);
 				$("#uploadInfo").html("正在上传第"+(i+1)+"张，请稍后...");
 				var j=i+1;
 				var fileName = $("#qtyxzl_sheet"+j).val();
@@ -713,7 +923,7 @@ function yxzladd(addIntopiece){
 					ft = new FileTransfer(); 
 //					ft.onprogress = showUploadingProgress;
 //			        navigator.notification.progressStart("", "当前上传进度");
-					var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+applicationId);  
+					var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+applicationId+"&loginId="+loginId+"&displayName="+displayName+"&imageClasses="+addIntopiece.imageClasses);  
 					ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 				}
 				i++;
@@ -731,11 +941,15 @@ function yxzladd(addIntopiece){
 	})
 	$("#newUser1").click(function(){
 
+		yxzzfl(addIntopiece);
+	})
+	$("#newUser２").click(function(){
+		
 		newUser1(addIntopiece);
 	})
 	$("#newUsers1").click(function(){
 
-		newUser1(addIntopiece);
+		yxzzfl(addIntopiece);
 	})
 	$("#xxzlcj").click(function(){
 
@@ -762,11 +976,13 @@ function ckimage(res){
 	"<th>客户名称</th>"+
 	"<th>上传时间</th>"+
 	"</tr>";
-	$.get(wsHost+ysctpurl,{customerId:res.customerId,productId:res.productId,applicationId:res.appId},callbackfunction);
+	$.get(wsHost+ysctpurl,{imageClasses:res.imageClasses,customerId:res.customerId,productId:res.productId,applicationId:res.appId},callbackfunction);
 	function  callbackfunction (json){
 		obj = $.evalJSON(json);
 		for(var i = 0;i<obj.imagerList.length;i++){
-
+			if(obj.imagerList[i].createdTime.length>19){
+				obj.imagerList[i].createdTime = obj.imagerList[i].createdTime.substr(0,19);
+			}
 			tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.imagerList[i].id+"@"+
 			obj.imagerList[i].applicationId+"'/>"+"</span></td>"+  
 			"<td>"+obj.imagerList[i].attachment+"</td>"+
@@ -918,7 +1134,7 @@ function browseimage(resu){
 			}
 		})
 }
-function openFileSelector(id,name) {  
+function openFileSelector(id,name,i) {  
 	var source = navigator.camera.PictureSourceType.PHOTOLIBRARY;  
 	//描述类型，取文件路径  
 	var destinationType = navigator.camera.DestinationType.FILE_URI; 
@@ -934,9 +1150,8 @@ function openFileSelector(id,name) {
 	navigator.camera.getPicture(getsuccess,getfile_Error,options);  
 
 	   function getfile_Error(message) {
-	         alert(message);
+//		   window.wxc.xcConfirm("调查模板或录音格式不对", "error");
 	    }
-
 	function getsuccess(URI){
 		window.resolveLocalFileSystemURI(URI, gotFileEntry, onFileFail);
 		//转换URI到全路径
@@ -947,7 +1162,7 @@ function openFileSelector(id,name) {
 			var url = document.getElementById(id);
 			url.value = fpath;
 			URI="file://"+fpath;
-			var lll= document.getElementsByName("imageuri")[0].setAttribute("uri",URI);
+			var lll= document.getElementsByName("imageuri")[i].setAttribute("uri",URI);
 			//alert(json);
 //			}
 			function testError(){
@@ -957,7 +1172,7 @@ function openFileSelector(id,name) {
 		}
 		//文件操作失败
 		function onFileFail(error) { 
-			alert("error code: "+ error);
+			window.wxc.xcConfirm("资料格式不对", "error");
 		};
 
 	}
@@ -1021,11 +1236,19 @@ function uploadSuccess(r) {
 			$("#sure").attr('disabled',false);
 		}
 	}else{
-//		alert("导入成功！");
-		$("#uploadInfo").html("导入成功！");
-		$("#diss").attr('disabled',false);
-		$("#sure").attr('disabled',false);
-		newUser1(addIntopiece);
+		if(obj.successToOther==false){
+			$("#uploadInfo").html("导入到影像补扫[其他]失败，已导入征信报告处，请下载浏览");
+			$("#diss").attr('disabled',false);
+			$("#sure").attr('disabled',false);
+			return;
+		}
+		
+			$("#uploadInfo").html("导入成功！");
+			$("#diss").attr('disabled',false);
+			$("#sure").attr('disabled',false);
+//			newUser1(addIntopieceAll);
+		
+//	
 	}
 	clearProcess();
 }  

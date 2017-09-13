@@ -6,6 +6,8 @@ $("#mainPage").html("<div class='title'>客户管理</div>"+
                         "<div class='box khgl' onclick='newUser()'><img src='images/xjkh.jpg'/><span>新建客户</span></div>"+
                         "<div class='box khgl' onclick='editUser()'><img src='images/khwh.jpg'/><span>客户维护</span></div>"+
                         "<div class='box khgl' onclick='myzbgl()'><img src='images/wdzb.png'/><span>众包管理</span></div>"+
+                        "<div class='box khgl' onclick='modelinput()'><img src='images/swsspg.jpg'/><span>四维授信评估模型</span></div>"+
+                        "<div class='box khgl' onclick='getModelResult()()'><img src='images/swsxcx.jpg'/><span>评估结果查询</span></div>"+
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();

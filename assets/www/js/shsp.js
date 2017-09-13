@@ -79,7 +79,7 @@ function cysdrw(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -212,10 +212,168 @@ function cysdrw(){
 	})
 
 }
+//pad图片类型
 
-//影像资料
-function xsyxzl(res){
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='"+res.currentLoc+"'/>影像资料</div>"+  
+function yxzzpadfl(res){
+	$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png' onclick='xsyxzl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'/>照片浏览-移动端分类</div>"+  
+			"<div class='content' style='text-align:center;'>" +  
+			"<div class='bottom-content'>"+
+            "<div class='box zppx' id = 'gzzm' style='margin-left:120px;display:inline-block;'>" +
+            "<img src='images/pad.png' id='jycs'/>" +
+                "<span>工资证明</span>"+
+            "</div>"+
+            "<div class='box zppx' id='jyqk' style='float:none;display:inline-block;margin-left:50px;'>" +
+                "<img src='images/pad.png' />" +
+                "<span>经营情况</span>"+
+            "</div>"+
+            "<div class='box zppx' id='hy' style='float:none;display:inline-block;margin-left:50px;'>" +
+            "<img src='images/pad.png' />" +
+            "<span>合影</span>"+
+            "</div>"+
+            "<div class='box zppx' id='jf' style='float:none;display:inline-block;margin-left:50px;'>" +
+            "<img src='images/pad.png'  />" +
+            "<span>家访</span>"+
+        "</div>"+
+        "<div class='box zppx' id='zj' style='float:none;display:inline-block;margin-left:50px;margin-right:120px;'>" +
+        "<img src='images/pad.png' />" +
+        "<span>身份材料</span>"+
+    "</div>"+
+    "</div>"+
+    "<div class='bottom-content'>"+
+    "<div class='box zppx' id = 'sdjl' style='margin-left:120px;display:inline-block;'>" +
+    "<img src='images/pad.png' />" +
+        "<span>审贷结论</span>"+
+    "</div>"+
+    "<div class='box zppx' id='yhls' style='float:none;display:inline-block;margin-left:50px;'>" +
+        "<img src='images/pad.png' />" +
+        "<span>银行流水</span>"+
+    "</div>"+
+    "<div class='box zppx' id='cc' style='float:none;display:inline-block;margin-left:50px;'>" +
+    "<img src='images/pad.png' />" +
+    "<span>资产情况</span>"+
+"</div>"+
+"<div class='box zppx' id='qt' style='float:none;display:inline-block;margin-left:50px;margin-right:320px'>" +
+"<img src='images/pad.png' />" +
+"<span>其他</span>"+
+"</div>"+
+"</div>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+
+	$("#gzzm").click(function(){
+		res.imageClasses="gzzm";
+		xsyxzlpad(res)
+	})
+	$("#zj").click(function(){
+		res.imageClasses="zj";
+		xsyxzlpad(res)
+	})
+	$("#sdjl").click(function(){
+		res.imageClasses="sdjl";
+		xsyxzlpad(res)
+	})
+	$("#yhls").click(function(){
+		res.imageClasses="yhls";
+		xsyxzlpad(res)
+	})
+	$("#cc").click(function(){
+		res.imageClasses="cc";
+		xsyxzlpad(res)
+	})
+	$("#qt").click(function(){
+		res.imageClasses="qt";
+		xsyxzlpad(res)
+	})
+	$("#jyqk").click(function(){
+		res.imageClasses="jyqk";
+		xsyxzlpad(res)
+	})
+	$("#hy").click(function(){
+		res.imageClasses="hy";
+		xsyxzlpad(res)
+	})
+	$("#jf").click(function(){
+		res.imageClasses="jf";
+		xsyxzlpad(res)
+	})
+}
+//pc图片类型
+function yxzzpcfl(res){
+	var pcimageurl="/ipad/JnpadImageBrowse/findPcImageBatch.json";
+	$.ajax({
+		url:wsHost+pcimageurl,
+		type: "GET",
+		dataType:'json',
+		data:{
+			appId:res.applicationId,
+			custId:res.customerId
+		},
+		success: function (json){
+			var obj = $.evalJSON(json);
+			var batchInfo="";
+			var batchInfo2="";
+			for (var i = 0; i < obj.batch_ls.length; i++) {
+				res.batchId=obj.batch_ls[i].id;
+//				batchInfo+=	"<div class='box zppx' style='margin-left:50px;display:inline;' id = 'gzzm' onclick='xsyxzlpc("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'>" +
+//				"<img style='margin-left:50px;display:inline;width:100px;height:100px;margin-top:40px;' src='images/pc.png'/>" +
+//				"<span style='margin-left:50px;margin-top:50px;'>"+obj.batch_ls[i].name+"</span>"+
+//				"</div>";
+				if(i<5){
+				if(i==0){
+					batchInfo+="<div class='box zppx' onclick='xsyxzlpc("+ JSON.stringify(res).replace(/"/g, '&quot;') +")' style='margin-left:120px;display:inline-block;'>" +
+		            "<img src='images/pc.png'/>" +
+		                "<span>"+obj.batch_ls[i].name+"</span>"+
+		            "</div>";
+				}else if(i==4){
+					batchInfo+="<div class='box zppx' onclick='xsyxzlpc("+ JSON.stringify(res).replace(/"/g, '&quot;') +")' id='zj' style='float:none;display:inline-block;margin-left:50px;margin-right:120px;'>" +
+			        "<img src='images/pc.png' />" +
+			        "<span>"+obj.batch_ls[i].name+"</span>";
+			    "</div>";
+					
+				}else{
+					batchInfo+= "<div class='box zppx' onclick='xsyxzlpc("+ JSON.stringify(res).replace(/"/g, '&quot;') +")' id='hy' style='float:none;display:inline-block;margin-left:50px;'>" +
+		            "<img src='images/pc.png' />" +
+		            "<span>"+obj.batch_ls[i].name+"</span>"+
+		            "</div>";
+				}
+				}else{
+				if(i==5){
+					batchInfo2+="<div class='box zppx' onclick='xsyxzlpc("+ JSON.stringify(res).replace(/"/g, '&quot;') +")' id = 'sdjl' style='margin-left:120px;display:inline-block;'>" +
+				    "<img src='images/pc.png' />" +
+			        "<span>"+obj.batch_ls[i].name+"</span>"+
+			    "</div>";
+				}else if(i==8){
+					batchInfo2+="<div class='box zppx' onclick='xsyxzlpc("+ JSON.stringify(res).replace(/"/g, '&quot;') +")' id='qt' style='float:none;display:inline-block;margin-left:50px;margin-right:320px'>" +
+					"<img src='images/pc.png' />" +
+					"<span>"+obj.batch_ls[i].name+"</span>"+
+					"</div>";
+				}else{
+					batchInfo2+="<div class='box zppx' onclick='xsyxzlpc("+ JSON.stringify(res).replace(/"/g, '&quot;') +")' id='hy' style='float:none;display:inline-block;margin-left:50px;'>" +
+		            "<img src='images/pc.png' />" +
+		            "<span>"+obj.batch_ls[i].name+"</span>"+
+		            "</div>";
+				}
+				}
+			}
+	$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png' onclick='xsyxzl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'/>照片浏览-管理端分类</div>"+  
+			"<div class='content' style='text-align:center;'>" +  
+			"<div class='bottom-content'>"+
+			batchInfo+
+			"</div>"+
+			"<div class='bottom-content'>"+
+			batchInfo2+
+			"</div>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+		}
+	})
+}
+//显示pad上传图片
+function xsyxzlpad(res){
+
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='yxzzpadfl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'/>照片浏览-移动端分类-移动端图片</div>"+  
 			"</div>"+
 			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
 			"<div class='spinner'>"+
@@ -230,7 +388,7 @@ function xsyxzl(res){
 	var id;
 	var page = 0;
 	var lltpurl;
-	$.get(wsHost+yxzlurl,{customerId:res.customerId,productId:res.productId,applicationId:res.applicationId},callbackfunction);
+	$.get(wsHost+yxzlurl,{imageClasses:res.imageClasses,customerId:res.customerId,productId:res.productId,applicationId:res.applicationId},callbackfunction);
 		function  callbackfunction (json){
 			obj = $.evalJSON(json);
 		var smallimages="";
@@ -245,8 +403,8 @@ function xsyxzl(res){
 //						" <figcaption class='img-caption'></figcaption></figure></a></li>";
 //			}
 			
-	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='"+res.currentLoc+"'/>影像资料</div>"+
-			"<div class='content'>" +
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='yxzzpadfl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'/>照片浏览-移动端图片</div>"+
+			"<div class='content' id='content'>" +
 			"<div id='gallery-container' class='plusview'>"+
 			"<ul>"+
 			smallimages+
@@ -258,10 +416,6 @@ function xsyxzl(res){
 	"</div>");
 	$(".right").hide();
 	$("#mainPage").show();
-	$("#imageBrowse").html(
-			"<img id ='images' width='500px' style='text-align:center' src='"+wsHost+lltpurl+"' alt='' />"
-	);
-	
 	$(function() {
 		$('.plusview').plusview();
 	});
@@ -271,30 +425,30 @@ function xsyxzl(res){
 //	        fullScreenEnabled: true
 //	      });
 //	    });
-	 var nStartx, nStarty, nEndx, nEndy;
-	 var dist = 100;
-	 document.getElementById("gallery-container").addEventListener("touchstart",
-	            function (e) {
-	                  nStartx = e.targetTouches[0].pageX;
-	                  nStarty = e.targetTouches[0].pageY;
-	                  console.log("touch start:" + nStartx + "," + nStarty);
-	            });
-	 document.getElementById("gallery-container").addEventListener("touchend",
-	           function (e) {
-	                  nEndx = e.changedTouches[0].pageX;
-	                  nEndy = e.changedTouches[0].pageY;
-	                  console.log("touch end:" + nEndx + "," + nEndy);
-	                  if(nEndx-nStartx>dist)   //向右滑动
-	                  {
-	                     //执行逻辑
-	                	  $("#syy").click();
-	                  }
-	                  else if(nStartx-nEndx>dist) //向左滑动
-	                  {
-	                     //执行逻辑
-	                	  $("#xyy").click();
-	                  }
-	 });
+//	 var nStartx, nStarty, nEndx, nEndy;
+//	 var dist = 100;
+//	 document.getElementById("gallery-container").addEventListener("touchstart",
+//	            function (e) {
+//	                  nStartx = e.targetTouches[0].pageX;
+//	                  nStarty = e.targetTouches[0].pageY;
+//	                  console.log("touch start:" + nStartx + "," + nStarty);
+//	            });
+//	 document.getElementById("gallery-container").addEventListener("touchend",
+//	           function (e) {
+//	                  nEndx = e.changedTouches[0].pageX;
+//	                  nEndy = e.changedTouches[0].pageY;
+//	                  console.log("touch end:" + nEndx + "," + nEndy);
+//	                  if(nEndx-nStartx>dist)   //向右滑动
+//	                  {
+//	                     //执行逻辑
+//	                	  $("#syy").click();
+//	                  }
+//	                  else if(nStartx-nEndx>dist) //向左滑动
+//	                  {
+//	                     //执行逻辑
+//	                	  $("#xyy").click();
+//	                  }
+//	 });
 //	$("#ckyt").click(function(){
 //		var values=$("#ckyt").val();
 //		var xx="查看原图";
@@ -347,6 +501,110 @@ function xsyxzl(res){
 	
 		}
 //	})
+
+	
+}
+//显示pc上传图片
+function xsyxzlpc(res){
+
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='yxzzpcfl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'/>照片浏览-管理端图片分类</div>"+  
+			"</div>"+
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+			"</div>");
+	var yxzlurl="/ipad/JnpadImageBrowse/uploadYxPc.json";
+	var obj;
+	var id;
+	var page = 0;
+	var lltpurl;
+	$.get(wsHost+yxzlurl,{customerId:res.customerId,productId:res.productId,applicationId:res.applicationId,batchId:res.batchId},callbackfunction);
+		function  callbackfunction (json){
+			obj = $.evalJSON(json);
+		var smallimages="";
+			for(var i=0;i<obj.imagerList.length;i++){
+				lltpurl="/ipad/JnpadImageBrowse/downLoadYxzlJnPc.json?url="+obj.imagerList[i];
+				smallimages+="<li class='item'><a href='"+wsHost+lltpurl+"' data-type='image'><img src='"+wsHost+lltpurl+"' alt='' /></a></li>";
+			}
+			var bigimages="";
+			
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='yxzzpcfl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'/>照片浏览-管理端图片分类-管理端图片</div>"+
+			"<div class='content' id='content'>" +
+			"<div id='gallery-container' class='plusview'>"+
+			"<ul>"+
+			smallimages+
+			"</ul>"+
+			"</div>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+//	$("#imageBrowse").html(
+//			"<img id ='images' width='500px' style='text-align:center' src='"+wsHost+lltpurl+"' alt='' />"
+//	);
+	
+	$(function() {
+		$('.plusview').plusview();
+	});
+	
+//	 var nStartx, nStarty, nEndx, nEndy;
+//	 var dist = 100;
+//	 document.getElementById("gallery-container").addEventListener("touchstart",
+//	            function (e) {
+//	                  nStartx = e.targetTouches[0].pageX;
+//	                  nStarty = e.targetTouches[0].pageY;
+//	                  console.log("touch start:" + nStartx + "," + nStarty);
+//	            });
+//	 document.getElementById("gallery-container").addEventListener("touchend",
+//	           function (e) {
+//	                  nEndx = e.changedTouches[0].pageX;
+//	                  nEndy = e.changedTouches[0].pageY;
+//	                  console.log("touch end:" + nEndx + "," + nEndy);
+//	                  if(nEndx-nStartx>dist)   //向右滑动
+//	                  {
+//	                     //执行逻辑
+//	                	  PlusView.showPrev;
+//	                  }
+//	                  else if(nStartx-nEndx>dist) //向左滑动
+//	                  {
+//	                     //执行逻辑
+//	                	  PlusView.showNext;
+//	                  }
+//	 });
+		}
+
+	
+}
+//影像资料
+function xsyxzl(res){
+	$("#jjsp").html("<div class='title' id='mjjgl2'><img src='images/back.png' onclick='"+res.currentLoc+"'/>照片浏览</div>"+  
+			"<div class='content'>" +
+			"<div class='bottom-content'>"+
+			"<div class='box zpll' id = 'pcimg' style='margin-left:450px;display:inline-block;'>" +
+			"<img src='images/pc.png'/>" +
+			"<span>管理端照片</span>"+
+			"</div>"+
+			"<div class='box zpll' id='padimg' style='float:none;margin-left:50px;display:inline-block;'>" +
+			"<img src='images/pad.png' />" +
+			"<span>移动端照片</span>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
+	$(".right").hide();
+	$("#jjsp").show();	
+	
+	$("#pcimg").click(function(){
+		
+		yxzzpcfl(res);
+	})
+	$("#padimg").click(function(){
+
+		yxzzpadfl(res);
+	})
+	
 }
 ////影像资料
 //function xsyxzl(res){
@@ -615,78 +873,78 @@ function csresult(res){
 		success: function (json){
 			var obj = $.evalJSON(json);
 			var	managerList=window.sessionStorage.getItem("managerList");
-			var sddd="";
-			if(obj.evaResult!=null){
-				sddd="<tr>"+
-				"<th>评估结果：</th>"+
-				"<td>"+obj.evaResult.result+"</td>"+
-				"<th>拟授信额度（万元）：</th>"+
-				"<td>"+obj.evaResult.money+"</td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>姓名：</th>"+
-				"<td>"+obj.evaResult.cname+"</td>"+
-				"<th>身份证号：</th>"+
-				"<td>"+obj.evaResult.cardNo+"</td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>性别：</th>"+
-				"<td>"+obj.evaResult.sex+"</td>"+
-				"<th>经营状况得分：</th>"+
-				"<td>"+obj.evaResult.busScore+"</td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>道德品质得分：</th>"+
-				"<td>"+obj.evaResult.habScore+"</td>"+
-				"<th>生存状况得分：</th>"+
-				"<td>"+obj.evaResult.liveScore+"</td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>还款能力（万元）：</th>"+
-				"<td>"+obj.evaResult.payAbli+"</td>"+
-//				"<th>未评估项/总项：</th>"+
-//				"<td>"+obj.evaResult.project+"</td>"+
-				"</tr>";
-			}else{
-				sddd="<tr>"+
-				"<th>评估结果：</th>"+
-				"<td></td>"+
-				"<th>拟授信额度（万元）：</th>"+
-				"<td></td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>姓名：</th>"+
-				"<td></td>"+
-				"<th>身份证号：</th>"+
-				"<td></td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>性别：</th>"+
-				"<td></td>"+
-				"<th>经营状况得分：</th>"+
-				"<td></td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>道德品质得分：</th>"+
-				"<td></td>"+
-				"<th>生存状况得分：</th>"+
-				"<td></td>"+
-				"</tr>"+
-				"<tr>"+
-				"<th>还款能力（万元）：</th>"+
-				"<td></td>"+
-//				"<th>未评估项/总项：</th>"+
+//			var sddd="";
+//			if(obj.evaResult!=null){
+//				sddd="<tr>"+
+//				"<th>评估结果：</th>"+
+//				"<td>"+obj.evaResult.result+"</td>"+
+//				"<th>拟授信额度（万元）：</th>"+
+//				"<td>"+obj.evaResult.money+"</td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>姓名：</th>"+
+//				"<td>"+obj.evaResult.cname+"</td>"+
+//				"<th>身份证号：</th>"+
+//				"<td>"+obj.evaResult.cardNo+"</td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>性别：</th>"+
+//				"<td>"+obj.evaResult.sex+"</td>"+
+//				"<th>经营状况得分：</th>"+
+//				"<td>"+obj.evaResult.busScore+"</td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>道德品质得分：</th>"+
+//				"<td>"+obj.evaResult.habScore+"</td>"+
+//				"<th>生存状况得分：</th>"+
+//				"<td>"+obj.evaResult.liveScore+"</td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>还款能力（万元）：</th>"+
+//				"<td>"+obj.evaResult.payAbli+"</td>"+
+////				"<th>未评估项/总项：</th>"+
+////				"<td>"+obj.evaResult.project+"</td>"+
+//				"</tr>";
+//			}else{
+//				sddd="<tr>"+
+//				"<th>评估结果：</th>"+
 //				"<td></td>"+
-				"</tr>";
-			}
+//				"<th>拟授信额度（万元）：</th>"+
+//				"<td></td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>姓名：</th>"+
+//				"<td></td>"+
+//				"<th>身份证号：</th>"+
+//				"<td></td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>性别：</th>"+
+//				"<td></td>"+
+//				"<th>经营状况得分：</th>"+
+//				"<td></td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>道德品质得分：</th>"+
+//				"<td></td>"+
+//				"<th>生存状况得分：</th>"+
+//				"<td></td>"+
+//				"</tr>"+
+//				"<tr>"+
+//				"<th>还款能力（万元）：</th>"+
+//				"<td></td>"+
+////				"<th>未评估项/总项：</th>"+
+////				"<td></td>"+
+//				"</tr>";
+//			}
 			window.scrollTo(0,0);//滚动条回到顶端
 			$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='cysdrw()'/>进件初审结论</div>"+  
 					"<div class='content'>" +
 					"<table class='cpTable khjbxx' style='margin-top:20px;'>"+//审核审批任务信息
-					"<tr>"+                        
-					"<th colspan='4'>评估结果</th>"+  
-					"</tr>"+
-					sddd+
+//					"<tr>"+                        
+//					"<th colspan='4'>评估结果</th>"+  
+//					"</tr>"+
+//					sddd+
 					"<tr>"+                        
 					"<th colspan='4'>进件申请信息</th>"+  
 					"</tr>"+
@@ -798,8 +1056,30 @@ function csresult(res){
 				var decisionRate= $("#decisionRate").val();
 				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
 				var lilv2=/^[1-9][0-9]*$/;
-				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
-					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
+				
+				if( $("#auditresult").val() == "APPROVE"){
+					if(Number(sxed)<Number(s[0])||Number(sxed)>Number(s[1])||!number.test(sxed)){
+						window.wxc.xcConfirm("请输入正确的授信金额", "warning");
+						return;
+					}
+					if(!lilv.test(decisionRate)&&!lilv2.test(decisionRate)){
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+						return;
+					}
+				}
+				if( $("#auditresult").val() == "REJECTAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						 window.wxc.xcConfirm("拒绝原因不能为空", "warning");
+						 return;
+					}
+				}
+				
+				if( $("#auditresult").val() == "RETURNAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						window.wxc.xcConfirm("退回原因不能为空", "warning");
+						 return;
+					}
+				}
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -828,21 +1108,15 @@ function csresult(res){
 							cysdrw();
 						}
 					})
-					}else{
-						window.wxc.xcConfirm("请输入正确的利率", "warning");
-					}
-				}else{
-//					alert("请输入正确的授信金额");
-					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
-				}
+				
 			})
 
 			$("#auditresult").change(function (){
 
 				var status = $("select[name=status]").val();
 				if( status == "APPROVE"){
-					$("tr:eq(11)").show();
-					$("tr:eq(14)").hide();
+					$("tr:eq(5)").show();
+					$("tr:eq(8)").hide();
 //					if($("input[name=decision_amount]").val() == ""){
 //					$("input[name='decision_amount']").after("<label class='error myerror' generated='true' >金额不能为空</label>");   
 //					}
@@ -853,16 +1127,16 @@ function csresult(res){
 				}
 
 				if( status == "REJECTAPPROVE"){
-					$("tr:eq(11)").hide();
-					$("tr:eq(14)").show();
+					$("tr:eq(5)").hide();
+					$("tr:eq(8)").show();
 //					if($("textarea[name=decision_refusereason]").val() == ""){
 //					$("textarea[name='decision_refusereason']").after("<label class='error myerror' generated='true' >拒绝原因不能为空</label>");   
 //					}
 				}
 
 				if( status == "RETURNAPPROVE"){
-					$("tr:eq(11)").hide();
-					$("tr:eq(14)").show();
+					$("tr:eq(5)").hide();
+					$("tr:eq(8)").show();
 				}
 
 				if(status =='RETURNAPPROVE'){
@@ -912,6 +1186,24 @@ function teacherList(){
 	
 	
 }
+Date.prototype.Format = function(fmt)   
+{ //author: meizz   
+  var o = {   
+    "M+" : this.getMonth()+1,                 //月份   
+    "d+" : this.getDate(),                    //日   
+    "h+" : this.getHours(),                   //小时   
+    "m+" : this.getMinutes(),                 //分   
+    "s+" : this.getSeconds(),                 //秒   
+    "q+" : Math.floor((this.getMonth()+3)/3), //季度   
+    "S"  : this.getMilliseconds()             //毫秒   
+  };   
+  if(/(y+)/.test(fmt))   
+    fmt=fmt.replace(RegExp.$1, (this.getFullYear()+"").substr(4 - RegExp.$1.length));   
+  for(var k in o)   
+    if(new RegExp("("+ k +")").test(fmt))   
+  fmt = fmt.replace(RegExp.$1, (RegExp.$1.length==1) ? (o[k]) : (("00"+ o[k]).substr((""+ o[k]).length)));   
+  return fmt;   
+}  
 //审贷决议
 function sdjy(){
 	var sdrwurl= "/ipad/intopieces/csBrowse.json";
@@ -962,7 +1254,7 @@ function sdjy(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -971,7 +1263,7 @@ function sdjy(){
 
 				tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].productId+"@"+
 				obj.items[i].applyQuota+"@"+obj.items[i].customerId+"@"+obj.items[i].id+
-				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"'/>"+"</span></td>"+  
+				"@"+obj.items[i].status+"@"+obj.items[i].examineAmount+"@"+obj.items[i].chineseName+"'/>"+"</span></td>"+  
 				"<td>"+obj.items[i].chineseName+"</td>"+
 				"<td>"+obj.items[i].applyQuota+"</td>"+
 				"<td>"+obj.items[i].cardType+"</td>"+
@@ -1036,6 +1328,7 @@ function sdjy(){
 					res.customerId = values[2];
 					res.productId =values[0];
 					res.applyQuota = values[1];
+					res.chineseName =values[6];
 					xssdjy(res);
 				}else{
 //					alert("请选择一行");
@@ -1352,8 +1645,29 @@ function xssdjy(res){
 				var decisionRate= $("#decisionRate").val();
 				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
 				var lilv2=/^[1-9][0-9]*$/;
-				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
-					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
+				if( $("#auditresult").val() == "APPROVE"){
+					if(Number(sxed)<Number(s[0])||Number(sxed)>Number(s[1])||!number.test(sxed)){
+						window.wxc.xcConfirm("请输入正确的授信金额", "warning");
+						return;
+					}
+					if(!lilv.test(decisionRate)&&!lilv2.test(decisionRate)){
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+						return;
+					}
+				}
+				if( $("#auditresult").val() == "REJECTAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						 window.wxc.xcConfirm("拒绝原因不能为空", "warning");
+						 return;
+					}
+				}
+				
+				if( $("#auditresult").val() == "RETURNAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						window.wxc.xcConfirm("退回原因不能为空", "warning");
+						 return;
+					}
+				}
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -1390,13 +1704,6 @@ function xssdjy(res){
 
 
 					})
-					}else{
-						window.wxc.xcConfirm("请输入正确的利率", "warning");
-					}
-				}else{
-//					alert("请输入正确的授信金额");
-					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
-				}
 			})
 			
 			$("#upload").click(function (){
@@ -1447,7 +1754,8 @@ function xssdjy(res){
 
 //上传审贷会纪要
 function scsdhjy(res){
-	
+	var loginId = window.sessionStorage.getItem("login");
+	var displayName= window.sessionStorage.getItem("displayName");
 	window.scrollTo(0,0);//滚动条回到顶端
 	$("#mainPage").html("<div class='title' id='newUsers1'><img src='images/back.png'/>上传审贷会纪要</div>"+  
 			"<div class='content' style='text-align:center;'>" + 
@@ -1460,8 +1768,8 @@ function scsdhjy(res){
 									"<tr>"+  
 										"<td>1</td>"+
 										"<td><input type='text' id='qtyxzl_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");' value='选择文件'/></td>"+
-										"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
-//										"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
+//										"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
+										"<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\",\""+res.chineseName+ "\");'/></td>"+
 									"</tr>"+
 								"</table>"+
 								"<p class='Left'>" +
@@ -1491,7 +1799,7 @@ function scsdhjy(res){
 		    options.mimeType = "multipart/form-data";  
 		    options.chunkedMode = false;  
 		    ft = new FileTransfer();  
-		    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+res.productId+"&customerId="+res.customerId+"&fileName="+options.fileName+"&applicationId="+res.appId);  
+		    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+res.productId+"&customerId="+res.customerId+"&fileName="+options.fileName+"&applicationId="+res.appId+"&loginId="+loginId+"&displayName="+displayName+"&imageClasses=sdjl");  
 		    $("#uploadInfo").html("正在上传第"+(i+1)+"张，请稍后...");
 		    ft.upload(fileURI,uploadUrl,uploadSuccesss, uploadFaileds, options); 
 		  }
@@ -1564,11 +1872,13 @@ function ckysctplb(res){
 	"<th>客户名称</th>"+
 	"<th>上传时间</th>"+
 	"</tr>";
-	$.get(wsHost+ysctpurl,{customerId:res.customerId,productId:res.productId,applicationId:res.appId},callbackfunction);
+	$.get(wsHost+ysctpurl,{imageClasses:"sdjl",customerId:res.customerId,productId:res.productId,applicationId:res.appId},callbackfunction);
 	function  callbackfunction (json){
 		obj = $.evalJSON(json);
 		for(var i = 0;i<obj.imagerList.length;i++){
-			
+			if(obj.imagerList[i].createdTime.length>19){
+				obj.imagerList[i].createdTime = obj.imagerList[i].createdTime.substr(0,19);
+			}
 			tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.imagerList[i].id+"@"+
 			obj.imagerList[i].applicationId+"'/>"+"</span></td>"+  
 			"<td>"+obj.imagerList[i].attachment+"</td>"+
@@ -1717,7 +2027,7 @@ function buzhangsp(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -2130,9 +2440,30 @@ function bzspjl(res){
 				var decisionRate= $("#decisionRate").val();
 				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
 				var lilv2=/^[1-9][0-9]*$/;
-				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
-					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
-					$("#save").attr('disabled',"true");
+				if( $("#auditresult").val() == "APPROVE"){
+					if(Number(sxed)<Number(s[0])||Number(sxed)>Number(s[1])||!number.test(sxed)){
+						window.wxc.xcConfirm("请输入正确的授信金额", "warning");
+						return;
+					}
+					if(!lilv.test(decisionRate)&&!lilv2.test(decisionRate)){
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+						return;
+					}
+				}
+				if( $("#auditresult").val() == "REJECTAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						 window.wxc.xcConfirm("拒绝原因不能为空", "warning");
+						 return;
+					}
+				}
+				
+				if( $("#auditresult").val() == "RETURNAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						window.wxc.xcConfirm("退回原因不能为空", "warning");
+						 return;
+					}
+				}
+				$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
 						dateType:'json',
@@ -2162,13 +2493,6 @@ function bzspjl(res){
 
 
 					})
-					}else{
-						window.wxc.xcConfirm("请输入正确的利率", "warning");
-					}
-				}else{
-//					alert("请输入正确的授信金额");
-					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
-				}
 			})
 
 			$("#auditresult").change(function (){
@@ -2266,7 +2590,7 @@ function lsywbfzrsp(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -2698,8 +3022,29 @@ function lsbywfzr(res){
 				var decisionRate= $("#decisionRate").val();
 				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
 				var lilv2=/^[1-9][0-9]*$/;
-				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
-					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
+				if( $("#auditresult").val() == "APPROVE"){
+					if(Number(sxed)<Number(s[0])||Number(sxed)>Number(s[1])||!number.test(sxed)){
+						window.wxc.xcConfirm("请输入正确的授信金额", "warning");
+						return;
+					}
+					if(!lilv.test(decisionRate)&&!lilv2.test(decisionRate)){
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+						return;
+					}
+				}
+				if( $("#auditresult").val() == "REJECTAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						 window.wxc.xcConfirm("拒绝原因不能为空", "warning");
+						 return;
+					}
+				}
+				
+				if( $("#auditresult").val() == "RETURNAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						window.wxc.xcConfirm("退回原因不能为空", "warning");
+						 return;
+					}
+				}
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -2730,13 +3075,6 @@ function lsbywfzr(res){
 
 
 					})
-					}else{
-						window.wxc.xcConfirm("请输入正确的利率", "warning");
-					}
-				}else{
-//					alert("请输入正确的授信金额");
-					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
-				}
 			})
 
 			$("#auditresult").change(function (){
@@ -2833,7 +3171,7 @@ function hzsp(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -3283,8 +3621,29 @@ function hzspjl(res){
 				var decisionRate= $("#decisionRate").val();
 				var lilv=/^(?:[1-9][0-9]*\.[0-9]+|0\.(?!0+$)[0-9]+)$/;
 				var lilv2=/^[1-9][0-9]*$/;
-				if((Number(sxed)>=Number(s[0])&&Number(sxed)<=Number(s[1])&&number.test(sxed)&&$("#auditresult").val()=="APPROVE")||$("#auditresult").val()!="APPROVE"){
-					if(lilv.test(decisionRate)||lilv2.test(decisionRate)){
+				if( $("#auditresult").val() == "APPROVE"){
+					if(Number(sxed)<Number(s[0])||Number(sxed)>Number(s[1])||!number.test(sxed)){
+						window.wxc.xcConfirm("请输入正确的授信金额", "warning");
+						return;
+					}
+					if(!lilv.test(decisionRate)&&!lilv2.test(decisionRate)){
+						window.wxc.xcConfirm("请输入正确的利率", "warning");
+						return;
+					}
+				}
+				if( $("#auditresult").val() == "REJECTAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						 window.wxc.xcConfirm("拒绝原因不能为空", "warning");
+						 return;
+					}
+				}
+				
+				if( $("#auditresult").val() == "RETURNAPPROVE"){
+					if($("#decisionRefusereason").val() == ""){
+						window.wxc.xcConfirm("退回原因不能为空", "warning");
+						 return;
+					}
+				}
 					$("#save").attr('disabled',"true");
 					$.ajax({
 						url:wsHost+tjjlurl,
@@ -3315,13 +3674,6 @@ function hzspjl(res){
 
 
 					})
-					}else{
-						window.wxc.xcConfirm("请输入正确的利率", "warning");
-					}
-				}else{
-//					alert("请输入正确的授信金额");
-					window.wxc.xcConfirm("请输入正确的授信金额", "warning");
-				}
 			})
 
 			$("#auditresult").change(function (){
@@ -3733,6 +4085,7 @@ function ckkhqtxxs(objs){
 				"<li name='tab2' id = 'ccxx'>车产信息</li>"+
 				"<li name='tab2' id = 'lxrxx'>联系人信息</li>"+
 				"<li name='tab2' id = 'jzxx'>居住信息</li>"+
+				"<li name='tab2' id = 'gxxx'>工薪类基本信息</li>"+
 				"<li name='tab2' id = 'qyjbxx'>企业基本信息</li>"+
 				"<li name='tab2' id = 'qyywxx'>企业业务信息</li>"+
 				"<li name='tab2' id = 'qydpxx'>企业店铺信息</li>"+
@@ -3820,7 +4173,44 @@ function ckkhqtxxs(objs){
 		"<td><input type='text' value='"+obj.geren3.mobilephone+"'/></td>"+
 		"</tr>"+
 		"</table>";
-		
+		var gxxx="<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:110px;'>工作单位</td>"+         
+		"<td><input type='text'  class='long' value='"+obj.gxxx3.jobAddress+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>工作年限</td>"+         
+		"<td><input type='text' value='"+obj.gxxx3.jobYears+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>工资水平</td>"+          
+		"<td><input type='text' value='"+obj.gxxx3.jobAmount+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>职级</td>"+  
+		"<td><input type='text' value='"+obj.gxxx3.rank+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>公积金缴存额</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.accumulation+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>公积金缴存年限</td>"+           
+		"<td><input type='text' value='"+obj.gxxx3.accumulationYears+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>社保缴存基数</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.social+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>社保缴存年限</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.socialYears+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>单位性质</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.unitProperty+"'/></td>"+
+		"</tr>"+
+		"</table>";
 		var jtxx= "<table class='cpTable'>"+
 		"<tr>"+                             
 		"<td style='width:145px'>家庭成员</td>"+         
@@ -3963,7 +4353,7 @@ function ckkhqtxxs(objs){
 		"</tr>"+
 		"<tr>"+                             
 		"<td>居住起始年月</td>"+    
-		"<td><input type='text' value='"+obj.juzhu3.beginDate+"'/></td>"+ 
+		"<td><input type='date' value='"+formatDate(obj.juzhu3.beginDate)+"'/></td>"+ 
 		"<td>是否按揭</td>"+    
 		"<td><input type='text' value='"+obj.juzhu3.wetherMortgage+"'/></td>"+ 
 		"</tr>"+
@@ -3993,7 +4383,7 @@ function ckkhqtxxs(objs){
 		"</tr>"+
 		"<tr>"+                             
 		"<td>经营起始时间</td>"+    
-		"<td><input type='date' value='"+obj.qyxx3.beginDate+"'/></td>"+
+		"<td><input type='date' value='"+formatDate(obj.qyxx3.beginDate)+"'/></td>"+
 		"<td>经营年限</td>"+    
 		"<td><input type='text' value='"+obj.qyxx3.plantingYear+"'/></td>"+
 		"</tr>"+
@@ -4063,11 +4453,11 @@ function ckkhqtxxs(objs){
 			for(var i=0;i<obj.fangchan3.length;i++){
 				fcinfo=fcinfo+"<tr>"+    
 				"<td>"+(i+1)+"</td>"+
-				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].houseAddress+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].houseArea+"'/></td>"+
-				"<td><input type='date' class='addinput' value='"+obj.fangchan3[i].monetaryDate+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].monetaryAmount+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.fangchan3[i].currentAmount+"'/></td>"+
+				"<td><input type='text' class='addinput' readonly='true' value='"+obj.fangchan3[i].houseAddress+"'/></td>"+
+				"<td><input type='text' class='addinput' readonly='true' value='"+obj.fangchan3[i].houseArea+"'/></td>"+
+				"<td><input type='date' class='addinput' readonly='true' value='"+formatDate(obj.fangchan3[i].monetaryDate)+"'/></td>"+
+				"<td><input type='text' class='addinput' readonly='true' value='"+obj.fangchan3[i].monetaryAmount+"'/></td>"+
+				"<td><input type='text' class='addinput' readonly='true' value='"+obj.fangchan3[i].currentAmount+"'/></td>"+
 				"<td>" +
 				obj.fangchan3[i].getWay+
 				"</td>"+
@@ -4079,7 +4469,7 @@ function ckkhqtxxs(objs){
 				"<th style='width:40px;'>序号</th>"+  
 				"<th>房产地址</th>"+
 				"<th>面积</th>"+
-				"<th>购买日期</th>"+
+				"<th style='width:180px;'>购买日期</th>"+
 				"<th>购买价格</th>"+
 				"<th>现值（公允值）</th>"+
 				"<th>购置方式</th>"+
@@ -4094,11 +4484,11 @@ function ckkhqtxxs(objs){
 		for(var i=0;i<obj.chechan3.length;i++){
 			ccinfo=ccinfo+"<tr>"+    
 			"<td>"+(i+1)+"</td>"+
-			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].carVersion+"'/></td>"+
-			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].carNumber+"'/></td>"+
-			"<td><input type='date' class='addinput' value='"+obj.chechan3[i].monetaryDate+"'/></td>"+
-			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].monetaryAmount+"'/></td>"+
-			"<td><input type='text' class='addinput' value='"+obj.chechan3[i].currentAmount+"'/></td>"+
+			"<td><input type='text' readonly='true' class='addinput' value='"+obj.chechan3[i].carVersion+"'/></td>"+
+			"<td><input type='text' readonly='true' class='addinput' value='"+obj.chechan3[i].carNumber+"'/></td>"+
+			"<td><input type='date' readonly='true' class='addinput' value='"+formatDate(obj.chechan3[i].monetaryDate)+"'/></td>"+
+			"<td><input type='text' readonly='true' class='addinput' value='"+obj.chechan3[i].monetaryAmount+"'/></td>"+
+			"<td><input type='text' readonly='true' class='addinput' value='"+obj.chechan3[i].currentAmount+"'/></td>"+
 			"<td>" +
 			obj.chechan3[i].getWay+
 			"</td>"+
@@ -4110,7 +4500,7 @@ function ckkhqtxxs(objs){
 				"<th style='width:40px;'>序号</th>"+  
 				"<th>汽车车型</th>"+
 				"<th>汽车车牌号</th>"+
-				"<th>购买日期</th>"+
+				"<th style='width:180px;'>购买日期</th>"+
 				"<th>购买价格</th>"+
 				"<th>现值（公允值）</th>"+
 				"<th>购置方式</th>"+
@@ -4145,6 +4535,10 @@ function ckkhqtxxs(objs){
 	$("#jzxx").click(function(){
 		change(this);
 		$("#resultshow").html(jzxx);
+	})
+	$("#gxxx").click(function(){
+		change(this);
+		$("#resultshow").html(gxxx);
 	})
 	
 	$("#qyjbxx").click(function(){

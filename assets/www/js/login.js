@@ -1,21 +1,10 @@
 
 //登录
 function dl(){
-	//工厂模式
-    /*var data = JSON.stringify({
-        "user_name": $("#user_name").val(),
-        "pass_word": $("#user_name").val()
-    });
-    var post = crud.dom.factory("POST");
-    post.doPost("/ipad/user/JnLogin.json",data,checkLoginCallback,"登陆失败！");*/
-
-//  测试用
-//	var user_name = "wenjian123";  
-//    var pass_word = "111111";
-//  上线用
   var user_name = $("#name").val();
-  var pass_word = $("#password").val()
-	var wsLoginUrl = "/ipad/user/JnLogin.json"+"?login="+user_name+"&password="+pass_word;
+  var pass_word = $("#password").val();
+//  wsHost=$("#host").val();
+	var wsLoginUrl = "/ipad/user/JnLogin.json"+"?login="+user_name+"&password="+pass_word+"&paduuid="+window.device.uuid;
     $.ajax({
         url:wsHost + wsLoginUrl,
         type: "GET",
@@ -36,6 +25,7 @@ function dl(){
         }
     });
 }
+var locationStart;
 //回调
 function checkLoginCallback(json){
     var obj = $.evalJSON(json);
@@ -48,7 +38,6 @@ function checkLoginCallback(json){
     var session = window.sessionStorage;//有些不支持sessionStorage，而是globalStroage.
     var manggerList = managerList();
 
-
     //alert(obj.result.user.id);
     session.setItem("userId",obj.result.user.id);
     session.setItem("userType",obj.result.user.userType);
@@ -59,10 +48,13 @@ function checkLoginCallback(json){
     //定时定位
     if(obj.LocationType=="H5"){
 //    	var location = window.setTimeout(getonlinepush,1000*60*5);	
-    	var location = window.setInterval(getonlinepush,1000*60*10);
-    }else{
+    	locationStart = window.setInterval(getonlinepush,1000*60*30);
+    }else if(obj.LocationType=="BDSDK"){
+    	locationStart = window.setInterval(getLocations,1000*60*30);
+	}else{
 //    	var location = window.setTimeout(pushposition,1000*60*5);
-    	var location = window.setInterval(pushposition,1000*60*10);
+//		pushposition();
+//    	locationStart = window.setInterval(pushposition,1000*20*30);
     }
 
     //alert("getItem:"+session.getItem("id"));
@@ -100,7 +92,7 @@ function dc(){
         type: "GET",
         dataType:'json',
         success: function (json) {
-        	window.clearInterval(location);
+        	window.clearInterval(locationStart);
 //        	clearTimeout(location); 
         	$("#password").val("");
         	    $("#login").show();

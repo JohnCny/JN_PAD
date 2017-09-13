@@ -176,6 +176,31 @@
 			this.contentArea = $('<div class="PlusView-contentArea"></div>')
 				.css('height', this.settings.height)
 				.appendTo(this.largeView);
+			
+			var nStartx, nStarty, nEndx, nEndy;
+			 var dist = 100;
+			 document.getElementById("gallery-container").addEventListener("touchstart",
+			            function (e) {
+			                  nStartx = e.targetTouches[0].pageX;
+			                  nStarty = e.targetTouches[0].pageY;
+			                  console.log("touch start:" + nStartx + "," + nStarty);
+			            });
+			 document.getElementById("gallery-container").addEventListener("touchend",
+			           function (e) {
+			                  nEndx = e.changedTouches[0].pageX;
+			                  nEndy = e.changedTouches[0].pageY;
+			                  console.log("touch end:" + nEndx + "," + nEndy);
+			                  if(nEndx-nStartx>dist)   //向右滑动
+			                  {
+			                     //执行逻辑
+			                	  self.showPrev();
+			                  }
+			                  else if(nStartx-nEndx>dist) //向左滑动
+			                  {
+			                     //执行逻辑
+			                	  self.showNext();
+			                  }
+			 });
 		}
 		this.largeView[this.settings.show]();
 	};
@@ -197,7 +222,5 @@
 			this.showNormalView();
 		}
 	};
-
-
 
 }(jQuery));

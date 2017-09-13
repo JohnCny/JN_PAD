@@ -26,6 +26,8 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 									"<select id='marriage'>" +
 										"<option>已婚</option>" +
 										"<option>未婚</option>" +
+										"<option>离婚</option>" +
+										"<option>丧偶</option>" +
 									"</select>" +
 								"</td>"+
 							"</tr>"+
@@ -71,6 +73,18 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 	  if ($("input[type='radio']").is(':checked')) {
 		 sex= $('input[name="sex"]:checked').attr("resu");
 	  }
+	  if(sex==""){
+		  window.wxc.xcConfirm("性别不能为空", "info");
+		  return;
+	  }
+	  if($("#mobilephone").val()==""){
+  		window.wxc.xcConfirm("移动电话不能为空", "info");
+  		return;
+	  }
+	  if($("#fmallyliveplace").val()==""){
+  		window.wxc.xcConfirm("家庭住址不能为空", "info");
+  		return;
+  		}
 	  var person = {
 			  sex:sex,
 			  marriage:$("#marriage").val(),
@@ -114,47 +128,86 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
                             "<div class='step3' onclick='newUser1("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'>信息资料采集</div>"+
                             "<div class='step3' onclick='khxxzlcj("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'>客户信息类型</div>"+
                             "<div class='step3'>信息录入</div>"+
+                            "<input type='button' class='btn btn-large btn-primary next' value='保存' id='save'/>"+
                         "</div><div class='line'></div>"+
                         "<table class='cpTable no-border bottom-content'>"+
                             "<tr>"+                             
                                 "<td style='width:110px;'>申请人性别</td>"+         
-                                "<td>" +obj.custp.sex+
+                                "<td><input type='text' id='sex' value='"+obj.custp.sex+"'/>"+
                                 "</td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>婚姻状况</td>"+         
-                                "<td>" +obj.custp.marriage+
+                                "<td><input type='text' id='marriage' value='"+obj.custp.marriage+"'/>"+
                                  "</td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>户籍所在地</td>"+          
-                                "<td><input type='text' value='"+obj.custp.domicileplace+"'/></td>"+
+                                "<td><input type='text' id='domicileplace' value='"+obj.custp.domicileplace+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>户籍详细地址</td>"+  
-                                "<td><input type='text' class='long' value='"+obj.custp.domicileinfo+"'/></td>"+
+                                "<td><input type='text' id='domicileinfo' class='long' value='"+obj.custp.domicileinfo+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>家庭住址</td>"+    
-                                "<td><input type='text' class='long' value='"+obj.custp.fmallyliveplace+"'/></td>"+
+                                "<td><input type='text' id='fmallyliveplace' class='long' value='"+obj.custp.fmallyliveplace+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>最高学位学历</td>"+           
-                                "<td>" +obj.custp.education+
+                                "<td><input type='text' id='education' class='long' value='" +obj.custp.education+"'/>"+
                                  "</td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>固定电话</td>"+    
-                                "<td><input type='text' value='"+obj.custp.telephone+"'/></td>"+
+                                "<td><input type='text' id='telephone' class='long' value='"+obj.custp.telephone+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>移动电话</td>"+    
-                                "<td><input type='text' value='"+obj.custp.mobilephone+"'/></td>"+
+                                "<td><input type='text' id='mobilephone' class='long' value='"+obj.custp.mobilephone+"'/></td>"+
                             "</tr>"+
                         "</table>"+
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+    
+    $("#save").click(function(){
+    	if($("#sex").val()==""){
+    		window.wxc.xcConfirm("性别不能为空", "info");
+    		return;
+    	}
+    	if($("#mobilephone").val()==""){
+    		window.wxc.xcConfirm("移动电话不能为空", "info");
+    		return;
+    	}
+    	if($("#fmallyliveplace").val()==""){
+    		window.wxc.xcConfirm("家庭住址不能为空", "info");
+    		return;
+    	}
+  	  var person = {
+  			  sex:$("#sex").val(),
+  			  marriage:$("#marriage").val(),
+  			  domicileplace:$("#domicileplace").val(),
+  			  domicileinfo:$("#domicileinfo").val(),
+  			  fmallyliveplace:$("#fmallyliveplace").val(),
+  			  education:$("#education").val(),
+  			  telephone:$("#telephone").val(),
+  			  mobilephone:$("#mobilephone").val(),
+  			  customerId:addIntopiece.customerId
+  	  };
+  	  var insertgrurl="/ipad/customerIntopiece/insertgr.json";
+  	  $.ajax({
+  			url:wsHost+insertgrurl,
+  			dateType:'json',
+  			type:'GET',
+  			data:person,
+  			success:function (json){
+  				var obj = $.evalJSON(json);
+  					window.wxc.xcConfirm(obj.mess, "info"); 
+  			}
+  		})
+  		
+    })
 			}
 		})
   }
@@ -389,41 +442,42 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 						"<div class='step3' onclick='newUser1("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'>信息资料采集</div>"+
 						"<div class='step3' onclick='khxxzlcj("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'>客户信息类型</div>"+
 						"<div class='step3'>信息录入</div>"+
+						"<input type='button' class='btn btn-large btn-primary next' value='保存' id='save'/>"+
                         "</div><div class='line'></div>"+
                         "<table class='cpTable no-border bottom-content'>"+
                             "<tr>"+                             
                                 "<td style='width:145px'>家庭成员</td>"+         
-                                "<td><input type='text' value='"+obj.cusf.familyNum+"'/></td>"+
+                                "<td><input type='text' id='familyNum' value='"+obj.cusf.familyNum+"'/></td>"+
                                 "<td>家庭和睦</td>"+          
-                                "<td>"+obj.cusf.familyHarmony+"</td>"+
+                                "<td><input type='text' id='familyHarmony'  value='"+obj.cusf.familyHarmony+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>经济依赖人数</td>"+  
-                                "<td><input type='text' value='"+obj.cusf.economicNum+"'/></td>"+
+                                "<td><input type='text' id='economicNum' value='"+obj.cusf.economicNum+"'/></td>"+
                                 "<td>配偶姓名</td>"+    
-                                "<td><input type='text' value='"+obj.cusf.mateName+"'/></td>"+
+                                "<td><input type='text' id='mateName' value='"+obj.cusf.mateName+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>配偶证件号码</td>"+    
-                                "<td><input type='text' value='"+obj.cusf.mateCardId+"'/></td>"+
+                                "<td><input type='text' id='mateCardId' value='"+obj.cusf.mateCardId+"'/></td>"+
                                 "<td>配偶工作单位</td>"+    
-                                "<td><input type='text' value='"+obj.cusf.mateJobAdress+"'/></td>"+
+                                "<td><input type='text' id='mateJobAdress' value='"+obj.cusf.mateJobAdress+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>配偶年收入</td>"+    
-                                "<td><input type='text' value='"+obj.cusf.mateIncome+"'/></td>"+
+                                "<td><input type='text' id='mateIncome' value='"+obj.cusf.mateIncome+"'/></td>"+
                                 "<td>配偶电话</td>"+    
-                                "<td><input type='text' value='"+obj.cusf.mateTel+"'/></td>"+
+                                "<td><input type='text' id='mateTel' value='"+obj.cusf.mateTel+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>配偶其他状况说明</td>"+    
-                                "<td><input type='text' value='"+obj.cusf.mateOtherInfo+"'/></td>"+
+                                "<td><input type='text' id='mateOtherInfo' value='"+obj.cusf.mateOtherInfo+"'/></td>"+
                                 "<td>子女工作状态</td>"+    
-                                "<td><input type='text' value='"+obj.cusf.childJob+"'/></td>"+
+                                "<td><input type='text' id='childJob' value='"+obj.cusf.childJob+"'/></td>"+
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>子女教育状态</td>"+    
-                                "<td colspan='3'><input type='text' value='"+obj.cusf.childEducation+"'/></td>"+
+                                "<td colspan='3'><input id='childEducation' type='text' value='"+obj.cusf.childEducation+"'/></td>"+
                             "</tr>"+
                         "</table>"+
                         "<table class='cpTable no-border bottom-content'>"+
@@ -525,6 +579,63 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+    $("#save").click(function(){
+        var family = {
+        		familyNum:$("#familyNum").val(),
+        		familyHarmony:$("#familyHarmony").val(),
+        		economicNum:$("#economicNum").val(),
+        		mateName:$("#mateName").val(),
+        		mateCardId:$("#mateCardId").val(),
+        		mateJobAdress:$("#mateJobAdress").val(),
+        		mateIncome:$("#mateIncome").val(),
+        		mateTel:$("#mateTel").val(),
+        		mateOtherInfo:$("#mateOtherInfo").val(),
+        		childJob:$("#childJob").val(),
+        		childEducation:$("#childEducation").val(),
+        		fatherName:$("#fatherName").val(),
+        		fatherDomicile:$("#fatherDomicile").val(),
+        		fatherAge:$("#fatherAge").val(),
+        		fatherMinzu:$("#fatherMinzu").val(),
+        		fatherCompany:$("#fatherCompany").val(),
+        		fatherCompanyAddress:$("#fatherCompanyAddress").val(),
+        		fatherIncome:$("#fatherIncome").val(),
+        		fatherContact:$("#fatherContact").val(),
+        		fatherSchool:$("#fatherSchool").val(),
+        		fatherEducation:$("#fatherEducation").val(),
+        		motherName:$("#motherName").val(),
+        		motherDomicile:$("#motherDomicile").val(),
+        		motherAge:$("#motherAge").val(),
+        		motherMinzu:$("#motherMinzu").val(),
+        		motherCompany:$("#motherCompany").val(),
+        		motherCompanyAddress:$("#motherCompanyAddress").val(),
+        		motherIncome:$("#motherIncome").val(),
+        		motherContact:$("#motherContact").val(),
+        		motherSchool:$("#motherSchool").val(),
+        		motherEducation:$("#motherEducation").val(),
+        		brotherName:$("#brotherName").val(),
+        		brotherDomicile:$("#brotherDomicile").val(),
+        		brotherAge:$("#brotherAge").val(),
+        		brotherMinzu:$("#brotherMinzu").val(),
+        		brotherCompany:$("#brotherCompany").val(),
+        		brotherCompanyAddress:$("#brotherCompanyAddress").val(),
+        		brotherIncome:$("#brotherIncome").val(),
+        		brotherContact:$("#brotherContact").val(),
+        		brotherSchool:$("#brotherSchool").val(),
+        		brotherEducation:$("#brotherEducation").val(),
+        		customerId:addIntopiece.customerId
+    	  };
+        var insertjturl="/ipad/customerIntopiece/insertjt.json";
+    	  $.ajax({
+    			url:wsHost+insertjturl,
+    			dateType:'json',
+    			type:'GET',
+    			data:family,
+    			success:function (json){
+    				var obj = $.evalJSON(json);
+    					window.wxc.xcConfirm(obj.mess, "info"); 
+    			}
+    		})
+        })
 			}
 		})
 			
@@ -548,7 +659,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
                                     "<th style='width:40px;'>序号</th>"+  
                                     "<th>汽车车型</th>"+
                                     "<th>汽车车牌号</th>"+
-                                    "<th>购买日期</th>"+
+                                    "<th style='width:180px;'>购买日期</th>"+
                                     "<th>购买价格</th>"+
                                     "<th>现值（公允值）</th>"+
                                     "<th>购置方式</th>"+
@@ -582,6 +693,18 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 		    var ccxxurl="/ipad/customerIntopiece/insertcc.json";
 		    var num= $('#ccxx tr').length-1;
 		    for(var i=1;i<=num;i++){
+		    	 if($("#carVersion"+i).val()==""){
+			    		window.wxc.xcConfirm("第"+i+"行汽车车型不能为空", "info");
+			    		return;
+			    	}
+			    	if($("#monetaryDate"+i).val()==""){
+			    		window.wxc.xcConfirm("第"+i+"行购买日期不能为空", "info");
+			    		return;
+			    	}
+			    	if($("#currentAmount"+i).val()==""){
+			    		window.wxc.xcConfirm("第"+i+"行现值不能为空", "info");
+			    		return;
+			    	}
 		    	  $.ajax({
 		  			url:wsHost+ccxxurl,
 		  			dateType:'json',
@@ -616,16 +739,17 @@ function ccxx_edit(addIntopiece){
 			var obj = $.evalJSON(json);
 			for(var i=0;i<obj.customercar.length;i++){
 				ccinfo=ccinfo+    
-				"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.customercar[i].id+"'/>"+"</span></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercar[i].carVersion+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercar[i].carNumber+"'/></td>"+
-				"<td><input type='date' class='addinput' value='"+obj.customercar[i].monetaryDate+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercar[i].monetaryAmount+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercar[i].currentAmount+"'/></td>"+
+				"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox'  value='"+obj.customercar[i].id+"@"+obj.customercar[i].carVersion+"@"+obj.customercar[i].carNumber+"@"+
+				obj.customercar[i].monetaryDate+"@"+obj.customercar[i].monetaryAmount+"@"+obj.customercar[i].currentAmount+"@"+obj.customercar[i].getWay+"@"+obj.customercar[i].otherInfo+"'/>"+"</span></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercar[i].carVersion+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercar[i].carNumber+"'/></td>"+
+				"<td><input type='date' readonly='true' class='addinput' value='"+formatDate(obj.customercar[i].monetaryDate)+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercar[i].monetaryAmount+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercar[i].currentAmount+"'/></td>"+
 				"<td>" +
-				obj.customercar[i].getWay+
+				"<input type='text' readonly='true' class='addinput' value='"+obj.customercar[i].getWay+"'/>"+
 				"</td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercar[i].otherInfo+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercar[i].otherInfo+"'/></td>"+
 			"</tr>";
 			}
 window.scrollTo(0,0);//滚动条回到顶端
@@ -644,7 +768,7 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
                                     "<th style='width:40px;'>序号</th>"+  
                                     "<th>汽车车型</th>"+
                                     "<th>汽车车牌号</th>"+
-                                    "<th>购买日期</th>"+
+                                    "<th style='width:180px;'>购买日期</th>"+
                                     "<th>购买价格</th>"+
                                     "<th>现值（公允值）</th>"+
                                     "<th>购置方式</th>"+
@@ -652,22 +776,35 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
                                 "</tr>"+
                                 ccinfo+
                             "</table>"+
-                            "<p><input type='button' class='btn btn-primary btn-large' value='删除' id='delete' /></p>"+
+                            "<p>" +
+                            "<input type='button' class='btn btn-primary btn-large' value='修改' id='update' />" +
+                            "<input type='button' class='btn btn-primary btn-large' value='删除' id='delete' />" +
+                            "</p>"+
                         "</div>"+
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+    
+    $("#update").click(function(){
+    	if ($("input[type='radio']").is(':checked')) {
+    		var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+    		ccxx_update(addIntopiece,values);
+    	}else{
+//			alert("请选择一行");
+			window.wxc.xcConfirm("请选择一行", "warning");
+		}
+    })
     $("#delete").click(function(){
 		if ($("input[type='radio']").is(':checked')) {
 
-			var values =$('input[name="checkbox"]:checked').attr("value");
+			var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 			var deletetpurl ="/ipad/customerIntopiece/deleteInfo.json";
 			$.ajax({
 				url:wsHost+deletetpurl,
 				type: "GET",
 				dataType:'json',
 				data:{
-					id:values,
+					id:values[0],
 					tables:"customerinformation_cc",
 				},
 				cache:false,
@@ -688,6 +825,92 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 		}
 		})
 }
+//车产信息修改
+function ccxx_update(addIntopiece,val){
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='ccxx_edit("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>进件管理</div>"+  
+						"<div class='content'>"+
+						"<p><input type='button' class='btn btn-large btn-primary next' value='保存' id='save'/></p>"+
+							"<table class='cpTable no-border bottom-cont'>"+   
+								"<tr>"+                             
+									"<td style='width:110px;'>汽车车型</td>"+         
+									"<td><input type='text' id='carVersion' value='"+val[1]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>汽车车牌号</td>"+         
+									"<td><input type='text' id='carNumber' value='"+val[2]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>购买日期</td>"+          
+									"<td><input type='date' style='width:200px;'  id='monetaryDate' value='"+formatDate(val[3])+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>购买价格</td>"+  
+									"<td><input type='text'  id='monetaryAmount' value='"+val[4]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>现值（公允值）</td>"+    
+									"<td><input type='text'  id='currentAmount' value='"+val[5]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>购置方式</td>"+    
+									"<td><input type='text' id='getWay' value='"+val[6]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>备注</td>"+    
+									"<td><input type='text' class='long' id='otherInfo' value='"+val[7]+"'/></td>"+
+								"</tr>"+
+							"</table>"+
+						"</div>");
+	  $(".right").hide();
+	  $("#mainPage").show();
+	  $("#save").click(function(){
+		    var ccxxurl="/ipad/customerIntopiece/updatecc.json";
+		    	 if($("#carVersion").val()==""){
+			    		window.wxc.xcConfirm("汽车车型不能为空", "info");
+			    		return;
+			    	}
+		    	 if($("#monetaryDate"+i).val()==""){
+			    		window.wxc.xcConfirm("第"+i+"行购买日期不能为空", "info");
+			    		return;
+			    	}
+			    	if($("#currentAmount").val()==""){
+			    		window.wxc.xcConfirm("现值不能为空", "info");
+			    		return;
+			    	}
+		    	  $.ajax({
+		  			url:wsHost+ccxxurl,
+		  			dateType:'json',
+		  			type:'GET',
+		  			data:{
+		  	    		id:val[0],
+		  				customerId:addIntopiece.customerId,
+		  	    		carVersion:$("#carVersion").val(),
+		  				carNumber:$("#carNumber").val(),
+		  				monetaryDate:$("#monetaryDate").val(),
+		  		    	monetaryAmount:$("#monetaryAmount").val(),
+		  		    	currentAmount:$("#currentAmount").val(),
+		  		    	getWay:$("#getWay").val(),
+		  		    	otherInfo:$("#otherInfo").val()
+		  					},
+		  			success:function (json){
+		  				var obj = $.evalJSON(json);
+		  					window.wxc.xcConfirm(obj.mess, "info"); 
+		  			}
+		  		})
+		})
+}
+function formatDate(date) {
+	  var d = new Date(date),
+	    month = '' + (d.getMonth() + 1),
+	    day = '' + d.getDate(),
+	    year = d.getFullYear();
+	 
+	  if (month.length < 2) month = '0' + month;
+	  if (day.length < 2) day = '0' + day;
+	 
+	  return [year, month, day].join('-');
+	}
 //房产信息
 function fcxx_add(addIntopiece){
 window.scrollTo(0,0);//滚动条回到顶端
@@ -741,6 +964,18 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
     var fcxxurl="/ipad/customerIntopiece/insertfc.json";
     var num= $('#fcxx tr').length-1;
     for(var i=1;i<=num;i++){
+    	if($("#houseAddress"+i).val()==""){
+    		window.wxc.xcConfirm("第"+i+"行房产地址不能为空", "info");
+    		return;
+    	}
+    	if($("#monetaryDate"+i).val()==""){
+    		window.wxc.xcConfirm("第"+i+"行购买日期不能为空", "info");
+    		return;
+    	}
+    	if($("#currentAmount"+i).val()==""){
+    		window.wxc.xcConfirm("第"+i+"行现值不能为空", "info");
+    		return;
+    	}
     	  $.ajax({
   			url:wsHost+fcxxurl,
   			dateType:'json',
@@ -775,16 +1010,17 @@ function fcxx_edit(addIntopiece){
 			var obj = $.evalJSON(json);
 			for(var i=0;i<obj.customerhouse.length;i++){
 				fcinfo=fcinfo+    
-				"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.customerhouse[i].id+"'/>"+"</span></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customerhouse[i].houseAddress+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customerhouse[i].houseArea+"'/></td>"+
-				"<td><input type='date' class='addinput' value='"+obj.customerhouse[i].monetaryDate+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customerhouse[i].monetaryAmount+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customerhouse[i].currentAmount+"'/></td>"+
+				"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.customerhouse[i].id+"@"+obj.customerhouse[i].houseAddress+"@"+obj.customerhouse[i].houseArea+"@"+
+				obj.customerhouse[i].monetaryDate+"@"+obj.customerhouse[i].monetaryAmount+"@"+obj.customerhouse[i].currentAmount+"@"+obj.customerhouse[i].getWay+"@"+obj.customerhouse[i].otherInfo+"'/>"+"</span></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customerhouse[i].houseAddress+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customerhouse[i].houseArea+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+formatDate(obj.customerhouse[i].monetaryDate)+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customerhouse[i].monetaryAmount+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customerhouse[i].currentAmount+"'/></td>"+
 				"<td>" +
-				obj.customerhouse[i].getWay+
+				"<input type='text' readonly='true' class='addinput' value='"+obj.customerhouse[i].getWay+"'/>"+
 				"</td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customerhouse[i].otherInfo+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customerhouse[i].otherInfo+"'/></td>"+
 			"</tr>";
 			}
 window.scrollTo(0,0);//滚动条回到顶端
@@ -802,31 +1038,41 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 								"<tr>"+                             
 									"<th style='width:40px;'>序号</th>"+  
 									"<th>房产地址</th>"+
-									"<th>面积</th>"+
-									"<th>购买日期</th>"+
-									"<th>购买价格</th>"+
-									"<th>现值（公允值）</th>"+
-									"<th>购置方式</th>"+
+									"<th style='width:50px;'>面积</th>"+
+									"<th style='width:180px;'>购买日期</th>"+
+									"<th style='width:80px;'>购买价格</th>"+
+									"<th style='width:80px;'>现值</th>"+
+									"<th style='width:80px;'>购置方式</th>"+
 									"<th>备注</th>"+
 								"</tr>"+
 								fcinfo+
 							"</table>"+
-							"<p><input type='button' class='btn btn-primary btn-large' value='删除' id='delete' /></p>"+
+							"<p><input type='button' class='btn btn-primary btn-large' value='修改' id='update' />"+
+							"<input type='button' class='btn btn-primary btn-large' value='删除' id='delete' /></p>"+
 						"</div>"+
 					"</div>");
 $(".right").hide();
 $("#mainPage").show();
+$("#update").click(function(){
+	if ($("input[type='radio']").is(':checked')) {
+		var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+		fcxx_update(addIntopiece,values);
+	}else{
+//		alert("请选择一行");
+		window.wxc.xcConfirm("请选择一行", "warning");
+	}
+})
 $("#delete").click(function(){
 	if ($("input[type='radio']").is(':checked')) {
 
-		var values =$('input[name="checkbox"]:checked').attr("value");
+		var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 		var deletetpurl ="/ipad/customerIntopiece/deleteInfo.json";
 		$.ajax({
 			url:wsHost+deletetpurl,
 			type: "GET",
 			dataType:'json',
 			data:{
-				id:values,
+				id:values[0],
 				tables:"customerinformation_fc",
 			},
 			cache:false,
@@ -848,6 +1094,80 @@ $("#delete").click(function(){
 		}
 		})
 		
+}
+function fcxx_update(addIntopiece,val){
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='fcxx_edit("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>进件管理</div>"+  
+						"<div class='content'>"+
+						"<p><input type='button' class='btn btn-large btn-primary next' value='保存' id='save'/></p>"+
+							"<table class='cpTable no-border bottom-cont'>"+   
+								"<tr>"+                             
+									"<td style='width:110px;'>房产地址</td>"+         
+									"<td><input type='text' id='houseAddress' value='"+val[1]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>面积</td>"+         
+									"<td><input type='text' id='houseArea' value='"+val[2]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>购买日期</td>"+          
+									"<td><input type='date' style='width:200px;'  id='monetaryDate' value='"+formatDate(val[3])+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>购买价格</td>"+  
+									"<td><input type='text'  id='monetaryAmount' value='"+val[4]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>现值（公允值）</td>"+    
+									"<td><input type='text'  id='currentAmount' value='"+val[5]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>购置方式</td>"+    
+									"<td><input type='text' id='getWay' value='"+val[6]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>备注</td>"+    
+									"<td><input type='text' class='long' id='otherInfo' value='"+val[7]+"'/></td>"+
+								"</tr>"+
+							"</table>"+
+						"</div>");
+	  $(".right").hide();
+	  $("#mainPage").show();
+	  $("#save").click(function(){
+		    var ccxxurl="/ipad/customerIntopiece/updatefc.json";
+		    if($("#houseAddress").val()==""){
+	    		window.wxc.xcConfirm("房产地址不能为空", "info");
+	    		return;
+	    	}
+		    if($("#monetaryDate"+i).val()==""){
+	    		window.wxc.xcConfirm("第"+i+"行购买日期不能为空", "info");
+	    		return;
+	    	}
+	    	if($("#currentAmount").val()==""){
+	    		window.wxc.xcConfirm("现值不能为空", "info");
+	    		return;
+	    	}
+		    	  $.ajax({
+		  			url:wsHost+ccxxurl,
+		  			dateType:'json',
+		  			type:'GET',
+		  			data:{
+		  	    		id:val[0],
+		  				customerId:addIntopiece.customerId,
+		  				houseAddress:$("#houseAddress").val(),
+		  	    		houseArea:$("#houseArea").val(),
+		  	    		monetaryDate:$("#monetaryDate").val(),
+		  	    		monetaryAmount:$("#monetaryAmount").val(),
+		  	    		currentAmount:$("#currentAmount").val(),
+		  	    		getWay:$("#getWay").val(),
+		  	    		otherInfo:$("#otherInfo").val()
+		  					},
+		  			success:function (json){
+		  				var obj = $.evalJSON(json);
+		  					window.wxc.xcConfirm(obj.mess, "info"); 
+		  			}
+		  		})
+		})
 }
 //联系人信息
 function lxrxx_add(addIntopiece){
@@ -889,6 +1209,18 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
         var lxrxxurl="/ipad/customerIntopiece/insertlxr.json";
         var num= $('#lxrxx tr').length-1;
         for(var i=1;i<=num;i++){
+        	if($("#contactName"+i).val()==""){
+        		window.wxc.xcConfirm("第"+i+"行联系人姓名不能为空", "info");
+        		return;
+        	}
+        	if($("#contactTel"+i).val()==""){
+        		window.wxc.xcConfirm("第"+i+"行与客户电话不能为空", "info");
+        		return;
+        	}
+        	if($("#relation"+i).val()==""){
+        		window.wxc.xcConfirm("第"+i+"行联系人关系不能为空", "info");
+        		return;
+        	}
         	  $.ajax({
       			url:wsHost+lxrxxurl,
       			dateType:'json',
@@ -919,10 +1251,11 @@ function lxrxx_edit(addIntopiece){
 			var obj = $.evalJSON(json);
 			for(var i=0;i<obj.customercontact.length;i++){
 				lxrinfo=lxrinfo+    
-				"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.customercontact[i].id+"'/>"+"</span></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercontact[i].contactName+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercontact[i].contactTel+"'/></td>"+
-				"<td><input type='text' class='addinput' value='"+obj.customercontact[i].relation+"'/></td>";
+				"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.customercontact[i].id+"@"+obj.customercontact[i].contactName+"@"+obj.customercontact[i].contactTel+
+				"@"+obj.customercontact[i].relation+"'/>"+"</span></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercontact[i].contactName+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercontact[i].contactTel+"'/></td>"+
+				"<td><input type='text' readonly='true' class='addinput' value='"+obj.customercontact[i].relation+"'/></td>";
 			}
 window.scrollTo(0,0);//滚动条回到顶端
 $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxxzlcj("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>进件管理</div>"+  
@@ -946,22 +1279,32 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
                                 lxrinfo+
                                 "</tr>"+
                             "</table>"+
-                            "<p><input type='button' class='btn btn-primary btn-large' value='删除' id='delete' /></p>"+
+                            "<p><input type='button' class='btn btn-primary btn-large' value='修改' id='update' />"+
+                            "<input type='button' class='btn btn-primary btn-large' value='删除' id='delete' /></p>"+
                         "</div>"+
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+    $("#update").click(function(){
+    	if ($("input[type='radio']").is(':checked')) {
+    		var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+    		lxrxx_update(addIntopiece,values);
+    	}else{
+//    		alert("请选择一行");
+    		window.wxc.xcConfirm("请选择一行", "warning");
+    	}
+    })
     $("#delete").click(function(){
 		if ($("input[type='radio']").is(':checked')) {
 
-			var values =$('input[name="checkbox"]:checked').attr("value");
+			var values =$('input[name="checkbox"]:checked').attr("value").split("@");
 			var deletetpurl ="/ipad/customerIntopiece/deleteInfo.json";
 			$.ajax({
 				url:wsHost+deletetpurl,
 				type: "GET",
 				dataType:'json',
 				data:{
-					id:values,
+					id:values[0],
 					tables:"customerinformation_lxr",
 				},
 				cache:false,
@@ -982,6 +1325,60 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 		}
 	})
   }
+function lxrxx_update(addIntopiece,val){
+	window.scrollTo(0,0);//滚动条回到顶端
+	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='lxrxx_edit("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'/>进件管理</div>"+  
+						"<div class='content'>"+
+						"<p><input type='button' class='btn btn-large btn-primary next' value='保存' id='save'/></p>"+
+							"<table class='cpTable no-border bottom-cont'>"+   
+								"<tr>"+                             
+									"<td style='width:110px;'>联系人姓名</td>"+         
+									"<td><input type='text' id='contactName' value='"+val[1]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>与客户关系</td>"+         
+									"<td><input type='text' id='relation' value='"+val[2]+"'/></td>"+
+								"</tr>"+
+								"<tr>"+                             
+									"<td>联系人电话</td>"+          
+									"<td><input type='text'  id='contactTel' value='"+val[3]+"'/></td>"+
+								"</tr>"+
+							"</table>"+
+						"</div>");
+	  $(".right").hide();
+	  $("#mainPage").show();
+	  $("#save").click(function(){
+		    var ccxxurl="/ipad/customerIntopiece/updatelxr.json";
+		    if($("#contactName").val()==""){
+        		window.wxc.xcConfirm("联系人姓名不能为空", "info");
+        		return;
+        	}
+        	if($("#contactTel").val()==""){
+        		window.wxc.xcConfirm("联系人电话不能为空", "info");
+        		return;
+        	}
+        	if($("#relation").val()==""){
+        		window.wxc.xcConfirm("与客户关系不能为空", "info");
+        		return;
+        	}
+		    	  $.ajax({
+		  			url:wsHost+ccxxurl,
+		  			dateType:'json',
+		  			type:'GET',
+		  			data:{
+		  	    		id:val[0],
+		  				customerId:addIntopiece.customerId,
+		  				contactName:$("#contactName").val(),
+		  				relation:$("#relation").val(),
+		  				contactTel:$("#contactTel").val()
+		  					},
+		  			success:function (json){
+		  				var obj = $.evalJSON(json);
+		  					window.wxc.xcConfirm(obj.mess, "info"); 
+		  			}
+		  		})
+		})
+}
 //居住信息
 function jzxx_add(addIntopiece){
 window.scrollTo(0,0);//滚动条回到顶端
@@ -1057,6 +1454,12 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
     $(".right").hide();
     $("#mainPage").show();
     $("#save").click(function(){
+    	if($("#houseClasses").val()==""){
+    		window.wxc.xcConfirm("居住类型不能为空", "info");
+    	}
+    	if($("#surveyWay").val()==""){
+    		window.wxc.xcConfirm("调查方式不能为空", "info");
+    	}
         var living = {
         		houseClasses:$("#houseClasses").val(),
         		decorateSituation:$("#decorateSituation").val(),
@@ -1099,34 +1502,64 @@ $("#mainPage").html("<div class='title'><img src='images/back.png' onclick='khxx
 						"<div class='step3' onclick='newUser1("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'>信息资料采集</div>"+
 						"<div class='step3' onclick='khxxzlcj("+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +")'>客户信息类型</div>"+
 						"<div class='step3'>信息录入</div>"+
+						 "<input type='button' class='btn btn-large btn-primary next' value='保存' id='save'/>"+
                         "</div><div class='line'></div>"+
                         "<table class='cpTable no-border bottom-content'>"+
                             "<tr>"+                             
                                 "<td style='width:145px;'>居住类型</td>"+         
-                                "<td><input type='text' value='"+obj.living.houseClasses+"'/></td>"+              
+                                "<td><input type='text' id='houseClasses' value='"+obj.living.houseClasses+"'/></td>"+              
                                 "<td>住房装修情况</td>"+          
-                                "<td><input type='text' value='"+obj.living.decorateSituation+"'/></td>"+ 
+                                "<td><input type='text' id='decorateSituation' value='"+obj.living.decorateSituation+"'/></td>"+ 
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>住房面积</td>"+  
-                                "<td><input type='text' value='"+obj.living.houseAera+"'/></td>"+
+                                "<td><input type='text' id='houseAera' value='"+obj.living.houseAera+"'/></td>"+
                                 "<td>住房格局</td>"+    
-                                "<td><input type='text' value='"+obj.living.houseSturcture+"'/></td>"+ 
+                                "<td><input type='text' id='houseSturcture' value='"+obj.living.houseSturcture+"'/></td>"+ 
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>居住起始年月</td>"+    
-                                "<td><input type='text' value='"+obj.living.beginDate+"'/></td>"+ 
+                                "<td><input type='text' id='beginDate' value='"+obj.living.beginDate+"'/></td>"+ 
                                 "<td>是否按揭</td>"+    
-                                "<td><input type='text' value='"+obj.living.wetherMortgage+"'/></td>"+ 
+                                "<td><input type='text' id='wetherMortgage' value='"+obj.living.wetherMortgage+"'/></td>"+ 
                             "</tr>"+
                             "<tr>"+                             
                                 "<td>居住场所调查方式</td>"+    
-                                "<td><input type='text' value='"+obj.living.surveyWay+"'/></td>"+ 
+                                "<td><input type='text' id='surveyWay' value='"+obj.living.surveyWay+"'/></td>"+ 
                             "</tr>"+
                         "</table>"+
                     "</div>");
     $(".right").hide();
     $("#mainPage").show();
+    $("#save").click(function(){
+    	if($("#houseClasses").val()==""){
+    		window.wxc.xcConfirm("居住类型不能为空", "info");
+    	}
+    	if($("#surveyWay").val()==""){
+    		window.wxc.xcConfirm("调查方式不能为空", "info");
+    	}
+        var living = {
+        		houseClasses:$("#houseClasses").val(),
+        		decorateSituation:$("#decorateSituation").val(),
+        		beginDate:$("#beginDate").val(),
+        		wetherMortgage:$("#wetherMortgage").val(),
+        		surveyWay:$("#surveyWay").val(),
+        		houseSturcture:$("#houseSturcture").val(),
+        		houseAera:$("#houseAera").val(),
+        		customerId:addIntopiece.customerId
+    	  };
+        var insertjzurl="/ipad/customerIntopiece/insertjz.json";
+    	  $.ajax({
+    			url:wsHost+insertjzurl,
+    			dateType:'json',
+    			type:'GET',
+    			data:living,
+    			success:function (json){
+    				var obj = $.evalJSON(json);
+    					window.wxc.xcConfirm(obj.mess, "info"); 
+    			}
+    		})
+        })
 			}
 	 })
   }

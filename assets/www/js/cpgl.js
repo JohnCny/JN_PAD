@@ -29,7 +29,7 @@ function mycpgl(){
 		 $("#mainPage").html(title + content+"</div>");
 		 var oDiv=document.getElementsByClassName("cplb");
 		 xxxx(objs);
-		 window.parent.resizeFrame();
+//		 window.parent.resizeFrame();
 	}
 /*$("#mainPage").html("<div class='title'>" +
     		            "<img src='images/back.png' onclick='mywdsy()'/>产品查询" +
@@ -119,6 +119,36 @@ function mycpgl(){
     $(".right").hide();
     $("#mainPage").show();
     
+}
+//产品管理
+function mycpgl2(){
+	var urlss="/ipad/product/productBrowse.json";
+	$.ajax({
+		url:wsHost+urlss,
+		dateType:'json',
+		type:'GET',
+		success:function (json){
+			var objs = $.evalJSON(json);
+			var contsnt="";
+			for(var i = 0;i<objs.result.length;i++){
+				contsnt =contsnt+"<div class='cplb' >" +
+						          "<img src='images/cp/jqt.png' title='"+objs.result[i].productName+"'/>" +
+					            "<span class='dklx'>"+objs.result[i].productName+"</span>"+
+						            "<span class='cpqx'>产品期限："+objs.result[i].prodLiTime+"</span>"+
+						            "<span class='cpll'>产品利率(%)："+objs.result[i].rateRange+"</span>"+
+						            "<img src='images/new.png' class='new'/>" +
+						  "</div>";
+			}
+			 $("#mainPage").html("<div class='title'>" +
+			 			"<img src='images/back.png' onclick='mywdsy()'/>产品查询" +
+//			 			"<input type='text' style='margin:13px 40px;' placeholder='搜索' onkeyup='search(this)'/>" +
+			 			"</div>"+  
+			 			"<div class='content' style='padding-bottom:60px;margin-top:160px;'>"+
+			 			contsnt+
+					 "</div>");
+			 xxxx(objs);
+		}
+	})
 }
 //双闭包为div添加onclick事件
 function xxxx(objs){

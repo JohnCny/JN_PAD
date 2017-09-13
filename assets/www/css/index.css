@@ -127,6 +127,18 @@ p.Left{text-align:left;}
 .jjgl img{width:5em;height:5em;margin-top:30px;}
 .jjgl span{color:#fff;width:10em;}
 
+.zppx{width:10em;height:10em;margin-top:100px;}
+.zppx img{width:5em;height:5em;margin-top:30px;}
+.zppx span{color:#000000;width:10em;}
+
+
+.zpll img{width:20em;height:20em;margin-top:40px;}
+.zpll span{color:#000000;width:10em;}
+
+.zpfl{margin-left:50px;display:inline;}
+.zpfl img{width:20em;height:20em;margin-top:40px;}
+.zpfl span{color:#000000;width:10em;}
+
 .jjstep{background:#fff;width:100%;position:fixed;top:125px;padding-top:10px;z-index:15}
 .jjstep div{width:220px;height:70px;float:left;color:#fff;line-height:70px;text-align:center;margin-bottom:10px;font-size:20px;}
 .jjstep .step1{background:url(../images/lc1_o.png) no-repeat;margin-left:2.5%;cursor:pointer;}
@@ -134,6 +146,8 @@ p.Left{text-align:left;}
 .jjstep .step3{background:url(../images/lc2_o.png) no-repeat;cursor:pointer;margin-left:-20px;}
 input[type=button].next{float:right;margin:15px 40px 0 0;}
 .bottom-content{position:relative;top:100px;z-index:9;padding-bottom:20px;}
+.bottom-cont{position:relative;top:40px;z-index:9;padding-bottom:20px;}
+.bottom-con{ position:absolute;left:100px;top:100px;padding-bottom:20px;}
 
 .imgbox{float:left;width:95%;margin-left:2.5%;margin-top:20px;clear:both;}
 .content .zz{position:absolute;width:350px;height:350px;background:rgba(0,0,0,0.5);display:none;}
@@ -265,9 +279,9 @@ input[type=checkbox]{display:none;}
 .checkbox_checked{background:url(../images/checked.png) no-repeat;}
 label.radio{padding-left:30px;}
 /*��ͼ*/
-.zingchart {width: 650px;height: 500px;background:#fff;margin:0 auto;}
+.zingchart {width: 550px;height: 500px;background:#fff;margin:0 auto;}
 .zingchartt {width: 700px;height: 500px;background:#fff;margin:0 auto;}
-.ban{width:170px;height:40px;background:#fff;position:absolute;top:600px;right:350px;}
+.ban{width:170px;height:20px;background:#fff;position:absolute;top:205px;right:291px;font-size:11px;}
 
 .khjl{display:inline-block;width:20%;}
 
@@ -369,7 +383,7 @@ label.radio{padding-left:30px;}
 	border: 0 none;
 }
 .PlusView-largeBg {
-	background: #fafafa;
+	background: transparent;
 	text-align: center;
 	position: relative;
 	padding: 0 50px;

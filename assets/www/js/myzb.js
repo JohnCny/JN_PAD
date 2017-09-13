@@ -15,7 +15,6 @@ function myzbgl(){
 	
 }
 function zbjjlb(loc){
-	
 	var userId = window.sessionStorage.getItem("userId");
 	var obj = null;
 	var wsLoginUrl = "/ipad/product/zhongbaocustomerbrower.json"+"?userId="+userId;
@@ -77,10 +76,14 @@ function zbjjlb(loc){
 						"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
 						"<input type='button' class='btn btn-large btn-primary' onclick ='zbjjxx("+loc+")' value='发布进件'/>"+ 
 						"<input type='button' id ='sure' class='btn btn-large btn-primary' value='抢单'/>"+ 
+						"<input type='button' id ='refresh' class='btn btn-large btn-primary' value='刷新'/>"+ 
 						"<input type='button' class='btn btn-large'' value='返回' id='backdown'/></p>"+
 				"</div>");
 				$(".right").hide();
 				$("#mainPage").show();
+				$("#refresh").click(function(){
+					zbjjlb(loc)
+				});
 				$("#backdown").click(function(){
 					if(loc==1){
 						tz();
@@ -100,7 +103,6 @@ function zbjjlb(loc){
 					if(result[page]){
 						$("#cslb").html(head+result[page]);
 					}else{
-//						alert("当前已经是最后一页");
 						window.wxc.xcConfirm("当前已经是最后一页", "info");
 						page=page-1;
 					}
@@ -114,12 +116,10 @@ function zbjjlb(loc){
 						var cteatedBy =values[0];
 						var customerId = values[3];
 						if(userId==cteatedBy){
-//							alert("不能抢自己的单");
 							window.wxc.xcConfirm("不能抢自己的单", "warning");
 						}else{
 						var userType = window.sessionStorage.getItem("userType");
 						if(userType!=1){
-//							alert("您的角色不能抢单");
 							window.wxc.xcConfirm("您的角色不能抢单", "warning");
 						}else{
 						var qiangUrl="/ipad/product/getcustomerbrower.json?customerId="+customerId+"&userId="+userId;
@@ -127,14 +127,12 @@ function zbjjlb(loc){
 						
 						function qiangdancallbackInfor(json){
 							var obj = $.evalJSON(json);
-//							alert(obj.mess);
 							window.wxc.xcConfirm(obj.mess, "success");
-							zbjjlb();
+							zbjjlb(loc);
 						}
 						}
 					}
 					}else{
-//						alert("请选择一行");
 						window.wxc.xcConfirm("请选择一行", "warning");
 						
 					}
@@ -145,7 +143,6 @@ function zbjjlb(loc){
 					if(result[page]){
 						$("#cslb").html(head+result[page]);
 					}else{
-//						alert("当前已经是第一页");
 						window.wxc.xcConfirm("当前已经是第一页", "info");
 						page = page+1;
 					}
@@ -191,9 +188,9 @@ function zbjjxx(loc){
 			var cardType = $("#cardType").val();
 			var tel = $("#phone").val();
 			var userId = window.sessionStorage.getItem("userId");
-			if(cardId==""||cardId==null||chineseName==""||chineseName==null){
+			if(tel==""||tel==null||chineseName==""||chineseName==null){
 //				alert("证件号码或姓名不能为空");
-				window.wxc.xcConfirm("证件号码或姓名不能为空", "warning");
+				window.wxc.xcConfirm("姓名和手机号码不能为空", "warning");
 			}else{
 				var wsLoginUrl = "/ipad/product/zhongbaocustomerInsert.json"+"?cardId="+cardId+"&chineseName="+chineseName+"&cardType="+cardType+"&userId="+userId+"&phoneNumber="+tel;
 				
@@ -203,7 +200,6 @@ function zbjjxx(loc){
 			        dataType:'json',
 			        success: function (json) {
 			        	var objs = $.evalJSON(json);
-//			        	alert(objs.message);
 			        	window.wxc.xcConfirm(objs.message, "success");
 			        	document.getElementById("khname").value = ""
 			        	document.getElementById("cardId").value = ""
@@ -257,7 +253,7 @@ function zbglxx(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){

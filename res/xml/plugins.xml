@@ -26,4 +26,6 @@
     <plugin name="CoordinateTranslatePlugin" value="com.cardpay.banksaler_rocket.CoordinateTranslatePlugin"/>
     <plugin name="GetLocationOffline" value="com.cardpay.banksaler_rocket.GetLocationOffline"/>
     <plugin name="GpsToBd09llPlugin" value="com.cardpay.banksaler_rocket.GpsToBd09llPlugin"/>
+    <plugin name="DeletePhotoPlugin" value="com.cardpay.banksaler_rocket.DeletePhoto"/>
+    <plugin name="LBS_locationPlugin" value="com.cardpay.banksaler_rocket.LBS_location"/>
 </plugins>

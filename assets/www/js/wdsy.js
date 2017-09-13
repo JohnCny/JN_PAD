@@ -3,15 +3,15 @@
 function mywdsy(){
 	window.scrollTo(0,0);//滚动条回到顶端
 //	alert("GET当前登录用户ID："+window.sessionStorage.getItem("userId"));
-//	$("#mainPage").html("<div class='title'>我的首页</div>"+ 
-//			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
-//			"<div class='spinner'>"+
-//			"<div class='bounce1'></div>"+
-//			"<div class='bounce2'></div>"+
-//			"<div class='bounce3'></div>"+
-//			"</div>"+
-//			"</div>"+
-//	"</div>");
+	$("#mainPage").html("<div class='title'>我的首页</div>"+ 
+			"<div class='contents' id='allmap'  style='text-align:center;height:580px;margin:auto auto;'>" +
+			"<div class='spinner'>"+
+			"<div class='bounce1'></div>"+
+			"<div class='bounce2'></div>"+
+			"<div class='bounce3'></div>"+
+			"</div>"+
+			"</div>"+
+	"</div>");
 	var get = crud.dom.factory("GET");
 	wsCustManager ="/ipad/user/findSysUserMsg.json";
 	var url = wsCustManager+"?userId="+window.sessionStorage.getItem("userId");
@@ -35,7 +35,11 @@ function mywdsy(){
 		}
 		
 		if(window.sessionStorage.getItem("LocationType")=="H5"){
-			locationType="<div class='box wdsy5' onclick='wzxx()'><img src='images/wdzj.png'/><span>位置信息</span></div>"
+			locationType="<div class='box wdsy5' onclick='wzxx()'><img src='images/wdzj.png'/><span>位置信息</span></div>";
+		}else if(window.sessionStorage.getItem("LocationType")=="BDSDK"){
+			locationType="<div class='box wdsy5' onclick='wzxx2()'><img src='images/wdzj.png'/><span>位置信息</span></div>";
+		}else if (window.sessionStorage.getItem("LocationType")=="BLS"){
+			locationType="<div class='box wdsy5' onclick ='getBLS()'><img src='images/wdzj.png'/><span>位置信息</span></div>";
 		}
 		var zhiwei="客户经理";
 		if(window.sessionStorage.getItem("userType")==5){
@@ -63,7 +67,7 @@ function mywdsy(){
 		/*"<p>授信权限：50万</p>"+*/
 //		"<p>放款总额：100万</p>"+
 		"</div>"+
-		"<div class='box wdsy1' onclick='mycpgl()'><img src='images/clkh.png'/><span>产品查询</span></div>"+
+		"<div class='box wdsy1' onclick='mycpgl2()'><img src='images/clkh.png'/><span>产品查询</span></div>"+
 		"<div class='box wdsy2' onclick='khjjxx();pie()'><img src='images/khjjxx.png'/><span>客户进件信息</span></div>"+
 		"<div class='box wdsy3' onclick='khyyzk()'><img src='images/khyyzk.png'/><span>客户运营状况</span></div>"+
 		im+
@@ -117,7 +121,7 @@ function khjjxx(){
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='mywdsy()'/>客户进件信息</div>"+  
 			"<div class='content'>" +
 			"<div id='ex_1' class='zingchart'></div>"+ 
-			"<div class='ban'></div>"+
+			"<div class='ban' id='jjzs'></div>"+
 			"<p>" +
 			/*	"<input type='button' class='tab-button' style='margin-left:40px;' value='补充进件' onclick='bcjj()'/>" +
 								"<input type='button' class='tab-button' value='拒绝进件' onclick='jjjj()'/>" +*/
@@ -148,9 +152,6 @@ function pie() {
 				           },
 				           {   
 				        	   "backgroundColor":"#4e74c0","text": "审核通过数量  "+obj.result.approvedNum,"values": [obj.result.approvedNum]
-				           },
-				           {   
-				        	   "backgroundColor":"#edd400","text": "进件总数 "+obj.sums
 				           }
 				           ]
 		};
@@ -158,6 +159,7 @@ function pie() {
 		$('#ex_1').zingchart({
 			data:ex1
 		}); 
+		$('#jjzs').html("进件总数 "+obj.sums);
 	}
 }
 //客户进件信息列表
@@ -192,9 +194,9 @@ function jjxxlb(){
 		},
 		success: function (json) {
 			obj = $.evalJSON(json);
+			for(var i = 0;i<obj.items.length;i++){
 			var fallBackReason = "";
 			var refuseReason = "";
-			for(var i = 0;i<obj.items.length;i++){
 				if(obj.items[i].status=="save"){
 					obj.items[i].status="未申请";
 				}else if(obj.items[i].status=="audit"){
@@ -206,7 +208,7 @@ function jjxxlb(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -222,7 +224,7 @@ function jjxxlb(){
 				
 				tmp=tmp+"<tr onclick='check(this)'>"+
 				"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.items[i].chineseName+"@"+
-				obj.items[i].productName+"@"+obj.items[i].id+"@"+obj.items[i].customerId+"@"+obj.items[i].productId+"@"+obj.items[i].status+"'"+"/>"+"</span></td>"+
+				obj.items[i].productName+"@"+obj.items[i].id+"@"+obj.items[i].customerId+"@"+obj.items[i].productId+"@"+obj.items[i].status+"@"+obj.items[i].chineseName+"'"+"/>"+"</span></td>"+
 				"<td>"+obj.items[i].chineseName+"</td>"+
 				"<td>"+obj.items[i].productName+"</td>"+
 				"<td>"+obj.items[i].applyQuota+"</td>"+
@@ -251,6 +253,8 @@ function jjxxlb(){
 					"<p><input type='button' class='btn btn-large btn-primary' value='上一页' id = 'syy' />"+
 					"<input type='button' class='btn btn-large btn-primary' value='下一页' id = 'xyy'/>"+
 					"<input type='button' class='btn btn-large btn-primary' value='补充调查' id = 'bcdc'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='影像资料' id = 'yxzl'/>"+
+					"<input type='button' class='btn btn-large btn-primary' value='调查报告' id = 'dcbg'/>"+
 					"<input type='button' class='btn btn-large' value='返回' onclick='khjjxx();pie()'/></p>"+
 			"</div>");
 			$(".right").hide();
@@ -278,29 +282,147 @@ function jjxxlb(){
 			$("#bcdc").click(function(){
 			if ($("input[type='radio']").is(':checked')) {
 				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
-             if(values[5]=="退回至客户经理"){
+//             if(values[5]=="退回至客户经理"){
 			var res={};
+			res.chineseName=values[0];
 			res.appId=values[2];
 			res.customerId=values[3];
 			res.productId=values[4];
-			bcdcimage(res);
-                }else{
-                	window.wxc.xcConfirm("进件状态非退回不能补充资料", "info");
-                }
+			res.chineseName=values[6];
+			bcdcyxzzfl(res);
+//                }else{
+//                	window.wxc.xcConfirm("进件状态非退回不能补充资料", "info");
+//                }
 			}else{
 //				alert("请选择一行");
 				window.wxc.xcConfirm("请选择一行", "warning");
 			}
 
 		})
+		$("#dcbg").click(function(){
+			if ($("input[type='radio']").is(':checked')) {
+				$("#dcbg").attr('disabled',"true");
+				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+				var res={};
+				res.appId=values[2];
+				res.currentLoc ="jjxxlb()";
+				xszlxx(res);
+			}else{
+				window.wxc.xcConfirm("请选择一行", "warning");
+			}
+			
+		})
+		$("#yxzl").click(function(){
+			
+			if ($("input[type='radio']").is(':checked')) {
+				$("#yxzl").attr('disabled',"true");
+				var values =$('input[name="checkbox"]:checked').attr("value").split("@");
+				var res={};
+				res.applicationId=values[2];
+				res.customerId=values[3];
+				res.productId=values[4];
+				res.currentLoc ="jjxxlb()";
+				xsyxzl(res);
+			}else{
+				window.wxc.xcConfirm("请选择一行", "warning");
+			}
+		})
+		
 		}
 	})
-}   
+}
+//影像资料类型
+function bcdcyxzzfl(addIntopiece){
+	$("#mainPage").html("<div class='title' onclick='jjxxlb()'><img src='images/back.png'/>影像资料采集</div>"+  
+			"<div class='content' style='text-align:center;'>" +  
+			"<div class='bottom-content'>"+
+            "<div class='box zppx' id = 'gzzm' style='margin-left:120px;display:inline-block;'>" +
+            "<img src='images/pad.png' id='jycs'/>" +
+                "<span>工资证明</span>"+
+            "</div>"+
+            "<div class='box zppx' id='jyqk' style='float:none;display:inline-block;margin-left:50px;'>" +
+                "<img src='images/pad.png' />" +
+                "<span>经营情况</span>"+
+            "</div>"+
+            "<div class='box zppx' id='hy' style='float:none;display:inline-block;margin-left:50px;'>" +
+            "<img src='images/pad.png' />" +
+            "<span>合影</span>"+
+            "</div>"+
+            "<div class='box zppx' id='jf' style='float:none;display:inline-block;margin-left:50px;'>" +
+            "<img src='images/pad.png'  />" +
+            "<span>家访</span>"+
+        "</div>"+
+        "<div class='box zppx' id='zj' style='float:none;display:inline-block;margin-left:50px;margin-right:120px;'>" +
+        "<img src='images/pad.png' />" +
+        "<span>身份材料</span>"+
+    "</div>"+
+    "</div>"+
+    "<div class='bottom-content'>"+
+    "<div class='box zppx' id = 'sdjl' style='margin-left:120px;display:inline-block;'>" +
+    "<img src='images/pad.png' />" +
+        "<span>审贷结论</span>"+
+    "</div>"+
+    "<div class='box zppx' id='yhls' style='float:none;display:inline-block;margin-left:50px;'>" +
+        "<img src='images/pad.png' />" +
+        "<span>银行流水</span>"+
+    "</div>"+
+    "<div class='box zppx' id='cc' style='float:none;display:inline-block;margin-left:50px;'>" +
+    "<img src='images/pad.png' />" +
+    "<span>资产情况</span>"+
+"</div>"+
+"<div class='box zppx' id='qt' style='float:none;display:inline-block;margin-left:50px;margin-right:320px'>" +
+"<img src='images/pad.png' />" +
+"<span>其他</span>"+
+"</div>"+
+"</div>"+
+	"</div>"+
+	"</div>");
+	$(".right").hide();
+	$("#mainPage").show();
+
+	$("#gzzm").click(function(){
+		addIntopiece.imageClasses="gzzm";
+		bcdcimage(addIntopiece)
+	})
+	$("#zj").click(function(){
+		addIntopiece.imageClasses="zj";
+		bcdcimage(addIntopiece)
+	})
+	$("#sdjl").click(function(){
+		addIntopiece.imageClasses="sdjl";
+		bcdcimage(addIntopiece)
+	})
+	$("#yhls").click(function(){
+		addIntopiece.imageClasses="yhls";
+		bcdcimage(addIntopiece)
+	})
+	$("#cc").click(function(){
+		addIntopiece.imageClasses="cc";
+		bcdcimage(addIntopiece)
+	})
+	$("#qt").click(function(){
+		addIntopiece.imageClasses="qt";
+		bcdcimage(addIntopiece)
+	})
+	$("#jyqk").click(function(){
+		addIntopiece.imageClasses="jyqk";
+		bcdcimage(addIntopiece)
+	})
+	$("#hy").click(function(){
+		addIntopiece.imageClasses="hy";
+		bcdcimage(addIntopiece)
+	})
+	$("#jf").click(function(){
+		addIntopiece.imageClasses="jf";
+		bcdcimage(addIntopiece)
+	})
+}
 //补充调查
 function bcdcimage(res){
-	
+	var loginId = window.sessionStorage.getItem("login");
+	var displayName= window.sessionStorage.getItem("displayName");
 	window.scrollTo(0,0);//滚动条回到顶端
-	$("#mainPage").html("<div class='title' onclick='jjxxlb()'><img src='images/back.png'/>客户进件列表-补充调查</div>"+  
+	$("#mainPage").html("<div class='title' onclick='bcdcyxzzfl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'><img src='images/back.png'/>客户进件列表-补充调查</div>"+  
 			"<div class='content' style='text-align:center;'>" + 
 								"<table id='qtyxzl' class='cpTable' style='text-align:center;margin-top:20px;'>"+
 									"<tr>"+    
@@ -311,9 +433,10 @@ function bcdcimage(res){
 									"<tr>"+  
 										"<td>1</td>"+
 										"<td><input type='text' id='qtyxzl_sheet1' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' onclick='getMedia(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\");' value='选择文件'/></td>"+
-										"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
-//										"<td><img src='images/ugc_icon_type_photo.png' onclick='capturePhoto(\"fcz_sheet1\",\"img\",\"imageuri\");'/></td>"+
-									"</tr>"+
+//										"<td><img src='images/ugc_icon_type_photo.png' id ='takepucture'/></td>"+
+//										"<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\",\""+res.chineseName+ "\");'/></td>"+
+										"<td><img src='images/ugc_icon_type_photo.png' onclick='captureAndUpload(\"qtyxzl_sheet1\",\"img\",\"imageuri\",\"1\","+ JSON.stringify(res).replace(/"/g, '&quot;') +");'/></td>"+
+										"</tr>"+
 								"</table>"+
 								"<p class='Left'>" +
 								"<button class='add-button' onclick='addTd(\"qtyxzl\")'><img src='images/add.png'/></button>" +
@@ -322,7 +445,7 @@ function bcdcimage(res){
 								"<p>" +
 								"<input type='button' class='btn btn-primary btn-large' value='确定' id='sure' />" +
 								"<input type='button' class='btn btn-primary btn-large' value='查看已上传列表' id='ysctplb' />" +
-								"<input type='button' class='btn btn-large' value='返回' id='back' onclick='jjxxlb()'/>" +
+								"<input type='button' class='btn btn-large' value='返回' id='back' onclick='bcdcyxzzfl("+ JSON.stringify(res).replace(/"/g, '&quot;') +")'/>" +
 								"</p>"+
 							"</div>");
 	  $(".right").hide();
@@ -332,20 +455,29 @@ function bcdcimage(res){
 		  function sckss(){
 		  var num= $('#qtyxzl tr').length;
 		  show_upload(0);
-		  for(var i=0;i<num;i++){
+			var i=0;
+			var timer =window.setInterval(startUpload,1000);
+			function startUpload(){
+				if(i>=num){
+					window.clearInterval(timer);
+					return;
+				}
 		 var fileURI = document.getElementsByName("imageuri")[i].getAttribute("uri");
 		 var j=i+1;
 		 var fileName = $("#qtyxzl_sheet"+j).val();
+		 if(fileName!=""&&fileURI!=""){
 		 var options = new FileUploadOptions();  
 		    options.fileKey = "file";  
 		    options.fileName = fileName; 
 		    options.mimeType = "multipart/form-data";  
 		    options.chunkedMode = false;  
 		    ft = new FileTransfer();  
-		    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+res.productId+"&customerId="+res.customerId+"&fileName="+options.fileName+"&applicationId="+res.appId);  
+		    var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+res.productId+"&customerId="+res.customerId+"&fileName="+options.fileName+"&applicationId="+res.appId+"&loginId="+loginId+"&displayName="+displayName+"&imageClasses="+res.imageClasses);  
 		    $("#uploadInfo").html("正在上传第"+(i+1)+"张，请稍后...");
 		    ft.upload(fileURI,uploadUrl,uploadSuccess, uploadFailed, options); 
 		  }
+		 i++;
+			}
 		  }
 	  })
 	  $("#ysctplb").click(function(){
@@ -411,7 +543,9 @@ function bcdcimagelb(res){
 	function  callbackfunction (json){
 		obj = $.evalJSON(json);
 		for(var i = 0;i<obj.imagerList.length;i++){
-
+			if(obj.imagerList[i].createdTime.length>19){
+				obj.imagerList[i].createdTime = obj.imagerList[i].createdTime.substr(0,19);
+			}
 			tmp=tmp+"<tr onclick='check(this)'><td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.imagerList[i].id+"@"+
 			obj.imagerList[i].applicationId+"'/>"+"</span></td>"+  
 			"<td>"+obj.imagerList[i].attachment+"</td>"+
@@ -555,7 +689,7 @@ function thkhlb(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -662,7 +796,7 @@ function jjkhlb(){
 				}else if(obj.items[i].status=="nopass"){
 					obj.items[i].status="申请未通过";
 				}else if(obj.items[i].status=="refuse"){
-					obj.items[i].status="被拒接";
+					obj.items[i].status="被拒绝";
 				}else if(obj.items[i].status=="approved"){
 					obj.items[i].status="审批结束";
 				}else if(obj.items[i].status=="succeed"){
@@ -903,7 +1037,7 @@ function ckqttjt(){
 														var chartData2 = {
 																"type": "bar", 
 																"series": [    
-																           {"text":"金额","values":[Number(zonged[0]),Number(zonged[1]),Number(zonged[2])]},
+																           {"text":"金额(万元)","values":[Number((Number(zonged[0])/10000).toFixed(2)),Number((Number(zonged[1])/10000).toFixed(2)),Number((Number(zonged[2])/10000).toFixed(2))]},
 
 																           ],
 																           "scale-x":{ 
@@ -914,7 +1048,7 @@ function ckqttjt(){
 //																        	   "zoom-to":[0,5]
 																           },
 																           "title": {
-																        	   "text":"统计各支行已申请和通过的进件数量"
+																        	   "text":"统计授信逾期不良金额"
 																           },
 																           "legend":{
 
@@ -923,9 +1057,9 @@ function ckqttjt(){
 														var chartData3 = {
 																"type": "bar", 
 																"series": [    
-																           {"text":"授信金额","values":[Number(shouxin[0]),Number(shouxin[1]),Number(shouxin[2]),Number(shouxin[3]),Number(shouxin[4]),Number(shouxin[5]),Number(shouxin[6])]},
-																           {"text":"逾期金额","values":[Number(yuqi[0]),Number(yuqi[1]),Number(yuqi[2]),Number(yuqi[3]),Number(yuqi[4]),Number(yuqi[5]),Number(yuqi[6])]},
-																           {"text":"不良金额","values":[Number(buliang[0]),Number(buliang[1]),Number(buliang[2]),Number(buliang[3]),Number(buliang[4]),Number(buliang[5]),Number(buliang[6])]}
+																           {"text":"授信金额(万元)","values":[Number((Number(shouxin[0])/10000).toFixed(2)),Number((Number(shouxin[1])/10000).toFixed(2)),Number((Number(shouxin[2])/10000).toFixed(2)),Number((Number(shouxin[3])/10000).toFixed(2)),Number((Number(shouxin[4])/10000).toFixed(2)),Number((Number(shouxin[5])/10000).toFixed(2)),Number((Number(shouxin[6])/10000).toFixed(2))]},
+																           {"text":"逾期金额(万元)","values":[Number((Number(yuqi[0])/10000).toFixed(2)),Number((Number(yuqi[1])/10000).toFixed(2)),Number((Number(yuqi[2])/10000).toFixed(2)),Number((Number(yuqi[3])/10000).toFixed(2)),Number((Number(yuqi[4])/10000).toFixed(2)),Number((Number(yuqi[5])/10000).toFixed(2)),Number((Number(yuqi[6])/10000).toFixed(2))]},
+																           {"text":"不良金额(万元)","values":[Number((Number(buliang[0])/10000).toFixed(2)),Number((Number(buliang[1])/10000).toFixed(2)),Number((Number(buliang[2])/10000).toFixed(2)),Number((Number(buliang[3])/10000).toFixed(2)),Number((Number(buliang[4])/10000).toFixed(2)),Number((Number(buliang[5])/10000).toFixed(2)),Number((Number(buliang[6])/10000).toFixed(2))]}
 																           ],
 																           "scale-x":{ 
 																        	   "values":["高新","天桥","长清","历城","历下","润丰","槐荫"],
@@ -935,7 +1069,7 @@ function ckqttjt(){
 //																        	   "zoom-to":[0,5]
 																           },
 																           "title": {
-																        	   "text":"统计各支行已申请和通过的进件数量"
+																        	   "text":"统计各支行授信逾期不良金额"
 																           },
 																           "legend":{
 
@@ -1063,7 +1197,7 @@ function tz(){
 				"</td>"+                      
 				"<td onclick='cskhtz()'>" +
 				"<img src='images/cs.png'/><br/><span class='tongzhi'>"+objs.yuqi+"</span><br/>" +
-				"<span class='tz_message'>催收客户通知</span>" +
+				"<span class='tz_message'>逾期催收客户通知</span>" +
 				"</td>"+   
 				"</tr>"+
 				"<tr>"+                         
@@ -1604,26 +1738,38 @@ function cskhtz(){
 			var result={};
 			var page=1;
 			var j = 1;
+			var sfkhjls="";
+			if(window.sessionStorage.getItem("userType")==1){
+				sfkhjls="<th>是否创建催收计划</th>";
+			}
 			var head= "<tr>"+                        
-			"<th>序号</th>"+  
 			"<th>客户姓名</th>"+
-			"<th>客户身份标识</th>"+
-			"<th>放款金额</th>"+
-			"<th>逾期金额</th>"+
-			"<th>本金逾期天数</th>"+
-			"<th>本金逾期天数</th>"+
-			"<th>是否创建催收计划</th>"+
+			"<th>客户身份证</th>"+
+			"<th>客户手机</th>"+
+			"<th>所属产品</th>"+
+			"<th>贷款金额</th>"+
+			"<th>还款总额</th>"+
+			"<th>应还本金</th>"+
+			"<th>应还利息</th>"+
+			"<th>客户经理</th>"+
+			sfkhjls+
 			"</tr>";
+			var sfkhjl="";
 			for(var i=0;i<obj.length;i++){
+				if(window.sessionStorage.getItem("userType")==1){
+					sfkhjl="<td><input type='button' onclick='cjcsjh(1)' class='btn btn-warning' value='是'/></td>";
+				}
 				tmp+="<tr onclick='check(this)'>"+    
-				"<td>"+(i+1)+"</td>"+
-				"<td>"+obj[i].name+"</td>"+
-				"<td>"+obj[i].cardId+"</td>"+
+				"<td>"+obj[i].cname+"</td>"+
+				"<td>"+obj[i].cardnum+"</td>"+
+				"<td>"+obj[i].contactmobiletel+"</td>"+
+				"<td>"+obj[i].prodName+"</td>"+
 				"<td>"+obj[i].money+"</td>"+
-				"<td>"+obj[i].dlaymat+"</td>"+
-				"<td>"+obj[i].delayamtdays+"</td>"+
-				"<td>"+obj[i].delayinterestdays+"</td>"+
-				"<td><input type='button' onclick='cjcsjh(1)' class='btn btn-warning' value='是'/></td>"+
+				"<td>"+obj[i].hkze+"</td>"+
+				"<td>"+obj[i].hkbj+"</td>"+
+				"<td>"+obj[i].yhlx+"</td>"+
+				"<td>"+obj[i].busimanager+"</td>"+
+				sfkhjl+
 				"</tr>";
 
 				if((i+1)%5==0){
@@ -2495,12 +2641,12 @@ function jljlxx(){
 					"<table class='cpTable' id='rblb' style='text-align:center;'>"+
 					"<tr>"+
 					"<td style='width:300px;'>上月奖励激励金额</td>"+
-					"<td>"+obj.reward_incentive+
+					"<td>"+Number(obj.reward_incentive).toFixed(2)+
 					"</td>"+
 					"</tr>"+
 					"<tr>"+
 					"<td style='width:300px;'>风险保证金余额</td>"+
-					"<td>"+obj.return_prepare_amount+
+					"<td>"+Number(obj.return_prepare_amount).toFixed(2)+
 					"</td>"+
 					"</tr>"+
 					"</table>"+
@@ -2568,7 +2714,7 @@ function wzxx(){
 			success:function (json){
 				var obj = $.evalJSON(json);
 				if(obj.success=="true"){
-					Message.showNotify("点击地图上的marker可以在百度地图中查看更详细的信息",3000);
+					Message.showNotify("点击地图上的marker可以在百度地图中查看更详细的信息",2000);
 					$("#allmap").removeClass("contents").addClass("content");
 					$("#allmap").html("");
 					var map = new BMap.Map("allmap"); 
@@ -2831,7 +2977,7 @@ function wzxx2(){
 							var marker  = new BMap.Marker(point); 
 							map.centerAndZoom(point,12); 
 							map.addOverlay(marker); 
-							var label = new BMap.Label(userName+":"+updatetime,{offset:new BMap.Size(20,-10)});
+							var label = new BMap.Label(userName+":"+updatetime,{offset:new BMap.Size(20+i,-10)});
 							marker.setLabel(label);
 							showInformation(marker,updatetime,lonnn,lattt,map,userName);
 //						}

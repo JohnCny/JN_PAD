@@ -4,6 +4,12 @@ function  checkRadio(obj){   //单选样式
     $(obj).attr("class","radio radio_checked");
     $(obj).find('input[type=radio]').attr('checked',"checked");
 }
+function  checkBoxModel(obj){   //单选样式 
+	$(obj).parent().find('.checkbox').attr("class","checkbox");
+	$(obj).parent().find('input[type=radio]').removeAttr('checked');
+	$(obj).attr("class","checkbox checkbox_checked");
+	$(obj).find('input[type=radio]').attr('checked',"checked");
+}
 function  checkBox(obj,id){   //单选样式 
     $(obj).parent().find('.checkbox').attr("class","checkbox");
     $(obj).parent().find('input[type=radio]').removeAttr('checked');
@@ -251,6 +257,17 @@ function searchTR(obj){
     }    
 }
 //表格添加行
+function addTds(table,addIntopiece){ 
+	 if(table=="qtyxzl"){//其他影像资料
+	        var num= $('#qtyxzl tr').length;
+	        $("#"+table).append("<tr>"+    
+	                                "<td>"+num+"</td>"+
+	                                "<td><input type='text' id='qtyxzl_sheet"+num+"' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' value='选择文件' onclick='getMedia(\"qtyxzl_sheet"+num+"\",\"img\",\"imageuri\","+num+");'/></td>"+
+	                                "<td><img src='images/ugc_icon_type_photo.png' onclick='captureAndUpload(\"qtyxzl_sheet"+num+"\",\"img\",\"imageuri\","+num+","+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +");'/></td>"+
+	                            "</tr>");      
+	    }
+}
+//表格添加行
 function addTd(table){ 
     if(table=="lxrxx"){//联系人信息
         var num= $('#lxrxx tr').length;
@@ -373,7 +390,7 @@ function addTd(table){
 				"<td><input type='text' class='addinput' id='monetaryAmount"+num+"'/></td>"+
 				"<td><input type='text' class='addinput' id='currentAmount"+num+"'/></td>"+
 				"<td>" +
-                    "<select　id='getWay"+num+"'>" +
+                    "<select id='getWay"+num+"'>" +
                         "<option>全款</option>"+
                         "<option>按揭</option>"+
                     "</select>" +
@@ -391,7 +408,7 @@ function addTd(table){
                 				"<td><input type='text' class='addinput' id='monetaryAmount"+num+"'/></td>"+
                 				"<td><input type='text' class='addinput' id='currentAmount"+num+"'/></td>"+
                 				"<td>" +
-                                    "<select　id='getWay"+num+"'>"+
+                                    "<select id='getWay"+num+"'>"+
                                         "<option>全款</option>"+
                                         "<option>按揭</option>"+
                                     "</select>" +
@@ -436,7 +453,7 @@ function addTd(table){
         $("#"+table).append("<tr>"+    
                                 "<td>"+num+"</td>"+
                                 "<td><input type='text' id='qtyxzl_sheet"+num+"' name='imageuri' uri='' class='readonly' readonly='readonly'/><input type='button' class='btn' value='选择文件' onclick='getMedia(\"qtyxzl_sheet"+num+"\",\"img\",\"imageuri\","+num+");'/></td>"+
-                                "<td><img src='images/ugc_icon_type_photo.png' onclick='capture(\"qtyxzl_sheet"+num+"\",\"img\",\"imageuri\","+num+");'/></td>"+
+                                "<td><img src='images/ugc_icon_type_photo.png' onclick='captureAndUpload(\"qtyxzl_sheet"+num+"\",\"img\",\"imageuri\","+num+","+ JSON.stringify(addIntopiece).replace(/"/g, '&quot;') +");'/></td>"+
                             "</tr>");      
     }
   if(table=="gzjh"){//工作计划
