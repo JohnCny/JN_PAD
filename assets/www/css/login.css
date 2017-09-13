@@ -4,7 +4,7 @@
 #login{background:#72c2bf url(../images/login.jpg) no-repeat;position:absolute;top:0;bottom:0;width:100%;z-index:99;}
 
 /*透明外框290*/
-.loginBox{width:400px;height:320px;background:rgba(255,255,255,0.3);margin:0 auto;margin-top:200px;padding:15px 15px 23px 15px;border-radius:10px;}
+.loginBox{width:400px;height:290px;background:rgba(255,255,255,0.3);margin:0 auto;margin-top:200px;padding:15px 15px 23px 15px;border-radius:10px;}
 /*白色form框*/
 .login_form{background:#fff;width:100%;height:100%;border-bottom:8px solid #81bb28;}
 /*form框左上角包角图片*/

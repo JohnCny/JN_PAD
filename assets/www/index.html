@@ -20,7 +20,6 @@
                      <h1>小微贷款系统</h1>
                      <input type='text' placeholder='用户名' id ="name" style="background-image:url('images/login1.png');"/>
                      <input type='password' placeholder='密码' id ="password"  style="background-image:url('images/login2.png');"/>
-                     <input type='text' placeholder='服务器' id ="host"  style="background-image:url('images/login2.png');"/>
                      <!--错误信息提示--> 
                      <span class='errorMessage'>
                          <img src='images/error.png'/>&nbsp;用户名或密码错误！
@@ -71,6 +70,7 @@
 <script src="js/jquery-1.7.2.min.js" charset="utf-8"></script>
 <!-- 饼图 -->
 <script src="js/zingchart.min.js"></script>
+<script src="js/modelForm.js"></script>
 <script src="js/zingchart.jquery.js"></script>
 <!-- <script src="http://cdn.zingchart.com/zingchart.min.js"></script> -->
 <script src="js/index.js"></script>
@@ -110,9 +110,11 @@
 <script type="text/javascript" src="js/showBo.js"></script>
 <script type="text/javascript" src="confirm/js/xcConfirm.js"></script>
 <script type="text/javascript" src="js/GpsToBd09llPlugin.js"></script>
+<script type="text/javascript" src="js/DeletePhonePlugin.js"></script>
+<script type="text/javascript" src="js/LBS_locationPlugin.js"></script>
 
 
-  <script src="js/plusview.js"></script>
+<script src="js/plusview.js"></script>
 <!-- <script type="text/javascript" src="mapjs/api_v2.0.js"></script>
 <script type="text/javascript" src="mapjs/convertor.js"></script>  -->
 <script type="text/javascript" src="map/baidumapv2/baidumap_offline_v2_load.js"></script>
@@ -247,5 +249,85 @@ function getMedia(id,type,name,num) {
 		    navigator.notification.alert(msg, null, 'Uh oh!'); 
 		} 
 	}
+var fullFilePath="";
+	//拍照并上传
+	function captureAndUpload(id,type,name,num,addIntopiece) {
+		idtmp=id;
+	   window.plugins.CapturePhotosPlugin.startActivity(captureSuccess,captureError,addIntopiece.chineseName);
+		function captureSuccess(mediaFiles) { 
+		 if(mediaFiles!="false"){
+			captureAndUpload(id,type,name,num,addIntopiece);
+			 fullFilePath=mediaFiles;
+		        window.plugins.imagePluginAPI.startActivity(testSuccess,testError, mediaFiles);
+				function testSuccess(res){
+					var values=res.split("/")
+					var URI="file://"+res;
+					var url = document.getElementById(idtmp);
+					var lll= document.getElementsByName("imageuri")[num-1].setAttribute("uri",URI);
+					url.value = values[values.length-1];
+					beginUpload(values[values.length-1],URI,addIntopiece);
+				}
+				function testError(){
+					alert("error");
+				}
+		    }      
+		} 
+		
+		// 采集操作出错后的回调函数
+		function captureError(error) { 
+		    var msg = 'An error occurred during capture: ' + error.code; 
+		    navigator.notification.alert(msg, null, 'Uh oh!'); 
+		} 
+		
+		//上传图片
 
+		function beginUpload(fileName,fileURI,addIntopiece){
+		var applicationId = addIntopiece.appId;
+		var loginId = window.sessionStorage.getItem("login");
+		var displayName= window.sessionStorage.getItem("displayName");
+			if(fileName!=""&&fileURI!=""){
+				var options = new FileUploadOptions();  
+				options.fileKey = "file";  
+				options.fileName = fileName; 
+				options.mimeType = "multipart/form-data";  
+				options.chunkedMode = false;  
+				ft = new FileTransfer(); 
+				var uploadUrl=encodeURI(wsHost+"/ipad/addIntopieces/imageImport.json?productId="+addIntopiece.productId+"&customerId="+addIntopiece.customerId+"&fileName="+options.fileName+"&applicationId="+applicationId+"&loginId="+loginId+"&displayName="+displayName+"&imageClasses="+addIntopiece.imageClasses);  
+				ft.upload(fileURI,uploadUrl,uploadSuccessByself, uploadFailedByself, options); 
+			}
+		}
+	function uploadSuccessByself(r){
+		//上传成功删除原图
+	//	window.plugins.DeletePhotoPlugin.startActivity(null,null,"",fullFilePath);
+	}
+	function uploadFailedByself(error){
+		var errorcode=error.code;
+	       var errstr="";
+	       switch (errorcode)
+	       {
+	           case 1:
+	           {
+	              errstr="错误代码1：源文件路径异常，请重新选择或者拍照上传！";
+	               break;
+	           }
+	           case 2:
+	           {
+	               errstr="错误代码2:目标地址无效,请重试！";
+	               break;
+	           }
+	           case 3:
+	           {
+	               errstr="您手机或者后台服务器网络异常,请重新上传！";
+	               break;
+	           }
+	           default :
+	           {
+	               errstr="程序出错";
+	               break;
+	           }
+
+	       }
+	       window.wxc.xcConfirm(errstr, "error");
+	}	
+	}
 </script>

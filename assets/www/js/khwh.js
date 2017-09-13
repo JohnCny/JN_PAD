@@ -4,7 +4,14 @@ function khzlcx(){
 	$("#mainPage").html("<div class='title'><img src='images/back.png' onclick='editUser()'/>客户管理-客户资料查询</div>"+  
 			"<div class='content' style='height:280px;padding-top:80px;background:url(images/book.jpg) no-repeat center center;'>" +
 			"<p>客户姓名:<input type='text' id ='customerName'/></p>"+
-			"<p>证件类型:<select><option>身份证</option></select></p>"+
+			"<p>证件类型:<select id ='cardType'>" +
+			 "<option value='0'>身份证</option>" +
+             "<option value='1'>军官证</option>"+
+             "<option value='2'>护照</option>"+
+             "<option value='3'>香港身份证</option>"+
+             "<option value='4'>澳门身份证</option>"+
+             "<option value='5'>台湾身份证</option>"+
+			"</select></p>"+
 			"<p>证件号码:<input type='text' id ='cardId'/></p>"+
 			"<p><input type='button' id = 'select' class='btn btn-large btn-primary' value='查询'/></p>" +
 	"</div>");
@@ -13,10 +20,12 @@ function khzlcx(){
 	$("#select").click(function() {
 		var customerName = $("#customerName").val();
 		var cardId = $("#cardId").val();
+		var cardType = $("#cardType").val();
 //		if(cardId!=""||customerName!=""){
 		var objs={};
 		objs.chineseName=customerName;
 		objs.cardId=cardId;
+		objs.cardType=cardType;
 		khcx(objs);
 //		}else{
 //		alert("请输入证件号码或姓名");
@@ -39,7 +48,7 @@ function khcx(objs){
 	"<th>证件号码</th>"+
 	"<th>手机</th>"+
 	"</tr>";
-	var wsLoginUrl = "/ipad/product/selectCustomerInfoByCardId.json"+"?cardId="+objs.cardId+"&chineseName="+objs.chineseName+"&userId="+userId+"&userType="+userType;
+	var wsLoginUrl = "/ipad/product/selectCustomerInfoByCardId.json"+"?cardId="+objs.cardId+"&cardType="+objs.cardType+"&chineseName="+objs.chineseName+"&userId="+userId+"&userType="+userType;
 	$.ajax({
 		url:wsHost + wsLoginUrl,
 		type: "GET",
@@ -183,6 +192,7 @@ function ckkhqtxx(objs){
 				"<li name='tab2' id = 'ccxx'>车产信息</li>"+
 				"<li name='tab2' id = 'lxrxx'>联系人信息</li>"+
 				"<li name='tab2' id = 'jzxx'>居住信息</li>"+
+				"<li name='tab2' id = 'gxxx'>工薪类基本信息</li>"+
 				"<li name='tab2' id = 'qyjbxx'>企业基本信息</li>"+
 				"<li name='tab2' id = 'qyywxx'>企业业务信息</li>"+
 				"<li name='tab2' id = 'qydpxx'>企业店铺信息</li>"+
@@ -270,7 +280,44 @@ function ckkhqtxx(objs){
 		"<td><input type='text' value='"+obj.geren3.mobilephone+"'/></td>"+
 		"</tr>"+
 		"</table>";
-		
+		var gxxx="<table class='cpTable'>"+
+		"<tr>"+                             
+		"<td style='width:110px;'>工作单位</td>"+         
+		"<td><input type='text'  class='long' value='"+obj.gxxx3.jobAddress+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>工作年限</td>"+         
+		"<td><input type='text' value='"+obj.gxxx3.jobYears+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>工资水平</td>"+          
+		"<td><input type='text' value='"+obj.gxxx3.jobAmount+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>职级</td>"+  
+		"<td><input type='text' value='"+obj.gxxx3.rank+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>公积金缴存额</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.accumulation+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>公积金缴存年限</td>"+           
+		"<td><input type='text' value='"+obj.gxxx3.accumulationYears+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>社保缴存基数</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.social+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>社保缴存年限</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.socialYears+"'/></td>"+
+		"</tr>"+
+		"<tr>"+                             
+		"<td>单位性质</td>"+    
+		"<td><input type='text' value='"+obj.gxxx3.unitProperty+"'/></td>"+
+		"</tr>"+
+		"</table>";
 		var jtxx= "<table class='cpTable'>"+
 		"<tr>"+                             
 		"<td style='width:145px'>家庭成员</td>"+         
@@ -505,7 +552,10 @@ function ckkhqtxx(objs){
 		change(this);
 		$("#resultshow").html(jzxx);
 	})
-	
+	$("#gxxx").click(function(){
+		change(this);
+		$("#resultshow").html(gxxx);
+	})
 	$("#qyjbxx").click(function(){
 		change(this);
 		$("#resultshow").html(qyjbxx);
@@ -857,16 +907,16 @@ function whrzlb(objs){
 		},
 		success: function (json) {
 			obj = $.evalJSON(json);
-			if(obj.result.totalCount!=0){
-				for(var i = 0;i<obj.result.totalCount;i++){
-					body=body+"<tr onclick='check(this)'>"+"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.result.items[i].chineseName+"@"+
-					obj.result.items[i].cardId+"@"+obj.result.items[i].appId+"@"+obj.result.items[i].id+"@"+obj.result.items[i].productName+"@"+obj.result.items[i].productId+
-					"@"+obj.result.items[i].userName+"'/>"+"</span></td>"+  
-					"<td>"+obj.result.items[i].chineseName+"</td>"+
-					"<td>"+obj.result.items[i].cardId+"</td>"+
-					"<td>"+obj.result.items[i].productName+"</td>"+
-					"<td>"+obj.result.items[i].startDay+"--"+obj.result.items[i].endDay+"</td>"+
-					"<td>"+obj.result.items[i].userName+"</td>"+			
+			if(obj.result.length!=0){
+				for(var i = 0;i<obj.result.length;i++){
+					body=body+"<tr onclick='check(this)'>"+"<td><span class='radio'> <input type='radio' name='checkbox' value='"+obj.result[i].chineseName+"@"+
+					obj.result[i].cardId+"@"+obj.result[i].appId+"@"+obj.result[i].id+"@"+obj.result[i].productName+"@"+obj.result[i].productId+
+					"@"+obj.result[i].userName+"'/>"+"</span></td>"+  
+					"<td>"+obj.result[i].chineseName+"</td>"+
+					"<td>"+obj.result[i].cardId+"</td>"+
+					"<td>"+obj.result[i].productName+"</td>"+
+					"<td>"+obj.result[i].startDay+"--"+obj.result[i].endDay+"</td>"+
+					"<td>"+obj.result[i].userName+"</td>"+			
 					"</tr>"
 				}
 			}else{
